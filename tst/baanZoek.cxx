@@ -935,6 +935,8 @@ TEST_F(BaanZoekTest, TestInitialization)
         {
             switch(countBloks[i])
             {
+            case 0:
+                break; // voor een los blok
             case 1:
                 EXPECT_TRUE((mBaanInfo->BlokPointer[i].pVorigBlok == &mBaanInfo->EindBlokPointer) ||
                 (mBaanInfo->BlokPointer[i].pVolgendBlok == &mBaanInfo->EindBlokPointer))
