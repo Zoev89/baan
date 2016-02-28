@@ -192,7 +192,7 @@ void DraaiSchijf::Bedien ()
 
     bedien.blokIO = HW_IO;
     bedien.adres = hardwareAdres;
-    bedien.data = hardwareBit;   // default IO_COMMAND0
+    bedien.data = 0; //hardwareBit;   // default IO_COMMAND0
     bedien.nummer = 0;
     bedien.returnGewenst = 0;
 
