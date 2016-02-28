@@ -1,0 +1,44 @@
+CC=gcc
+FLTK=$(FLTK_PATH)
+.SUFFIXES: .fl .cxx .h
+
+CFLAGS=-g -I`cd ..;pwd`/include -I$(FLTK) -I../baan/shared
+LDFLAGS=-g -L$(FLTK)/lib -lfltk2 -l fltk2_images -L/usr/X11R6/lib  -lX11 -lXi -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lusb
+
+
+print_SOURCES= \
+	print.cxx \
+	../baan/shared/usbinout.cxx \
+    ../baan/shared/leesdata.cxx \
+
+
+
+print_OBJECTS= $(print_SOURCES:.cxx=.o)
+
+print_EXECUTABLE=print
+
+
+all: $(print_EXECUTABLE)
+
+clean:
+	rm $(print_OBJECTS)
+	rm *~
+
+indent:
+	indent -nut $(print_SOURCES)
+	
+backup:
+	cp -r * /media/ERIC128/linuxBaan/print
+
+
+$(print_EXECUTABLE): $(print_OBJECTS) 
+	$(CC) $(print_OBJECTS) -o $@ $(LDFLAGS)
+
+.cxx.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.fl.o:
+	$(FLTK)/fluid/fluid -c $<
+	$(CC) $(CFLAGS) -c $*.cxx -o $@
+
+

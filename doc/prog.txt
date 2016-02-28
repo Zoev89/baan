@@ -1,0 +1,315 @@
+Notes om een nieuw interface toetevoegen:
+Bedenk het api. 
+Voeg het api toe aan het CProgramma class als
+een virtual function (bij de lijst met de andere
+virtual public functies. Implementeer de functie
+in programma.cxx. Voeg de c declaratie toe aan programmaDefines.h
+en voeg de callback toe aan progLib.cxx. In progLib.cxx 
+kan je direct de functie in de CProgramma class aanroepen.
+Hercompileer de baan en de linklibrary die het nieuwe
+api wil gebruiken. En voeg de documentatie van de nieuwe
+functie toe aan dit file
+
+Trein programma API
+
+De programmeer taal is C. De code wordt door de c++
+complier heen gehaalt. Alle standaard taal contructies
+zijn mogelijk. Alleen het gebruik van de run-time libraries
+gaat problemen leveren. Gebruik dus geen malloc of new om
+memorie te alloceren want het programma kan dan niet geladen
+worden. Wel kan je gebruik maken van static variabelen.
+Ook als je hetzelde programma voor 2 regelaars gebruikt zijn
+de statics gescheiden. Hierdoor is het niet mogelijk 
+om de run-time library tegebruiken. Er mogen geen unresolved
+symbols zijn. Ik vond het gescheiden zijn van de statics
+belangrijker dan de run-time library.
+ 
+
+void progMain(int event,int nummer)
+event:
+	INIT	eenmalig als het programma start nummer is het huidige blok nummer
+	BLOK	als de trein in blok nummer rijdt
+	IO	
+	TIMER	timer X (number) eindigde
+	MUIS	muis klik op muis event nummer
+nummer:
+	de 16 bits extra data die mee komt per event.
+
+De progMain functie wordt elke keer aangeroepen als er iets te melden is voor deze tijd.
+Ga dus niet lang zitten rekenen of zitten pollen (continu aftesten of iets gebeurd is)
+want dat leverd een deadlock op.
+Gebruik het event systeem waarmee de progMain wordt aangeroepen. Als je toch iets
+moet pollen gebruik dan een timer waardoor je steeds even slaapt.
+
+De progMain functie moet aanwezig zijn anders werkt de
+code niet.
+
+optioneel interface
+progAanvraagRet(int adres,int bit,int ret)
+adres:
+    Is het blok of IO adres waarop een aanvraag zat
+bit:
+    Voor een ioAanvraag is dit het bit nummer van het in/outgangs
+    blok.
+ret:    
+	0 		voor een succesvolle operatie
+	IOGEWIJGERD	als de bediening gewijgerd is
+	IOTIMEOUT	als de tijd verlopen is
+Als je niet geinterreerd bent in het resultaat van aanvraag
+functies hoef je de functie niet te implementeren. B.V.
+mijn globale programma bediend meestal direct dingen en
+dan is het niet nodig. Meestal de treinen wel want die moeten
+reserveringen/wissels maken en je mag pas gaan rijden als de 
+reserveringen/wissels gedaan zijn.
+
+
+Functies:
+
+int ioAanvraag(int adres, int bit,int stand,int timeout);
+adres:	Het hardware adres van de io die je wil bedienen
+bit:    welk van de 16 bits men wil.
+	voorbeeld:
+	258.01 is adres 258 bit 1
+stand:  Men kan direct de waarde die intern in het programma zit gebruiken
+	of de predefined waardes:
+	IOAANVRAAG_TOGGLE	van aan naar uit en andersom
+	IOAANVRAAG_DEFAULT	initalizeer een wissel in de default startup 
+	ENGELSEWISSEL_KRUIS
+	ENGELSEWISSEL_BUIG
+	WISSEL_RECHT
+	WISSEL_BUIG
+	DRIEWEGWISSEL_12	naar aansluiting 2
+	DRIEWEGWISSEL_13	naar aansluiting 3
+	DRIEWEGWISSEL_14	naar aansluiting 4
+	LAMP_UIT
+	LAMP_AAN
+
+timeout:
+   De timeout word gespecificeerd in seconden (niet in 100ms interval).
+   ioAanvraag komt altijd meteen terug. Als men een timeout specificeerd
+   wordt de progAanvraagRet aangeroepen als de operatie voltooid is of
+   timeout of gewijgerd is. Gewijgerd kan voorkomen als de queue van 15
+   aanvragen vol zit.
+	0	meteen terug komen en wachten of het gelukt is. B.V een 
+	    lampje aan zetten.   
+	n 	na n seconden terugkomen als de opgegeven stand niet
+		tot stand is gekomen, gebruik TIMEOUT_MAX (max_int) voor een
+		voor een bijna oneindige wacht (68jaar).
+
+Return waarde:
+	0 		voor een succesvolle operatie
+	IOGEWIJGERD	als de bediening gewijgerd is
+
+Notes:
+	Als men een timeout heb gegeven dan kan door een verwijder
+	call de execution IOGEWIJGERD terug geven check dit dus in
+	je programma als je verwijder calls gebruikt! Ook een TIMEOUT_MAX
+	komt dan terug met een IOGEWIJGERD dus ga er dan niet vanuit
+	dat de operatie succesvol is.
+	Ook al bedien je een wissel met ioAanvraag dat betekent niet
+	dat een ander eventueel de wissel niet kan bedienen.
+    Gebruik blokAanvraag om andere programmas te verhinderen
+    van bediening van de wissel. Als je als regel neemt eerst
+    blokAanvraag en dan pas bedienen gaat het nooit fout.
+    
+NOTES:
+    De aanvraag word direct uitgevoerd en als die gewijgerd
+    is en je specificeerd een timeout dan word die in een
+    lijst gezet en de functie komt meteen terug met IOGEWIJGERD.
+    Gebruik progAanvraagRet om te zien wanneer de operatie
+    afrond.
+    Als je een aanvraag doet en de trein rijdt nog is het
+    verstandig om de trein te laten stoppen. Als de aanvraag
+    meteen wordt gehonoreerd kan je in de progAanvraagRet
+    de trein weer aanzetten. Als je meerdere aanvragen doet
+    en ze worden direct gehonoreerd is de call volgoorde:
+    aanvraag progAanvraagRet, aanvraag, progAanvraagRet
+    je zou dan in de laatste progAanvraagRet de trein weer
+    kunnen starten. Als er dan een wacht ontstaat dan is de 
+    trein tenminste veilig. Je kunt ook vooruit de wissels
+    goed zetten door vantevoren de calls te doen. Als je dan
+    in de buurd komt kan je kijken op de laatste progAanvraagRet
+    binnen is zoniet stop je.
+
+
+void muisEvent(int xlb, int ylb, int xro, int yro, int nummer);
+xlb:	linker boven hoek x coordinaat
+ylb:	linker boven hoek y coordinaat
+xro:	rechter onder hoek x coordinaat
+yro:	rechter onder hoek y coordinaat
+nummer:	het nummer waarmee dit muis event terug gemeld moet worden
+
+Notes:
+	Specificeer een rechthoek van het beeldscherm waarbinnen geklikt mag worden.
+	De coordinaten zijn positive getallen en xlb < xro en ylb < yro ander gebruik
+	is niet toegestaan en geeft ongedefineerd gedrag.
+
+
+void timer(int ticks, int event, int vlag);
+ticks:	aantal 100ms ticks van de timer
+	voorbeeld ticks = 10 geeft 1 sec wacht tijd
+event:	Het getal waarmee gemeld moet worden dat deze timer afgelopen is
+vlag:	Geeft aan wat voor een soort timer er gebruikt moet worden
+	TIMER_EENMALIG
+	TIMER_HERHALEND
+
+
+void deleteTimer(int event);
+event:	Het event nummer waarmee de timer gemaakt was.
+
+Notes:
+	Je kunt alleen die timers deleten die jij hebt gealloceerd
+	dus een timer van een andere regelaar kan je niet aankomen.
+
+
+
+void zetSpanning(int adres,int spanning, int returnGewenst, int prioriteit);
+adres:		adres van het blok
+spanning:	waarde tussen 0 en 63 pasop 1 en 2 zijn richting commandos
+returnGewenst:	of de waarde van de AD converter opgeslagen moet worden
+prioriteit:	0 dan laag , 1 voor hoog
+
+Notes:
+	gebruik progLeesSpanning om de return waarde te lezen. Dit dient niet
+	in dezelfde cycle te gebeuren maar pas als de actie is uitgevoerd.
+
+Waarschuwing:
+	Oud interface die sinds de invoering van het refreshen (idle 
+	bytes die verzonden worden) niet meer
+	werkt. De waarde zal herhaaldelijk weer overschreven worden naar
+	wat het baan programma ziet. Als we een blok willen reserveren voor
+	niet locomotief gebruik kan men altijd een regelaar pakken op een
+	alleenstaand stuk rails. Of we maken iets speciaals voor dit soort
+	gebruik. 
+
+
+void zetBit(int adres, int bit, int waarde, int returnGewenst, 
+int prioriteit);
+adres:		Het hardware adres van de io die je wil bedienen
+bit:		welk van de 16 bits men wil.
+		voorbeeld:
+		258.01 is adres 258 bit 1
+returnGewenst:  of de return waarde van de controller opgeslagen moet worden
+prioriteit:     0 dan laag , 1 voor hoog
+
+Notes:
+	Nuttige voor het dimmen van lampen want dat kan met de normale
+	besturing niet (dit gaat veranderen).
+	Nuttig voor het opzetten van IO transacties waarbij de return waarde
+	interresant is. B.V. AD converters of andere binaire inputs
+	aangesloten op de IO controller.
+	De return waarde kan gelezen worden met behulp van leesBit.
+	TODO maak een interface voor ioAanvraag die de return waarde
+	specificeerd en wacht tot de waarde gezet is.
+
+
+int leesSpanning(int adres);
+adres:	adres van het blok
+
+Return waarde:
+	Retuneerd de waarde die de AD converter van dit blok heeft gegeven op
+	een opdracht met return gewenst.
+
+
+int leesBit(int adres, int bit);
+adres:	Het hardware adres van de io die je wil bedienen
+bit:	welk van de 16 bits men wil.
+	voorbeeld:
+	258.01 is adres 258 bit 1
+
+Notes:	
+	Retuneerd de waarde die de IO controller heeft gegeven op
+	een IO opdracht met return gewenst.
+
+
+void schrijfGetal(int x, int y, int getal, int deeltal, int deler, 
+int aantal);
+x:	positie x op het scherm
+y:	positie y op het scherm
+deeltal:teller van de breuk
+deler:	het deeltal van de breuk
+aantal:	is het aantal digits op het display
+
+Notes:
+	Dit GUI commando displayed een getal in de vorm van 
+	deeltal/deler
+	Zodat we ook facties kunnen displayen want het programma kent nog
+	geen floats.
+
+
+int zetSnelheid(int snelheid);
+snelheid:	de gewenste snelheid van de locomotief.
+		tussen 0..63
+		speciale defines:
+		SNELHEID_LANGZAAM	de waarde die in de regelaar staat
+		SNELHEID_RIJDEN		de waarde die in de regelaar staat
+
+Return waarde:
+	De waarde die de regelaar had. Hiermee kan men een wijziging doen en
+	later de wijziging ongedaan maken.
+
+
+int blokAanvraag(int adres, int beleg, int timeout)
+beleg:	geeft aan of je het blok belegt of vrijgeeft
+	gebruik de defines BLOKAANVRAAG_BELEG BLOKAANVRAAG_VRIJ
+timeout:In seconden zie ook de notes van ioAanvraag
+
+Return waarde:
+	 de return waarde is hetzelfde als ioAanvraag
+
+Notes:
+	Zie de beschijving van ioAanvraag voor de notes en waarschuwingen
+
+
+void verwijderAanvragen()
+
+Notes:
+	haalt alle aanvragen van io of blok weg en ook nog uitstaande
+	aanvragen worden weggehaalt. Is soms makkelijker dan elke individuele
+	aanvraag opruimen.
+
+int richting(int richting)
+richting:	welke richting de locomotief op moet. Gebruik:
+		RICHTING_VOORUIT
+		RICHTING_ACHTERUIT
+		RICHTING_ONVERANDERD
+
+Return waarde:
+	De oude stand van de regelaar zodat men die later weer terug kan
+	brengen in de orginele stand.
+
+
+int blokStop(int blok, int status)
+blok:	een valid blok adres
+status:	gebruik de volgende waarden
+	ZET_STOP
+	VERWIJDER_STOP
+	VERWIJDER_ALLE_STOPS
+
+Notes:
+	de ZET_STOP en VERWIJDER_STOP werken op het opgegeven blok.
+	voor het verwijderen wordt wel gekeken of de stop van deze
+	regelaar is.
+	VERWIJDER_ALLE_STOPS haalt uit alle blokken de stop weg die
+	van deze regelaar zijn er wordt dan niet naar de waarde van blok
+	gekeken.
+
+Return waarde:
+	0	succes
+	1	er is al een stop door een andere regelaar neer gezet
+	2	verkeerde input
+
+
+int blokStatus(int blok)
+blok:     een valid blok adres
+
+Notes
+    Om te weten te komen of er een trein in een blok zit
+    kan je blokStatus gebruiken. De routine geeft direct de 
+    waarde terug.
+
+Return waarde:
+    STATUS_VRIJ		 Blok is niet belegt door een trein
+    STATUS_VOORUIT   Er is een trein en die gaat vooruit
+    STATUS_ACHTERUIT Er is een trein en die gaat achteruit.
+    

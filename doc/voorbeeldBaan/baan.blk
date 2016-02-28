@@ -1,0 +1,30 @@
+# Version
+1
+# Bitmap filename
+baan.xpm
+# ini filename
+baan.ini
+# global programma naam
+Programma = 
+# aantal blokken en spoelen
+3 0
+# positie van de regelaars in linker top x y en rechter bodem x y
+50 200 400 500
+# positie van het treinen venster linker top x y en breedte hoogte
+250 50 160 300
+# coordinaten van het debug progress
+50 240
+# vooruit en terug commando voor deze baan
+2 1
+# Nu het aantal blokken
+# Nummer Volgend MaxSnelheid Lengte Boven Sein x    y
+1      B2  -1  40 1 0   24   29
+2      B3  -1  40 0 0  192   69
+3      B1  -1  50 1 0   17  118
+# Nu het aantal ios
+# onkoppelaars
+# standaardWissel
+# kruising
+# engelseWissel
+# driewegWissel
+# lamp

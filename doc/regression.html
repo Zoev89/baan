@@ -1,0 +1,304 @@
+<html><head><!--  regression.html  written by chris odom on 1-4-2002  --><!--  linear regression excel tutorial --><title>Excel Tutorial on Linear Regression</title></head>
+
+
+
+<body alink="red" link="darkblue" text="black" vlink="darkblue">
+
+<!-- ****** begin main table *******  -->
+<table bgcolor="white" border="0" cellpadding="0" cellspacing="0" width="640">
+<tbody><tr>
+    <td bgcolor="white" width="6">
+        &nbsp;
+    </td>
+
+    <td bgcolor="white" width="628">
+
+
+
+    <center>
+    <table background="regression_files/white" border="0" bordercolor="purple" cellpadding="6" cellspacing="0" width="628">
+    <tbody><tr>
+        <td align="center" valign="middle" width="209">
+            <font size="6">Physics<br>Laboratory</font>
+        </td>
+
+        <td align="center" valign="bottom" width="209">
+            <img src="regression_files/assistant">
+        </td>
+
+        <td align="center" valign="middle" width="209">
+            <font size="6">Excel<br>Tutorial<br>#11</font>
+        </td>
+
+
+    </tr>
+    </tbody></table>
+    <hr noshade="noshade">
+    </center>
+    <br>
+    <font face="arial, helvetica" size="2">
+
+<table border="0" cellpadding="0" cellspacing="0" width="630">
+<tbody><tr>
+   <td align="left" valign="top" width="210">
+      <a href="http://phoenix.phys.clemson.edu/tutorials/excel/stats.html" style="text-decoration: none;">10. Statistics<br><font face="wingdings" size="+4">E</font></a><br>
+   </td>
+   <td align="center" valign="center" width="210">
+      <font size="5">Linear Regression and Excel</font>
+   </td>
+   <td align="right" valign="top" width="210">
+      <a href="http://phoenix.phys.clemson.edu/tutorials/excel/hints.html" style="text-decoration: none;">12. Helpful Hints<br><font face="wingdings" size="+4">F</font></a><br>
+   </td>
+</tr>
+</tbody></table>
+
+    <a name="1"></a>
+
+    </font><p>
+<font face="arial, helvetica" size="2">        (See our <a href="http://phoenix.phys.clemson.edu/tutorials/index.html">Tutorial Page</a> for more information about
+		<a href="http://phoenix.phys.clemson.edu/tutorials/regression/index.html">linear regression methods</a>. 
+		You may also wish to take a look at how we analyzed actual 
+		<a href="http://phoenix.phys.clemson.edu/labs/torque/torque.html">experimental data</a>
+        using linear regression techniques.)
+    </font></p><hr noshade="noshade">
+<font face="arial, helvetica" size="2">	
+
+    </font><p>
+<font face="arial, helvetica" size="2">    <font size="4">Sample data.</font>
+	</font></p><p>
+<font face="arial, helvetica" size="2">	<img src="regression_files/lrdata" align="left">
+	Say we have a set of data,
+	<img src="regression_files/xiyi" align="middle">,
+	shown at the left.  If we have reason to believe that
+	there exists a <b>linear relationship</b> between the variables <b>x</b> and <b>y</b>,
+	we can plot the data and draw a "best-fit" <i>straight line</i> through the data.
+	Of course, this relationship is governed by the familiar equation
+	<img src="regression_files/ymxb" align="absbottom">.
+	We can then find the <b>slope, <i>m</i>,</b> and <b>y-intercept, <i>b</i>,</b> 
+	for the data, which are	shown in the figure below.
+	</font></p><center>
+<font face="arial, helvetica" size="2">		<img src="regression_files/lrplot">
+	</font></center>
+<font face="arial, helvetica" size="2">	
+	Let's enter the above data into an Excel spread sheet, 
+	<a href="http://phoenix.phys.clemson.edu/tutorials/excel/graph.html">plot the data</a>, <a href="http://phoenix.phys.clemson.edu/tutorials/excel/graph.html#5">create a
+	trendline</a> and <a href="http://phoenix.phys.clemson.edu/tutorials/excel/graph.html#6">display</a> its slope, y-intercept 
+	and R-squared value.
+	Recall that the R-squared value is the square of the correlation coefficient.  (Most
+	statistical texts show the correlation coefficient as "<i>r</i>", but
+	Excel shows the coefficient as "<i>R</i>". Whether you write is as <i>r</i>
+	or <i>R</i>, the correlation coefficient gives us a measure of the reliability of 
+	the linear relationship between the <i>x</i> and <i>y</i> values.  (Values
+	close to 1 indicate excellent linear reliability.))
+	</font><p>
+<font face="arial, helvetica" size="2">	Enter your data as we did in columns B and C.  The reason for this is strictly
+	cosmetic as you will soon see.
+	</font></p><p>
+<font face="arial, helvetica" size="2">	<img src="regression_files/lrxy" align="middle">
+	<img src="regression_files/lrxyplot">
+	
+	
+	</font></p><p>
+<font face="arial, helvetica" size="2">    <a name="2"></a>
+    </font></p><hr noshade="noshade">
+<font face="arial, helvetica" size="2">    </font><p>
+<font face="arial, helvetica" size="2">    <font size="4">Linear regression equations.</font>
+    </font></p><p>
+<font face="arial, helvetica" size="2">	
+	If we expect a set of data to have a linear correlation,
+    <b>it is not necessary for us to plot the data</b> in order to
+    determine the constants <i>m</i> (slope) and
+    <i>b</i> (y-intercept) of
+    the equation <img src="regression_files/ymxb" align="absbottom">.
+    Instead, we can apply a statistical
+    treatment known as <a href="http://phoenix.phys.clemson.edu/tutorials/regression/index.html"><b>linear regression</b></a>
+	to the data and determine these constants.
+	</font></p><p>
+<font face="arial, helvetica" size="2">	Given a set of data <img src="regression_files/xiyi" align="absbottom">
+    with <i>n</i> data points, the slope, y-intercept and correlation coefficient, <i>r</i>,
+	can be determined using the following:
+    <br>
+    </font></p><p>
+<font face="arial, helvetica" size="2">    </font></p><center>
+<font face="arial, helvetica" size="2">        <img src="regression_files/slope">
+        </font><p>
+<font face="arial, helvetica" size="2">        <img src="regression_files/yint">
+        </font></p><p>
+<font face="arial, helvetica" size="2">		<img src="regression_files/regression">
+    </font></p></center>
+<font face="arial, helvetica" size="2">        <br>
+    (Note that the limits of the summation, which are <i>i</i> to <i>n</i>,
+    and the summation indices on <i>x</i> and <i>y</i> have been omitted.)
+    </font><p>
+<font face="arial, helvetica" size="2">	
+
+    <a name="3"></a>
+    </font></p><hr noshade="noshade">
+<font face="arial, helvetica" size="2">    </font><p>
+<font face="arial, helvetica" size="2">    <font size="4">Implicitly applying regression to the sample data.</font>
+    </font></p><p>
+<font face="arial, helvetica" size="2">	It may appear that the above equations are quite complicated, however upon inspection,
+	we see that their components are nothing more than simple algebraic manipulations of the
+	raw data.  We can expand our spread sheet to include these components.  
+	</font></p><ol>
+<font face="arial, helvetica" size="2">	<li>First, add
+		three columns that will be used to determine the quantities <b>xy</b>, 
+		<b>x<sup>2</sup></b> and <b>y<sup>2</sup></b>, for each data point.
+	<p>
+	</p></li><li>Next, use
+		Excel to evaluate the following: 
+		<b><font face="symbol">S</font>x</b>,
+		<b><font face="symbol">S</font>y</b>,
+		<b><font face="symbol">S</font>(xy)</b>,
+		<b><font face="symbol">S</font>(x<sup>2</sup>)</b>,
+		<b><font face="symbol">S</font>(y<sup>2</sup>)</b>,
+		<b>(<font face="symbol">S</font>x)<sup>2</sup></b>,
+		<b>(<font face="symbol">S</font>y)<sup>2</sup></b>.
+		Recall that the symbol, <b><font face="symbol">S</font></b>, means
+		"summation".  Additionally, the term <b>xy</b> is the product of <b>x</b> and
+		<b>y</b>, that is: <b>x * y</b>.  Also, the term
+		<b><font face="symbol">S</font>(x<sup>2</sup>)</b> is very different than the term
+		<b>(<font face="symbol">S</font>x)<sup>2</sup></b>.  Be careful with your order
+		of operations!
+	<p>
+	</p></li><li>Now use Excel to count the number of data points, <b>n</b>.  (To do this,
+		use the Excel COUNT() function.  The syntax for COUNT() in this example is:
+		=COUNT(B3:B8) and is shown in the formula bar in the screen shot below.
+	<p>
+	</p></li><li>Finally, use the above components and the linear regression equations 
+		given in the previous section to calculate 
+		the <b>slope (m)</b>, <b>y-intercept (b)</b> and
+		<b>correlation coefficient (r)</b> of the data.  If you are careful, your
+		spread sheet should look like ours.  Note that our equations for the slope,
+		y-intercept and correlation coefficient are highlighted in yellow.
+		<p>
+		</p><center>
+			<img src="regression_files/lrsheet">
+		</center>
+	</li></font></ol>
+<font face="arial, helvetica" size="2">	</font><p>
+<font face="arial, helvetica" size="2">	
+
+
+
+    <a name="4"></a>
+    </font></p><hr noshade="noshade">
+<font face="arial, helvetica" size="2">    </font><p>
+<font face="arial, helvetica" size="2">    <font size="4">Linear regression with built-in functions.</font>
+    </font></p><p>
+<font face="arial, helvetica" size="2">	It is plain to see that the slope and y-intercept values that were calculated
+	using linear regression techniques are identical to the values of the 
+	more familiar trendline from the graph in the first section; namely 
+	m = 0.5842 and b = 1.6842.  In addition,
+	Excel can be used to display the R-squared value.  Again, 
+	R<sup>2</sup> = r<sup>2</sup>.  From the graph, we see that R<sup>2</sup> = 0.9488.  
+	From our linear regression analysis, we find that r = 0.9741, therefore 
+	r<sup>2</sup> = 0.9488, which is agrees with the graph.
+	</font></p><p>
+<font face="arial, helvetica" size="2">	You should now see that the Excel graphing
+	routine uses linear regression to calculate the slope, y-intercept and correlation
+	coefficient.
+	</font></p><p>
+<font face="arial, helvetica" size="2">	Excel has three built-in functions that allow for a third method for determining 
+	the slope, y-intercept, correlation coefficient, and R-squared values 
+	of a set of data.  The functions
+	are SLOPE(), INTERCEPT(), CORREL() and RSQ(), and are also covered
+	in the <a href="http://phoenix.phys.clemson.edu/tutorials/excel/stats.html">statistics</a> section of this tutorial.
+	</font></p><p>
+<font face="arial, helvetica" size="2">	The syntax for each are as follows:
+	</font></p><ul>
+<font face="arial, helvetica" size="2">		<li>Slope, m: <b>=SLOPE(known_y's, known_x's)</b>
+		</li><li>y-intercept, b: <b>=INTERCEPT(known_y's, known_x's)</b>
+		</li><li>Correlation Coefficient, r: <b>=CORREL(known_y's, known_x's)</b>
+		</li><li>R-squared, r<sup>2</sup>: <b>=RSQ(known_y's, known_x's)</b>
+	</li></font></ul>
+<font face="arial, helvetica" size="2">	</font><p>
+<font face="arial, helvetica" size="2">	Here is how we would analyze our data using these built-in Excel functions.  Again,
+	the equations for each calculation are highlighted in yellow.
+	</font></p><p>
+<font face="arial, helvetica" size="2">	</font></p><center>
+<font face="arial, helvetica" size="2">		<img src="regression_files/lrfunctions">
+	</font></center>
+<font face="arial, helvetica" size="2">	</font><p>
+<font face="arial, helvetica" size="2">	So, to reiterate, we can determine the slope, y-intercept and correlation coefficient
+	of any set of data using three Excel methods:
+	</font></p><p>
+<font face="arial, helvetica" size="2">	</font></p><ol>
+<font face="arial, helvetica" size="2">		<li><a href="#1">Plot the data and add a trendline</a>
+		</li><li><a href="#3">Implicitly use linear regression techniques</a>
+		</li><li><a href="#4">Use Excel's built in functions</a>
+	</li></font></ol>
+<font face="arial, helvetica" size="2">	</font><p>
+
+<font face="arial, helvetica" size="2">    
+    <br>
+    If you have a question or comment, send an e-mail to
+    <script language="Javascript" src="regression_files/contact"></script><a href="mailto:jerryh@clemson.edu">Jerry Hester, Physics Laboratory Director</a>.
+
+
+    </font></p><p>
+<font face="arial, helvetica" size="2">    </font></p><hr noshade="noshade">
+
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="630">
+<tbody><tr>
+   <td align="left" valign="top" width="210">
+      <a href="http://phoenix.phys.clemson.edu/tutorials/excel/stats.html" style="text-decoration: none;">10. Statistics<br><font face="wingdings" size="+4">E</font></a><br>
+   </td>
+   <td align="center" valign="center" width="210">
+        <a href="http://phoenix.phys.clemson.edu/tutorials/excel/index.html"><img src="regression_files/excelbtn" border="0"></a>
+   </td>
+   <td align="right" valign="top" width="210">
+      <a href="http://phoenix.phys.clemson.edu/tutorials/excel/hints.html" style="text-decoration: none;">12. Helpful Hints<br><font face="wingdings" size="+4">F</font></a><br>
+   </td>
+</tr>
+</tbody></table>
+
+
+
+<font face="arial, helvetica" size="2">    </font></td>
+
+    <td bgcolor="white" width="6">
+        &nbsp;
+    </td>
+
+</tr>
+<tr>
+    <td bgcolor="white" width="6">
+        &nbsp;
+    </td>
+
+    <td bgcolor="white" width="628">
+
+    <hr noshade="noshade">
+    <p align="right">
+        <font size="2">
+        <i>
+        Copyright © 2000, Clemson University.  All Rights Reserved.
+        <br>
+        <script language="JavaScript">
+            document.write('Last Modified on ' + document.lastModified);
+        </script>Last Modified on Sat 10 Nov 2007 10:35:07 PM CET
+        <br>
+        This page was created by
+        <script language="Javascript" src="regression_files/contactodom"></script>.
+        </i>
+        </font>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+    </td>
+
+    <td bgcolor="white" width="6">
+        &nbsp;
+    </td>
+</tr>
+    
+</tbody></table>
+<!-- ****** end main table *******  -->
+
+</body></html>

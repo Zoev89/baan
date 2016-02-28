@@ -1,0 +1,569 @@
+#
+# Eerste regel geeft de bitmap filename aan.
+#
+baan.xpm
+
+# 
+# Geef aan in welke file de huidige stand opgenomen dient te worden
+# Als men de database veranderd is het zinvol de ini file weg te gooien anders
+# kan de baan wel eens in een vreemde state opkomen.
+#
+baan.ini
+
+# 
+# Geef de naam van het globale programma
+# als er nog geen globaal programma is dan laat de declaratie leeg
+# Programma =
+#
+Programma = global.o
+#Programma =
+
+#
+# Het aantal blokken en het aantal belegde bitten in de IO controllers
+#
+121 64
+
+#
+# Geef de default rectangle aan van de regelaars in top links x y en 
+# bodem rechts x y window coordinaten
+# Note 0 0 is de top left corner van het programma window (niet van het scherm)
+50 280 400 500
+
+#
+# Geef het default venster top links x y en breedte hoogte op van het lokomotiven venster
+900 50 160 250
+
+#
+# Om een progress te kunnen zien van het aantal uitstaande requests naar
+# de hardware. Geef 0 als niet in de progres geinterresseerd bent.
+# Anders geef de x y coordinaat waar de 3 progress bars moeten komen te liggen
+#
+50 240
+
+#
+# Geef het micro controller commando voor wat vooruit/achteruit is.
+# De micro controller kent 2 waarden 1 voor een positive spanning en 2
+# voor een negatieve spanning. Op mijn baan is vooruit een negative spanning (2)
+# en achteruit een positieve spanning (1)
+2 1
+
+
+#
+# Geef de setting voor elk blok.
+# De baan wordt opgbouwd in de voorwaartse richting
+# Dit geld ook voor de wissels!
+# Elk blok heeft de volgende parameters:
+#  - blok nummer
+#  - Volgend blok in Bblok of W/wissel notatie
+#  - MaxSnelheid     in Km/h (-1 is niet gebruikt)
+#  - De lengte van een dit blok is cm
+#  - Boven = 1 er is bovenleiding (0 geen bovenleiding)
+#  - Sein 0, 1, 2
+#      0 = geen sein
+#      1 = rood/groen sein
+#      2 = rood/organge/groen sein
+#  - x point van de identifier
+#  - y point van de identifier
+# Deze 5 getallen moeten achtereenvolgens op een regel gegeven worden.
+#
+# de Bblok of W/wissel notatie definitie
+# Men geeft B<blok_nummer> als de aansluiting een baan blok is.
+# Men geeft W<wissel_nummer> als de aansluiting op 3 van een wissel ligt
+#     of 2,4 van een engelse wissel/kruising.
+# Men geeft w<wissel_nummer> als de aansluiting op 4 van een drieweg wissel ligt.
+# blok_nummer is gewoon een integer waarde en wissel_nummer is een floating waarde waarvoor
+# hetzelfde geld als voor de informatie die je geeft voor Spoel
+#
+# Default hangen alle blokken aan een eindblok
+# Een  blok wat dood loopt moet aan een eindblok gehangen worden
+# Daarvoor is blok -1 gereserveerd
+# Een blok wat voor zijn VorigBlok een eindblok nodig heeft hoef (kan) je
+# niet initializeren want dat wordt default al gedaan.
+# 
+#
+# Als een blok uitkomt op een standaard wissel leg dan de blokken
+# gewoon door voor de 12 stand. Als een volgend blok uitkomt op een
+# 13 stand specificeer dan Wxxxx.yy welke wissel dat dan is.
+# Een zelfde strategie geld ook voor kruisingen/engelse wissels. De 13 stand
+# gewoon door leggen en als je uitkomt op de 24 stand specificeer dan
+# deze wissel.
+# Voor een drieweg wissel geld voor de 13 stand de blokken door leggen en
+# specificeer Wxxxx.yy voor de 12 stand of wxxxx.yy voor de 14 stand
+#
+# Nummer Volgend MaxSnelheid Lengte Boven Sein x    y
+#
+#
+# Binnen kant van de buiten baan
+#
+   23      B2      -1        40    1    1 854  525
+    2     B44      -1       179    1    0 854  161
+   44     B46      -1       179    1    0 560   10
+   46   W262.14    -1       160    1    0 100   10
+   48   W262.05    -1       110    1    0 40   131
+   94     B95      -1        16    1    0 106  144
+   95     B81      -1        41    1    0 154  153
+   81     B73      -1        96    1    0 270  153
+   73     B60      -1        45    1    0 431  153
+   60     B59      -1       100    1    0 558  153
+   59     B12      -1        40    1    0 764  153
+   12    B116      -1       200    1    0 916  258
+  116    B114      -1       100    1    0 873  648
+  114    B112      -1       150    1    0 542  677
+  112    B110      -1       200    1    0  47  668
+  110     B86      -1       140    1    0   3  511
+   86     B87      -1       100    1    0  10  265
+   87     B83      -1        45    1    0 175  227
+   83     B68      -1       140    1    0 317  227
+   68     B52      -1        45    1    0 487  227
+   52      B8      -1       130    1    0 632  227
+    8     B14      -1       100    1    2 832  295
+   14     B38      -1       140    1    2 631  426
+   38     B34      -1       160    1    2 402  547
+   34     B20      -1       135    1    2 640  636
+   20     B23      -1        55    1    2 778  636
+
+#
+#  Grote station blokken van de binnen baan
+#
+   22      B1      -1        40    1    1 838  490
+    1   W256.10    -1       179    1    0 838  129
+
+
+#
+# Buiten kant van de buiten baan
+#
+    5      B6       -1      179    1    0 875  122
+    6     B43       -1       42    1    1 853   40
+   43     B45       -1      180    1    1 600    0
+   45     B47       -1      220    1    1 160    0
+   47     B82       -1       87    1    1  17  147
+   82     B72       -1      120    1    0 221  166
+   72     B58       -1       45    1    0 403  166
+   58     B57       -1      120    1    0 540  166
+   57     B56       -1       45    1    0 706  166
+   56     B11       -1       20    1    0 773  166
+   11    B115       -1      150    1    0 879  306
+  115    B113       -1      100    1    0 860  630
+  113    B111       -1      200    1    0 579  663
+  111    B109       -1      200    1    0 171  663
+  109     B85       -1      150    1    0  23  384
+   85   W262.02     -1       80    1    0  44  264
+   84     B67       -1      140    1    0 226  240
+   67     B80       -1       45    1    0 372  240
+   80     B54       -1      140    1    0 526  240
+   54      B7       -1       45    1    0 710  240
+    7   W256.12     -1       78    1    2 789  260
+
+#tussen stuk naar binnenbaan
+   10      B9       -1         0    1    2 837  254
+    9     B15       -1        22    1    2 845  356 
+
+   13     B37       -1       163    1    2 563  412
+   37     B35       -1       160    1    2 390  508
+   35     B21       -1       104    1    2 526  645
+   21      B5       -1        98    1    2 806  640
+
+#
+#  Grote station blokken van de buiten baan
+#
+    3      B4       -1       179    1    0 863  183
+    4   W256.11     -1        42    1    1 860   84
+
+#
+# Transport band stuk
+#
+   15     B42       -1       160    0    2 688  475
+   42     B-1       -1       107    0    2 516  557
+#
+# De binnen baan
+#
+   25     B28       -1       138    0    2 541  594
+   28     B17       -1       100    0    2 636  453
+   17     B33       -1       120    0    2 797  542
+   33     B41       -1       105    0    2 602  613
+   41     B40       -1       101    0    2 450  583
+#
+# kleine station
+#
+   40     B31       -1        37    0    1 528  453
+   31     B24       -1        79    0    0 663  545
+   24   W257.09     -1        35    0    1 753  594
+
+   26     B32       -1        35    0    1 517  477
+   32     B36       -1        80    0    0 646  564
+   36     B16       -1        35    0    1 723  614
+
+# Binnen baan
+   16     B27       -1       138    0    2 808  470
+   27     B39       -1       111    0    2 576  440
+   39     B18       -1       134    0    2 436  481
+   18     B19       -1        80    0    2 545  625
+   19     B29       -1       150    0    2 800  489
+   29     B25       -1        40    0    2 675  500
+
+#
+# drie binnen stukken van het grote station
+#
+   93   w262.00     -1        26    1    0 165  180
+
+   91     B71       -1        39    1    0 241  180
+   71     B51       -1       183    1    0 439  180
+   51   w260.09     -1        41    1    0 685  180
+
+  102     B92       -1        45    1    2 166  193
+   92     B90       -1        22    1    0 201  192
+   90     B70       -1        38    1    0 272  192
+   70     B50       -1       164    1    0 439  192
+   50     B55       -1        41    1    0 685  192
+   55     B10       -1        58    1    0 801  200
+
+   89     B69       -1        40    1    0 241  204      
+   69     B49       -1       183    1    0 439  204
+   49   W260.09     -1        40    1    0 685  204
+
+   88   W262.00     -1        27    1    0 173  212
+
+# drie eindsporen van blok 102
+  105   w262.08     -1        73    0    0  30  179
+  104    B102       -1        72    0    0  30  192
+  103   W262.08     -1        73    0    0  30  205
+
+# Rangeer terein grote station
+   96     B97       -1        27    1    0 150  137
+   98    W262.13    -1        16    1    0 195  124
+
+   99     B96       -1        50    1    0 110  134
+   97     B74       -1        39    1    0 250  134
+   74     B61       -1       152    1    0 420  134
+   61     B62       -1        38    1    0 580  134
+   62     B63       -1        45    1    0 658  137
+   63     B53       -1        40    1    0 740  134
+
+   79     B75       -1        40    1    0 286  124
+   75     B77       -1       118    1    0 420  124
+   77    W260.12    -1        39    1    0 558  124
+
+  100     B78       -1        50    1    0 200  112
+   78     B76       -1        39    1    0 286  112
+   76     B65       -1        88    1    0 420  112
+   65     B66       -1        39    1    0 558  112
+   66     B-1       -1        50    1    0 660  112
+
+   64   W260.07       -1        16    1    0 652  124
+
+# Rangeer terein onder het dak
+   53    B120       -1       200    1    0 900  209
+  120    B117       -1        40    1    0 904  477
+  117    B118       -1        33    1    0 917  536
+  118    B123       -1        42    1    0 900  605
+  123    B124       -1       190    1    0 606  681
+  124    B125       -1        39    1    0 440  681
+  125    B126       -1       115    1    0 260  681
+  126     B-1       -1        88    1    0  48  681
+
+  119    B121       -1        45    1    0 916  612
+  121    B122       -1       196    1    0 606  693
+  122   W259.10     -1        39    1    0 440  693
+
+#
+# Nu komen N aantal wissels aan de beurt
+# Let op normaal is het aantal wissels gelijk aan het 2 maal het aantal spoelen maar bij
+# gebruik van 3 weg wissels is dat 4 spoelen. Het programma gaat netzolang door tot alle
+# spoelen belegd zijn!
+#
+#
+# Type
+# 1 ontkoppel rail
+# 2 standaard wissel (recht of gebogen)
+# 3 kruising zonder aandrijving
+# 4 Engelse wissel
+# 5 drieweg wissel
+# 6 Lamp
+#
+# Spoel word bedoeld het adress van de IO micro controler en het bit nummer 
+# waaraan de spoel is aangesloten. Voor de codering wordt de volgende regel gebruikt
+# spoel = hardwareAdres + hardwareBit/100
+# Voorbeeld op bit 1 van een controller met adres 15 heb je een wissel aangesloten dan
+# vul je voor spoel 15.01 in.
+# Voor de expers een float waarde is gebruikt waardoor afrond fouten kunnen ontstaan. Het
+# programma gaat afrond fouten achter de comma maken als het adres van de controller groter
+# is dan 130000. Aangezien ik maar 1024 adressen heb zijn afrond fouten absoluut geen issue.
+#
+# Tijd is dat de spoel gekrachtigd word in ticken. Een waarde van -1
+# geeft oneindig aan. Een waarde van 0 geeft ongedefineerd gedrag dit
+# is namelijk een beetje onzinnig
+# Op dit moment is 1 tick 50msec.
+#
+# Algemeen
+# Type Spoel Tijd Richt  
+#  1     5     3   0    
+#           
+#
+# Lamp:
+# De lamp is de uitzondering op de algemene regel ik heb hier namelijk
+# ook een UitTijd zodat we ook een knipperend lampje kunnen maken.
+# Wanneer men niet wil dat een lamp knipperd geef dan -1 of 0
+#
+# hwAan de tijd dat uitgang van de microcontroller actief is.
+# hwTot de total cycle tijd. Beiden tijden zijn in 1/2880 sec.
+# meestal reken ik met een 3000hz clock dat is makkelijker rekenen.
+#
+# De lampen etc kunnen aan geduid worden door een type
+# type 0 = one shot 1/0
+# type 1 = one shot p/n (wissels)
+# type 2 = duty cycle regeling 0/1 (note the hwAan heeft geen betekenis)
+# type 3 = frequencie regeling p/n
+#
+# Lijn waar een geel lijntje getrokken kan worden als de lamp aanstaat.
+# volgorde x1,y1  x2,y2
+# Door x2 en y2 negative coordinaten te geven wordt de betreffende lamp
+# niet onder controlle gesteld van het programma. Dit geld alleen
+# voor het lamp type!
+#
+# transportband
+#Typ Spoel hwAan hwTot type Tijd UitTijd      Lijn
+  6 258.05  15     30    3  1900    -1   489 265 498 283
+#  6 258.05  15     30    3  1400   -1    501 270 510 283
+# huisjes boerderij
+  6 256.03    1     8    2   -1     -1   146 110 152 117
+  6 256.02    1     8    2   -1     -1    94  57 100  65
+  6 256.01    1     8    2   -1     -1    57  74  65  81
+#  6 256.00    1     8    2   -1     -1    50 112  56 119
+
+#stroom meeting niet onder control van gebruiker
+  6 259.15    1     8    2   -1     -1    520 350 -525 -355
+#worden gebruikt om ad conversie resultaten op te halen
+  6 259.12     1     8    2   -1     -1   100 100 140 140
+  6 259.13     1     8    2   -1     -1   100 100 140 140
+#4 station
+  6 257.00    1     8   2    -1     -1    840 440 845 450
+
+#kleine station
+  6 258.01    1     8   2    -1     -1    631 554 641 564
+#schenker
+  6 258.02    1     8   2    -1     -1    700 500 710 510
+#esso
+  6 258.03    1     8   2    -1     -1    553 606 558 611
+#transport band
+  6 258.04    1     8   2    -1     -1    661 481 666 486
+
+#appartement gebouw
+  6 259.01    1     8   2    -1     -1    523 600 528 605
+#kerk
+  6 259.02    1     8   2    -1     -1    532 536 537 541
+#huis
+  6 259.03    1     8   2    -1     -1    484 576 489 581
+#cafe
+  6 259.04    1     8   2    -1     -1    469 534 474 548
+#vila
+  6 259.05    1     8   2    -1     -1    415 420 420 425
+
+# de houtzagerij
+  6 257.02   70   105   3    -1     -1    875 610 885 620
+#de verlichting je kunt die niet met de muis gedienen (0 -1) dit
+# word via global.c geregeld met een gebruiker event
+  6 256.04    1     8   2    -1     -1    453 323 -455 -331
+  6 257.01    1     8   2    -1     -1    455 323 -457 -331
+  6 258.00    1     8   2    -1     -1    457 323 -459 -331
+  6 259.00    1     8   2    -1     -1    459 323 -461 -331
+
+
+# StandaardWissel:
+# Voor een wissel word het spoel nummer opgegeven van 1-2. 
+# 1-2 is de rechte kant en 1-3 is buigend.
+# Voor gebogen wissel geld 1-2 is de grote bocht en 1-3 is de krappe bocht.
+# Een wissel kan op twee manieren liggen namelijk:
+# Voorwaards
+#       /----2--
+# -1---/  
+#        ----3--
+#
+# Of achterwaards
+# --3----
+#         /---1-
+# --2----/
+#
+#
+# 1 is het blok waar de wissel in ligt.
+# En voor 3 geld de Bblok of W/wissel notatie
+# Voor een voorwaardse wissel moet voor 3 het volgende blok/wissel ingevuld worden.
+# Voor een achterwaardse wissel wordt voor 3 B-1 ingevult deze wordt dan door een andere
+# wissel of baanvak al ingevult
+#
+# 12 lengte van het 1 blok in stand 12 (geef -1 op als de default van de baan goed is)
+# 13 lengte van het 1 blok in stand 13 (geef -1 op als de default van de baan goed is)
+#
+# M2 M3 MaxSnelheid voor blok 1 voor de 12 13 combinatie
+# als in het wissel blok twee wissels liggen dan werk dit systeem niet geef dan aan een van de wissel 
+# de controlle over de maximum snelheid en geef -1 voor de andere wissel. Als
+# je voor b.v alleen M2 een maximum wil aangeven geef dan voor M3 999 aan
+# en niet -1 want anders blijft de M2 maximum snelheid van kracht onafhankelijk
+# van de stand.
+#
+#Typ Spoel   1coord    2coord  3coord   1   3       12  13 M2  M3
+  2  256.00  853 338  853 370  861 370  9  W257.04 22   37 -1  -1
+  2  256.10  775 017  799 024  799 031 44   B-1    -1  -1  -1  -1
+  2  256.11  795 004  822 012  822 021 43   B-1    -1  -1  -1  -1
+  2  256.12  828 375  836 349  828 349 13   B-1    -1  -1  -1  -1
+  2  257.08  788 657  756 657  758 651 21   B-1    -1   70 -1  -1
+  2  257.09  824 577  806 599  803 593 16   B-1    -1  -1  -1  -1
+  2  257.10  877 574  887 543  880 543 21   B3     -1  -1  -1  -1
+  2  257.11  850 600  862 567  855 567 20   B22    -1  -1  -1  -1
+  2  258.08  609 549  588 562  593 567 15  W258.07 -1  -1  -1  -1
+  2  258.07  574 588  595 573  588 572 25   B-1    -1  -1  -1  -1
+  2  258.10  680 633  711 633  711 638 18  W258.09 110  80 -1  -1
+  2  259.06  111 665  144 665  144 672 111  B-1    200 100 -1  -1
+  2  259.09  217 689  184 689  184 682 125 W259.08 -1  -1  -1  -1
+  2  259.10  380 689  413 689  413 695 125  B-1    -1  -1  -1  -1
+  2  259.11  463 513  488 483  491 488 41   B26    -1  -1  -1  -1
+  2  260.11  582 119  616 119  616 124 65   B64    -1  -1  -1  -1
+  2  260.12  653 134  617 124  617 131 64   B-1    -1  -1  -1  -1
+  2  262.03  183 214  213 206  213 212 88   B89    -1  -1  -1  -1
+  2  262.04  173 185  206 194  207 188 93   B91    -1  -1  -1  -1
+  2  262.06   60 151  94  164   94 158 48   B94    -1  -1  -1  -1  
+  2  262.07   68 249  102 236  106 242 85   B84    -1  -1  -1  -1
+  2  262.10  101 159  133 159  133 153 94  W262.11 -1  -1  -1  -1
+  2  262.12  203 134  234 125  237 131 98   B79    -1  -1  -1  -1
+  2  262.13  267 119  234 119  235 125 78   B-1    -1  -1  -1  -1
+  2  262.14   71  20   97  11   97  16 48   B-1    -1  -1  -1  -1
+  2  262.15  122   4   98   4   98  10 45   B48    222 160 -1  -1
+#
+# Ontkoppelaar:
+# Normaal een lijn van x1,y1  x2,y2 de stand als de ontkoppelaar niet gebruikt word.
+# Ontkoppelen een lijn van x1,y1  x2,y2 de stand als de ontkoppelaar actief is.
+#
+# CODE WERKT WAARSCHIJNLIJK NOG NIET
+#Typ Spoel Tijd    Normaal         Ontkoppelen
+#  1    0    20  110 150 120 150   110 147 120 147  
+
+
+#
+# Kruising:
+#
+# Een kruising belegt helaas toch een spoel. Het programma ziet het namelijk toch als een wissel.
+# Als de wissel hardware vol is kan men altijd een niet bestaand adres op geven zolang de adres
+# bus nog ruimte heeft.
+#
+# Omdat een kruising symetrisch is kent deze geen richting waarin die ligt. (je draaid hem
+# gewoon om en je hebt dezelfde electrische eigenschappen)
+# Voor het 1 en 3 aansluiting geld dat je die via de blokken moet
+# programeren en dat je voor aansluiting 4 vanuit een blok of een wissel een Wxxxx.yy
+# geeft en de 2 aansluiting door via de initializatie aangeven waaraan die hangt.
+#
+# Er zijn wel twee mogelijkheden om te tellen rechts om of links om
+# 1)
+#     ===>rijrichting
+# -1-              -2-
+#    ---        ---
+#       ---  ---
+#          ==
+#       ---  ---  
+#    ---        ---
+# -4-              -3-
+#
+# 2)
+#     ===> rijrichting
+# -4-              -3-
+#    ---        ---
+#       ---  ---
+#          ==
+#       ---  ---  
+#    ---        ---
+# -1-              -2-
+#
+# Voor het programma maakt dat niets uit maar je moet er dan wel aan denken dat
+# je al de aansluitingen correct doet anders komt de trein niet in het gewenste blok.
+#
+# Oke een kruising heeft geen electrische aandrijving maar ik moet een 
+# orientatie punt hebben.
+#
+# 1: is het blok waar de kruising in ligt dus is altijd een baanblok een gewoon getal dus.
+# alleen voor 2 hebben we informatie nodig de rest wordt door de blok sectie of
+# door een andere wissel gedaan. Hiervoor dus de bekende B/W/w combinatie
+#
+# NOG NOOIT GETEST
+#Typ Spoel 1coord   2coord   3coord   4coord   1   2  
+#  3    6   030 220  030 240  050 240  050 220  26 B27 
+
+
+#
+# Engelse Wissel
+# Hiervoor geld voor een groot deel het zelfde als de kruising alleen worden
+# er natuurlijk 1 spoelen gebruikt.
+#
+# Lengte informatie van het wissel blok. De lengte van het blok waar de wissel ligt
+# kan per stand verschrillen. Hierdoor moet per kant de lengte van het blok per stand
+# worden gespecificeerd.
+# 13  afstand kruisend van 1 naar 3
+# 12  afstand buigend van 1 naar 2
+# 42  afstand kruisend van 4 naar 3
+# 43  afstand buigend van 4 naar 3
+#
+# Nu is het dus heel belangrijk om te weten welke variant je hebt genomen
+# MK MB MaxSnelheid voor het wissel blok voor de kruisende en de buigende combinatie
+# als in het wissel blok twee wissels liggen dan werk dit systeem niet geef dan aan een van de wissel 
+# de controlle over de maximum snelheid en geef -1 voor de andere wissel.
+#
+#Typ Spoel 1coord   2coord   3coord   4coord    1     2     13  12  42  43 MK MB
+4  258.09  714 645  753 649  755 645  716 639   34 W257.08 140 123  26  42 -1  -1
+4  256.08  854 307  860 264  854 264  848 307   10 W256.09  46  40  38  41 -1  -1
+4  256.09  841 349  847 311  841 311  836 349    8   B13   105  40  20  89 -1  -1
+4  257.03  918 578  911 524  903 524  911 578  117  B119    33  27  27  33 -1  -1
+4  257.04  875 426  882 466  887 466  882 426  115 W257.05  33 115  21 105 -1  -1
+4  257.05  900 515  893 472  888 472  893 515  116 W257.03  30  30 104  83 -1  -1
+4  259.08  145 677  183 682  183 677  145 671  112 W259.06 200 100  27 100 -1  -1
+4  260.06  761 171  810 177  810 171  770 165   56 W256.08  25  33  33  25 -1  -1
+4  260.08  767 159  720 152  720 159  767 165   59 W260.06  46  50  47  22 -1  -1
+4  262.02  154 222  104 229  104 236  154 229   86   B88    32  97  87  22 -1  -1
+4  262.05   94 170  141 177  141 170   94 164   47   B93    87  96  32  22 -1  -1
+4  260.07  652 140  701 146  701 140  652 133   62 W260.08  27  27  27  27 -1  -1
+4  262.11  203 134  157 140  157 147  203 140   96   B98    27  26  27  26 -1  -1
+#
+# DriewegWissel
+#
+#       /----2--
+# -1---/  ---3--
+#        ----4--
+#
+# 1 is het blok waar de wissel in ligt.
+# - Typ 
+# - Spoel
+# - 1coord
+# - 2coord
+# - 3coord
+# - 4coord
+# - 1 bloknummer
+# - 2 B/W/w conventie zie note later.
+# - 4 B/W/w conventie zie note later.
+# - 12 lengte van het 1 blok in stand 12 (geef -1 op als de default van de baan goed is)
+# - 13 lengte van het 1 blok in stand 13 (geef -1 op als de default van de baan goed is)
+# - 14 lengte van het 1 blok in stand 14 (geef -1 op als de default van de baan goed is)
+# - M2 MaxSnelheid stand 12
+# - M3 MaxSnelheid stand 13
+# - M4 MaxSnelheid stand 14
+#
+# Als de wissel voorwaards lig:
+#       /----2--
+# -1---/  ---3--
+#        ----4--
+# Vul dan voor 2 en 4 de juiste B/W/w input
+#
+# Als de wissel achterwaards lig:
+# --4----
+# --3---  /---1-
+# --2----/
+# Vul dan voor 2 en 4 B-1 in want dan moet dit al door de blok database gedaan zijn!
+#
+#
+# M2 M3 M4 MaxSnelheid voor het wissel blok voor de 12,13 en 14 combinatie
+# als in het wissel blok twee wissels liggen dan werk dit systeem niet geef dan aan een van de wissel 
+# de controlle over de maximum snelheid en geef -1 voor de andere wissel.
+#
+# Er worden 2 spoelen belegd voor de driewegwissel. Je hoeft alleen het adres
+# van de eerste spoel te geven en de tweede spoel zit op subadres + 1
+# De eerste spoel is degene die stand 12 regeld.
+#
+#Typ Spoel    1coord   2coord   3coord   4coord   1   2    4   12 13 14  M2  M3  M4
+  5  260.09  779 200  748 209  738 200  741 193   55 B-1  B-1  -1 -1 -1  -1  -1  -1
+  5  262.00  246 200  215 207  208 200  209 195   92 B-1  B-1  -1 -1 -1  -1  -1  -1
+  5  262.08  171 200  139 207  132 200  134 193  102 B-1  B-1  -1 -1 -1  -1  -1  -1 

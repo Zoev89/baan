@@ -1,0 +1,48 @@
+
+Het lastigst is het verplaatsen maar maakt de wissel IO wel beter (GEDAAN) maar, (zouden we ook voor de blok database
+kunnen doen maar daar zitten een paar aannames over nummer en blok....
+
+------------------------------------
+Een additionele string voor een lamp?
+
+----------------------------------
+Maak een routine die wacht tot een return gewenst is uitgevoerd zodat we
+zeker weten dat het gedaan is.
+
+------------------------------------
+Memory leak in het wisselInst.cxx of fl want de wissels gebruiken new om
+de public variablen te initializeren maar worden niet opgeruimt.
+Maak in de fl code de initializatie op NULL en dan later de niet NULL's
+deleten.
+Eenzelfde probleem is er in de regelInst.fl met het creeren van de widgets
+die worden gealloct maar nooit vrij gegeven. Weet niet zeker als 
+het window out of scope gaat of fl dit opruimt het lijkt me niet maar
+een testje waarbij ik het memory gebruik bekijk liet geen groei zien
+maar dit was wel in Mbytes dus het zou ook wel eens lang kunnen duren
+voordat je dat ziet.
+
+--------------------------
+Bij teveel aanroepen vanuit programma code van IO's gaat het programma
+onderuit en hersteld niet. Ik heb tijdelijk het aantal uitstaande IO's
+vergroot maar dat is geen oplossing. Breidt de CHardware class uit met een
+blocking call om de bitten te zetten. De default zou ik blokking maken 
+en een speciale non blocking voor de workerthreat.
+
+---------------------------
+
+De flt::message geeft me een coredump als ik een wjziging in
+de blk file heb en het ini file is oud. Voorstel een logging mechanisme
+maken die een printf en fprintf doet. Zie in baanDocIniFile
+      if (baanInfo.AantalSpoelen != spoelen)
+Daar staat een todo met een uitgecomentaarde message. 
+Nu niet er is een errorPrint nu, maar we moeten misschien alle 
+fltk::message 
+berichten eens langs lopen en kijken wat we willen converteren.
+
+-------------------------------
+De loc files moeten op dit moment in de baan.blk directory staan ander kan
+die de bitmap niet vinden. Het probleem zit in
+ baanDocInitRegelaar
+We zouden een locale blkDir moeten maken als we niet in blkDir zitten. Deze zou
+dan gebruikt kunnen worden voor het openen van de bitmap.
+ 

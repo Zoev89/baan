@@ -1,0 +1,31 @@
+CC=g++
+.SUFFIXES: .cxx .h
+FLTK=$(FLTK_PATH)
+
+test_SOURCES = \
+    socketTest.cxx \
+    spoorInformatie.cxx \
+    baanZoek.cxx \
+
+CFLAGS = -g -I$(FLTK) -I../src -I../shared `pkg-config libxml++-2.6 --cflags`
+LDFLAGS = ../bin/libBaan.a -L$(FLTK)/lib -lfltk2_images -lfltk2 -L/usr/X11R6/lib  -lX11 -lXi -lXinerama -lXft -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lrt -lusb -lboost_system -lboost_thread -lboost_filesystem `pkg-config libxml++-2.6 --libs` -ldl -lfontconfig
+
+test_OBJECTS=$(test_SOURCES:.cxx=.o)
+
+
+all: unitTests client clientEnkel
+
+unitTests: $(test_OBJECTS) ../bin/libBaan.a
+	g++ $(test_OBJECTS) -lgtest -lgtest_main $(LDFLAGS) -o unitTests
+
+client: client.c
+	gcc $(CFLAGS) client.c  -lpthread -o client
+
+clientEnkel: clientEnkel.c
+	gcc $(CFLAGS) clientEnkel.c  -lpthread -o clientEnkel
+
+clean:
+	rm $(test_OBJECTS) unitTests
+
+.cxx.o:
+	$(CC) $(CFLAGS) -c $< -o $@

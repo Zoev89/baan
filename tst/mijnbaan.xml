@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stationInfo>
+  <station name="Berlijn">
+    <spoor name="Spoor 1">
+      <blok>84</blok>
+      <blok>67</blok>
+      <blok>80</blok>
+      <blok richting="1">54</blok>
+    </spoor>
+    <spoor name="Spoor 2">
+      <blok richting="2">87</blok>
+      <blok>83</blok>
+      <blok>68</blok>
+      <blok>52</blok>
+    </spoor>
+    <spoor name="Spoor 3">
+      <blok richting="2">89</blok>
+      <blok>69</blok>
+      <blok richting="1">49</blok>
+    </spoor>
+    <spoor name="Spoor 4">
+      <blok richting="2">90</blok>
+      <blok>70</blok>
+      <blok richting="1">50</blok>
+    </spoor>
+    <spoor name="Spoor 5">
+      <blok richting="2">91</blok>
+      <blok>71</blok>
+      <blok richting="1">51</blok>
+    </spoor>
+    <spoor name="Spoor 6">
+      <blok>82</blok>
+      <blok>72</blok>
+      <blok>58</blok>
+      <blok richting="1">57</blok>
+    </spoor>
+    <spoor name="Spoor 7">
+      <blok richting="2">95</blok>
+      <blok>81</blok>
+      <blok>73</blok>
+      <blok>60</blok>
+    </spoor>
+    <spoor name="Spoor R1">
+      <blok richting="2">97</blok>
+      <blok>74</blok>
+      <blok richting="1">61</blok>
+    </spoor>
+    <spoor name="Spoor R2">
+      <blok richting="2">79</blok>
+      <blok>75</blok>
+      <blok richting="1">77</blok>
+    </spoor>
+    <spoor name="Spoor R3">
+      <blok richting="2">78</blok>
+      <blok>76</blok>
+      <blok richting="1">65</blok>
+    </spoor>
+    <spoor name="Spoor E1">
+      <blok>66</blok>
+    </spoor>
+    <spoor name="Spoor E2">
+      <blok richting="2">63</blok>
+      <blok>53</blok>
+      <blok richting="1">120</blok>
+    </spoor>
+    <spoor name="Spoor G1">
+      <blok richting="2">118</blok>
+      <blok>123</blok>
+      <blok richting="1">124</blok>
+    </spoor>
+    <spoor name="Spoor G2">
+      <blok richting="2">119</blok>
+      <blok>121</blok>
+      <blok richting="1">122</blok>
+    </spoor>
+    <spoor name="Spoor G3">
+      <blok>126</blok>
+    </spoor>
+    <spoor name="Spoor T1">
+      <blok>103</blok>
+    </spoor>
+    <spoor name="Spoor T2">
+      <blok>104</blok>
+    </spoor>
+    <spoor name="Spoor T3">
+      <blok>105</blok>
+    </spoor>
+    <spoor name="SpoorTram">
+      <blok>99</blok>
+    </spoor>
+  </station>
+  <station name="Eindhoven">
+    <spoor name="Spoor 1">
+      <blok richting="2">22</blok>
+      <blok>1</blok>
+    </spoor>
+    <spoor name="Spoor 2">
+      <blok richting="2">23</blok>
+      <blok>2</blok>
+    </spoor>
+    <spoor name="Spoor 3">
+      <blok>3</blok>
+      <blok richting="1">4</blok>
+    </spoor>
+    <spoor name="Spoor 4">
+      <blok>5</blok>
+      <blok richting="1">6</blok>
+    </spoor>
+  </station>
+  <station name="Waalre">
+    <spoor name="Spoor 1">
+      <blok richting="2">26</blok>
+      <blok>32</blok>
+      <blok richting="1">36</blok>
+    </spoor>
+    <spoor name="Spoor 2">
+      <blok richting="2">40</blok>
+      <blok>31</blok>
+      <blok richting="1">24</blok>
+    </spoor>
+  </station>
+  <station name="WaalreOnder">
+    <spoor name="SpoorDoor">
+      <blok>19</blok>
+      <blok>29</blok>
+    </spoor>
+    <spoor name="SpoorDood">
+      <blok>42</blok>
+    </spoor>
+    <spoor name="SpoorTransport">
+      <blok>15</blok>
+    </spoor>
+  </station>
+</stationInfo>

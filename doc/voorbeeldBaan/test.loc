@@ -1,0 +1,29 @@
+#Version
+2
+#ELoc
+0
+#MinSnelheid MaxSnelheid
+0 63
+#TopSnelheidKmh
+100
+#fNormaalAlfa NormaalClip
+0.05 16
+#fStopAlfa StopClip
+0.1 16
+#Snelheid1 Afstand1
+31 55
+#Snelheid2 Afstand2
+63 80
+Programma = 
+#Langzaam Rijden
+15 35
+#locSoort
+test
+#laatsteWagonCheck
+0
+#lastRegelKeuze lastGain1 lastGain2 lastStand1 lastStand2
+1 0.777203 0.777203 5 40
+#lowpass plusMinus helling dodeTijd
+0.900000 10 1.000000 6.000000
+#TotaalAfstand TotaalTicken
+143710 107723

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UIRegelaar</class>
+ <widget class="QDialog" name="UIRegelaar">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>201</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QSlider" name="snelheid">
+   <property name="geometry">
+    <rect>
+     <x>88</x>
+     <y>40</y>
+     <width>21</width>
+     <height>160</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>61</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QSlider" name="richting">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>10</y>
+     <width>51</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>1</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="bitmap">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>240</y>
+     <width>76</width>
+     <height>36</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>76</width>
+     <height>36</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="snelheidProgress">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>40</y>
+     <width>16</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="maximum">
+    <number>63</number>
+   </property>
+   <property name="value">
+    <number>24</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+   <property name="format">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="verwijder">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>240</y>
+     <width>76</width>
+     <height>36</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Verwijder</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>76</width>
+     <height>36</height>
+    </size>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>richting</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>UIRegelaar</receiver>
+   <slot>vtValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>100</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>snelheid</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>UIRegelaar</receiver>
+   <slot>snelheid(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>119</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>100</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>vtValue(int)</slot>
+  <slot>snelheid(int)</slot>
+ </slots>
+</ui>

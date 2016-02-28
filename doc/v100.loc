@@ -1,0 +1,135 @@
+#
+# Naam van de locomotief
+#
+v100
+
+#
+# Eerste regel geeft de bitmap filename aan.
+#
+v100.xpm
+
+#
+# de file waar de totalen afstand in cm en rijtijd in ticken
+# in kan
+#
+v100.tot
+
+#
+# Geef aan of dit een bovenleiding loc is.
+# 1=bovenleiding  0=geen bovenleiding
+#
+0
+
+#
+# Nu komt de minimum en maximum snelheid op een regel
+# het absolute minimum 0 en maximum is 63
+#
+12 60
+
+#
+# Geef nu de top snelheid in km/h deze word voor de maximum
+# snelheid berekening gebruikt.
+#
+100
+
+#
+# Geef de kleur aan als een RGB tripple (maximum is 255)
+#  Rood
+200 0 0
+
+# 
+# We gebruiken een recusief eerste orde net werk van de volgend vorm
+#
+#  gewenst   -   alfa  --------    -             uitgang
+#       ----|-|--->----| clip |---|+|-------------
+#            -         --------    -          |
+#            |                     |   -----  |
+#            --------------------------| T |--|
+#                                      -----
+#
+# Intern reken ik meet een 16 maal grotere waarde.
+#
+# De waarde alfa wordt gegeven in een range van [0..1]. Bij grootte
+# waarden van alfa zal er snel gereageerd worden en bij kleine waarden
+# van alfa wordt er langzaam gereageerd. De waarde clip kan er voor zorgen
+# dat een bepaalde maximum verandering niet overschreden wordt. De eenheid
+# is in stappen van de hardware.
+#
+# Geef de waarde van alfa en clip voor optrekken en remmen.
+0.05 16
+
+#
+# Geef de waarde van alfa en clip voor stoppen
+0.05 16
+
+
+#
+# Geef de remweg tabel waarbij de eerste regel de volle snelheid is en
+# de tweede regel de halve snelheid.
+# op elke regel moet de regelaar instelling gevolgd door de afgelegde
+# afstand in cm
+63 75
+32 55
+
+
+# Last afhankelijke regeling heeft geen parameters meer nodig worden nu
+# in de .tot file gesaved en worden adaptief bij geregeld. Als de alpha 0
+# is dan is de regeling uit
+#
+# Voor de lastafhankelijke regeling wordt het volgende schema gebruikt
+#                  -------
+#        gewenst |-| T^2 |-|
+#            |   | ------- |
+#            |   |         * difMul    plusMinus
+#       -    -   |         -   -   -   ------
+# Gem -|*|--|-|--|--------|-|-|*|-|+|--|clip|------ Uitgang
+#       -    -             -   -   -   ------  |
+#       |                      |   |           |
+#   gainFactor               alpha |   -----   |
+#                                  ----| T |---|
+#                                      -----
+# In principe is dit een PID regelaar. De I actie wordt gedaan door
+# het recursieve uitgangs netwerk. De D actie wordt benaderd door een
+#
+# out = in - difMul Z^2
+#
+# Dit is maar een zwake benadering van een differentator. Daar het maken van een
+# digitale differentator zeer moeilijk is heb ik deze simpele benadering gekozen.
+# Het toevoegen van hogere orde secties aan de differentator voor het verkrijgen
+# van een betere differentator zou ook delay opleveren en dat is natuurlijk zeer 
+# ongewenst voor de regel karakteristiek van het totale systeem.
+# De gainFactor is geintroduceerd om de gemeten waarde zo te schalen dat het bereik
+# overeen komt met die van de gewenste waarde.
+# De alpha stelt de snelheid in van de integrator. De clip (plusMinus) is om het bereik
+# van de regelaar te beperken. De bodem en de top waarde van de clip acie
+# worden bepaald door top = gewenst + plusMinus en bottom = gewenst - plusMinus
+#
+# Als men de lastafhankelijke regeling niet wenst te gebruiken kan men de 
+# alpha = 0 zetten. Hierdoor zal de regeling inactief worden en de gewenst waarde
+# zal op de uitgang verschijnen (dit zit niet in het schematje).
+#
+# Op dit moment is voor de variabelen het volgende gedeclareerd
+#  float gainFactor
+#  float difMul
+#  float alpha
+#  int   plusMinus
+#
+# gainFactor difMul alpha plusMinus
+# 0.98 0.5 0.2 16
+
+# 
+# Geef de naam van het programma
+# als er nog geen programma is dan laat de declaratie leeg
+# Programma =
+#
+#Programma =	v215.o
+Programma =
+
+# Voor de uitvoering van een programma kan je hier per
+# locomotief zijn langzaan en rijden snelheid geven.
+20 35
+
+# Het locomotie type (een naam soort zoals stoom of electrisch etc)
+diesel
+
+# sevice op 

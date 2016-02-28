@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>400</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuTrein">
+    <property name="title">
+     <string>Trein</string>
+    </property>
+    <addaction name="actionNieuweTrein"/>
+    <addaction name="actionTreinen_venster"/>
+   </widget>
+   <widget class="QMenu" name="menuBaan">
+    <property name="title">
+     <string>Baan</string>
+    </property>
+    <addaction name="actionTd_Dump"/>
+    <addaction name="actionIO_Overzicht"/>
+    <addaction name="actionBaan_Overzicht"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionNieuw_Blok"/>
+    <addaction name="actionNieuw_IO"/>
+    <addaction name="actionCheck"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout_Baan"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTrein"/>
+   <addaction name="menuBaan"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNieuweTrein">
+   <property name="text">
+    <string>NieuweTrein</string>
+   </property>
+  </action>
+  <action name="actionTreinen_venster">
+   <property name="text">
+    <string>Treinen Venster</string>
+   </property>
+  </action>
+  <action name="actionTd_Dump">
+   <property name="text">
+    <string>td Dump</string>
+   </property>
+  </action>
+  <action name="actionIO_Overzicht">
+   <property name="text">
+    <string>IO Overzicht</string>
+   </property>
+  </action>
+  <action name="actionBaan_Overzicht">
+   <property name="text">
+    <string>Baan Overzicht</string>
+   </property>
+  </action>
+  <action name="actionNieuw_Blok">
+   <property name="text">
+    <string>Nieuw Blok</string>
+   </property>
+  </action>
+  <action name="actionNieuw_IO">
+   <property name="text">
+    <string>Nieuw IO</string>
+   </property>
+  </action>
+  <action name="actionCheck">
+   <property name="text">
+    <string>Check</string>
+   </property>
+  </action>
+  <action name="actionAbout_Baan">
+   <property name="text">
+    <string>About Baan</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
