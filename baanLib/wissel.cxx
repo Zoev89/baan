@@ -474,17 +474,13 @@ void Wissels::WisselNieuw (float adres, int type, int kopBlok)
 // Zijeffect mBaanInfo->AantalSpoelen -= 1;
 void Wissels::WisselVerwijder (int WisselNummer)
 {
-    int offset;
-    BlokPointer_t *start, *einde;
-    int i, w, r;
-    BlokPointer_t *p;
     // Nu zit er een gat in de IOBits array dit moeten we weer recht brijen.
     // De array is dusdanig geinitializeerd dat er nooit een gat in mag zitten
     // Dus vul het gat weer op door alle bovenliggende wissels 1 naar voren
     // te plaatsen
 
     // Eerst verplaatsen dan de pointers modificeren
-    for (i = WisselNummer + 1; i < mBaanInfo->AantalSpoelen; i++)
+    for (int i = WisselNummer + 1; i < mBaanInfo->AantalSpoelen; i++)
     {
         mBaanInfo->IOBits[i - 1] = std::move(mBaanInfo->IOBits[i]);
         if (mBaanInfo->IOBits[i - 1].get()->StopBlokPointer[0].BlokIONummer == i)
@@ -495,10 +491,15 @@ void Wissels::WisselVerwijder (int WisselNummer)
     }
     mBaanInfo->IOBits.pop_back(); // remove the last element
     mBaanInfo->AantalSpoelen -= 1;
+#ifdef NIET_MEER_NODIG
+    int i, w, r;
+    int offset;
+    BlokPointer_t *start, *einde;
+    BlokPointer_t *p;
+
     start = &(mBaanInfo->IOBits[WisselNummer].get()->StopBlokPointer[0]);
     einde =
-        &(mBaanInfo->IOBits[mBaanInfo->AantalSpoelen -
-                           1].get()->StopBlokPointer[AANTAL_BLOKS_PER_WISSEL - 1]);
+        mBaanInfo->IOBits[mBaanInfo->AantalSpoelen - 1].get()->StopBlokPointer.back();
     offset =
         (char *) &(mBaanInfo->IOBits[1].get()->StopBlokPointer[0]) -
         (char *) &(mBaanInfo->IOBits[0].get()->StopBlokPointer[0]);
@@ -506,7 +507,7 @@ void Wissels::WisselVerwijder (int WisselNummer)
     // trek de offset af bij alle pointers die in de range liggen voor alle wissels
     for (i = 0; i < mBaanInfo->AantalSpoelen; i++)
     {
-        for (w = 0; w < AANTAL_BLOKS_PER_WISSEL; w++)
+        for (w = 0; w < mBaanInfo->IOBits[i].get()->StopBlokPointer.size(); w++)
         {
             for (r = 0; r < 2; r++)
             {
@@ -540,6 +541,7 @@ void Wissels::WisselVerwijder (int WisselNummer)
             }
         }
     }
+#endif
 }
 
 
@@ -746,7 +748,7 @@ EersteWisselResult Wissels::VindEersteWissel(int blokNummer, int richting)
     for(int i=0; i<mBaanInfo->AantalSpoelen; i++)
     {
         IOBits_t * pWissel = mBaanInfo->IOBits[i].get();
-        for (int aantal=0; aantal<AANTAL_ROUTE_AANSLUITINGEN; aantal++)
+        for (size_t aantal=0; aantal<pWissel->routeKnoopPunt.size(); aantal++)
         {
             for(unsigned int v=0; v<pWissel->routeKnoopPunt[aantal].blokList.size(); v++)
             {

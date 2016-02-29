@@ -35,7 +35,6 @@
 //////////////////////////////////////////////////////////////////////
 
 DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &standaardWisselDialoog, BaanInfo_t *baanInfo, int kopBlok):
-    IOBits_t(baanInfo->EindBlokPointer),
     mMessage(msg),
     mBlok(blok),
     mWissels(wissels),

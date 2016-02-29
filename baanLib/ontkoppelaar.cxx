@@ -29,7 +29,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 Ontkoppelaar::Ontkoppelaar(IMessage &msg, IBlok& blok, IWissels &wissels, IWisselDialoog &ontKoppelaarDialoog, BaanInfo_t *baanInfo):
-    IOBits_t(baanInfo->EindBlokPointer),
     mMessage(msg),
     mBlok(blok),
     mWissels(wissels),

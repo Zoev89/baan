@@ -677,7 +677,6 @@ TEST_F(BaanZoekTest, InitStandaarWisselVooruit)
     ASSERT_EQ(0,wissel->routeKnoopPunt[1].aansluitingen[0]);
     ASSERT_EQ(1,wissel->routeKnoopPunt[2].aansluitingen.size());
     ASSERT_EQ(0,wissel->routeKnoopPunt[2].aansluitingen[0]);
-    ASSERT_EQ(0,wissel->routeKnoopPunt[3].aansluitingen.size());
     ASSERT_EQ(3,wissel->routeKnoopPunt[0].blokList.size());
     ASSERT_EQ(65,wissel->routeKnoopPunt[0].blokList[0]);
     ASSERT_EQ(76,wissel->routeKnoopPunt[0].blokList[1]);
@@ -919,7 +918,7 @@ TEST_F(BaanZoekTest, TestInitialization)
             countBloks[pWissel->GetWisselBlok()->BlokIONummer] -= 2;
         case STANDAARD_WISSEL:
         case DRIEWEG_WISSEL:
-          for(int y=0;y<4;y++)
+          for(int y=0;y<pWissel->routeKnoopPunt.size();y++)
           {
               for(unsigned int x=0;x<pWissel->routeKnoopPunt[y].blokList.size();x++)
               {

@@ -35,7 +35,6 @@
 //////////////////////////////////////////////////////////////////////
 
 DriewegWissel::DriewegWissel(IMessage &msg, IBlok& blok, IWissels& wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &driewegWisselDialoog, BaanInfo_t *baanInfo, int kopBlok):
-    IOBits_t(baanInfo->EindBlokPointer),
     mMessage(msg),
     mBlok(blok),
     mWissels(wissels),
@@ -63,15 +62,10 @@ DriewegWissel::DriewegWissel(IMessage &msg, IBlok& blok, IWissels& wissels, IBaa
     Lengte12 = -1;
     Lengte13 = -1;
     Lengte14 = -1;
-    // default init naar eind blokken
-    for (int i = 0; i < AANTAL_BLOKS_PER_WISSEL; i++)
-    {
-        StopBlokPointer[i].pVolgendBlok =
-            &mBaanInfo->EindBlokPointer;
-        StopBlokPointer[i].pVorigBlok =
-            &mBaanInfo->EindBlokPointer;
-        StopBlokPointer[i].pBlok = &(StopBlok[i]);
-    }
+    StopBlok.resize(3);
+    StopBlokPointer.resize(3);
+    routeKnoopPunt.resize(4);
+    IOBits_t::InitConstructor(baanInfo->EindBlokPointer);
 }
 
 DriewegWissel::~DriewegWissel()

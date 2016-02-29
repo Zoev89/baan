@@ -103,7 +103,7 @@ public:
     int m_index;
     int m_lengte;
 };
-
+#define AANTAL_ROUTE_AANSLUITINGEN 4
 class WelkeWisselGebruikt
 {
     struct WelkeWisselGebruiktData

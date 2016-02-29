@@ -2,17 +2,20 @@
 #include "baan.h"
 #include "baanWT.h"
 
-IOBits_t::IOBits_t(BlokPointer_t &EindBlokPointer)
+IOBits_t::IOBits_t()
 {
-
     hardwareReturnWaarde = 0;
-    for (int x=0;x<AANTAL_ROUTE_AANSLUITINGEN;x++)
+}
+
+void IOBits_t::InitConstructor(BlokPointer_t &EindBlokPointer)
+{
+    for (int x=0;x<routeKnoopPunt.size();x++)
     {
         routeKnoopPunt[x].wisselNummer = -2;
         routeKnoopPunt[x].knoopPunt = -2;
         routeKnoopPunt[x].richtingVoorkeur = richtingBeiden;
     }
-    for (int x = 0; x < AANTAL_BLOKS_PER_WISSEL; x++)
+    for (size_t x = 0; x < StopBlokPointer.size(); x++)
     {
         StopBlokPointer[x].pBlok = &StopBlok[x];
         StopBlokPointer[x].pVolgendBlok = &EindBlokPointer;

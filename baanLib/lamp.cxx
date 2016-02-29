@@ -31,7 +31,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 Lamp::Lamp(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog &lampDialoog, BaanInfo_t *baanInfo):
-    IOBits_t(baanInfo->EindBlokPointer),
     mMessage(msg),
     mBlok(blok),
     mWissels(wissels),

@@ -35,7 +35,6 @@
 //////////////////////////////////////////////////////////////////////
 
 StandaardWissel::StandaardWissel(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &standaardWisselDialoog, BaanInfo_t *baanInfo, int kopBlok):
-    IOBits_t(baanInfo->EindBlokPointer),
     mMessage(msg),
     mBlok(blok),
     mWissels(wissels),
@@ -59,16 +58,10 @@ StandaardWissel::StandaardWissel(IMessage &msg, IBlok& blok, IWissels &wissels, 
     MaxSnelheid13 = -1;
     Lengte12 = -1;
     Lengte13 = -1;
-    // default init naar eind blokken
-    for (int i = 0; i < AANTAL_BLOKS_PER_WISSEL; i++)
-    {
-        StopBlokPointer[i].pVolgendBlok =
-            &mBaanInfo->EindBlokPointer;
-        StopBlokPointer[i].pVorigBlok =
-            &mBaanInfo->EindBlokPointer;
-        StopBlokPointer[i].pBlok = &(StopBlok[i]);
-    }
-
+    StopBlok.resize(1);
+    StopBlokPointer.resize(1);
+    routeKnoopPunt.resize(3);
+    IOBits_t::InitConstructor(baanInfo->EindBlokPointer);
 }
 
 StandaardWissel::~StandaardWissel()

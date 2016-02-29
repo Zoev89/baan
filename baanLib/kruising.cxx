@@ -31,7 +31,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 Kruising::Kruising(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog &kruisingDialoog, BaanInfo_t *baanInfo, int kopBlok):
-    IOBits_t(baanInfo->EindBlokPointer),
     mMessage(msg),
     mBlok(blok),
     mWissels(wissels),
@@ -56,18 +55,12 @@ Kruising::Kruising(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage& 
     MaxSnelheid14 = -1;
     Lengte13 = -1;
     Lengte42 = -1;
-    // default init naar eind blokken
-    for (int i = 0; i < AANTAL_BLOKS_PER_WISSEL; i++)
-    {
-        StopBlokPointer[i].pVolgendBlok =
-            &mBaanInfo->EindBlokPointer;
-        StopBlokPointer[i].pVorigBlok =
-            &mBaanInfo->EindBlokPointer;
-        StopBlokPointer[i].pBlok = &(StopBlok[i]);
-    }
+    StopBlok.resize(1);
+    StopBlokPointer.resize(1);
+    routeKnoopPunt.resize(4);
+    IOBits_t::InitConstructor(baanInfo->EindBlokPointer);
     StopBlokPointer[0].pBlok =
         pBlok1->pBlok;
-
 }
 
 

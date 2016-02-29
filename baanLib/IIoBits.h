@@ -7,9 +7,6 @@
 #ifndef IIOBITS_H
 #define IIOBITS_H
 
-#define AANTAL_BLOKS_PER_WISSEL 3
-#define AANTAL_ROUTE_AANSLUITINGEN 4
-
 typedef struct
 {
     std::vector<int> blokList;  // blok nummers, wisselNummer, wisselNummerAansluiting
@@ -25,9 +22,9 @@ typedef struct
 class IOBits_t: public IWissel
 {
 public:
-    IOBits_t(BlokPointer_t &EindBlokPointer);
+    IOBits_t();
 
-    RouteringKnoopPunt_t routeKnoopPunt[AANTAL_ROUTE_AANSLUITINGEN];
+    std::vector<RouteringKnoopPunt_t> routeKnoopPunt;
   /*
    ** 0 ongebruikt
    ** 1 ontkoppel rail
@@ -40,8 +37,8 @@ public:
    **/
   int Type;
 
-  std::array<BlokPointer_t, AANTAL_BLOKS_PER_WISSEL> StopBlokPointer;
-  std::array<Blok_t, AANTAL_BLOKS_PER_WISSEL> StopBlok;
+  std::vector<BlokPointer_t> StopBlokPointer;
+  std::vector<Blok_t> StopBlok;
 
   int hardwareAdres;		// op welk basis adres zit de IO
   int hardwareBit;		// op welk bit is de IO opgeslagen
@@ -71,6 +68,7 @@ public:
 
   int CheckWisselBlok (BlokPointer_t * pBlok, int Richting, BlokPointer_t *eindpointer);
   float WisselAdres();
+  void InitConstructor(BlokPointer_t &EindBlokPointer); // nadat de afgeleide klasse de vectors opzet dan deze algemene initializatie
 
 
 };
