@@ -162,8 +162,7 @@ void StandaardWissel::UpdateRec ()
     rec.h (i - rec.y () + 3);
 }
 
-
-int StandaardWissel::Init (char *Input, FILE *)
+int StandaardWissel::Init (const char *Input, std::function<std::string()> )
 {
     float floatAdres;
     int Blok1;

@@ -13,7 +13,7 @@ class Lamp: public IOBits_t
 public:
     Lamp(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& lampDialoog, BaanInfo_t *baanInfo);
     // IWissel
-    virtual int Init(char *Input, FILE *file) override;
+    virtual int Init(const char *Input, std::function<std::string()> newInput) override;
     virtual void InitRoutering () override;
     virtual void ZoekOngeinitializeerdeEindBlokken() override;
     virtual void Display () override;

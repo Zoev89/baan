@@ -9,7 +9,7 @@ IOBits_t::IOBits_t()
 
 void IOBits_t::InitConstructor(BlokPointer_t &EindBlokPointer)
 {
-    for (int x=0;x<routeKnoopPunt.size();x++)
+    for (size_t x=0;x<routeKnoopPunt.size();x++)
     {
         routeKnoopPunt[x].wisselNummer = -2;
         routeKnoopPunt[x].knoopPunt = -2;
@@ -39,7 +39,7 @@ void IOBits_t::InitConstructor(BlokPointer_t &EindBlokPointer)
     }
 }
 
-int IOBits_t::Init(char *, FILE *)
+int IOBits_t::Init(const char *, std::function<std::string()>)
 {
     return 0;
 }

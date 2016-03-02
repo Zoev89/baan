@@ -22,7 +22,7 @@ public:
     Wissels(IMessage& msg, IBlok& blok, IMainWindowDrawing &mainWindowDrawing, IBaanMessage& baanMessage
             , IWisselDialoog& wisselDialoog, BaanInfo_t *baanInfo);
     // IWissels
-    virtual int Init(int WisselNummer, char *Input, FILE *file) override;
+    virtual int Init(int WisselNummer, const char *Input, std::function<std::string()> newInput) override;
     virtual void InitRoutering (int WisselNummer) override;
     virtual void ZoekOngeinitializeerdeEindBlokken(int WisselNummer) override;
     virtual void Display (int WisselNummer, bool bitmap) override;

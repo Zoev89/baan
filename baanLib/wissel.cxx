@@ -56,7 +56,7 @@ Wissels::Wissels(IMessage &msg, IBlok& blok, IMainWindowDrawing &mainWindowDrawi
 // WISSEL_ERR_INVALID_ADRES adres of invalid blok/ongebruikt blok
 // WISSEL_ERR_NIET_ALLES_AANWEZIG de scanf vond niet alles
 // WISSEL_ERR_INVALID_TYPE het type is onbekend
-int Wissels::Init (int WisselNummer, char *Input, FILE* file)
+int Wissels::Init (int WisselNummer, const char *Input, std::function<std::string()> extraInput)
 {
     int Type, ret_val;
 
@@ -82,7 +82,7 @@ int Wissels::Init (int WisselNummer, char *Input, FILE* file)
     pWissel =  mBaanInfo->IOBits[WisselNummer].get();
 
     pWissel->TijdTeller = 0;
-    ret_val =  pWissel->Init(Input, file);
+    ret_val =  pWissel->Init(Input, extraInput);
     return ret_val;
 }
 

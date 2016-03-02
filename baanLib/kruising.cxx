@@ -204,7 +204,7 @@ void Kruising::UpdateRec ()
 }
 
 
-int Kruising::Init (char *Input, FILE *)
+int Kruising::Init (const char *Input, std::function<std::string()> )
 {
     float floatAdres;
     int Blok1;

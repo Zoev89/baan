@@ -197,7 +197,7 @@ void EngelseWissel::UpdateRec ()
 }
 
 
-int EngelseWissel::Init (char *Input, FILE *)
+int EngelseWissel::Init (const char *Input, std::function<std::string()> )
 {
     float floatAdres;
     int Blok1;

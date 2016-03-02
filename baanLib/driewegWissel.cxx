@@ -188,7 +188,7 @@ void DriewegWissel::UpdateRec ()
 }
 
 
-int DriewegWissel::Init (char *Input, FILE *)
+int DriewegWissel::Init (const char *Input, std::function<std::string()> )
 {
     /* Deze init routine belegt gebruikt voor:
    ** 2  spoel + 0

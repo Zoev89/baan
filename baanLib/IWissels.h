@@ -29,7 +29,7 @@ public:
     ~IWissels() = default;
 
     // Bijna de IWissel interface op TestIOTimer,Aanvraag na en Init andere volgoorde van parameters
-    virtual int Init (int WisselNummer, char *Input, FILE * file)=0;
+    virtual int Init(int WisselNummer, const char *Input, std::function<std::string()> newInput) = 0;
     virtual void InitRoutering (int WisselNummer)=0;
     virtual void ZoekOngeinitializeerdeEindBlokken(int WisselNummer)=0;
     virtual void Display (int WisselNummer, bool updateBitmap) = 0;

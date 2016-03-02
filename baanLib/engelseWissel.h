@@ -14,7 +14,7 @@ public:
     EngelseWissel(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& engelseWisselDialoog, BaanInfo_t *baanInfo, int kopBlok);
     ~EngelseWissel();
     // IWissel
-    virtual int Init(char *Input, FILE *file) override;
+    virtual int Init(const char *Input, std::function<std::string()> newInput) override;
     virtual void InitRoutering () override;
     virtual void ZoekOngeinitializeerdeEindBlokken() override;
     virtual void Display () override;

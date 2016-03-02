@@ -89,7 +89,7 @@ void Ontkoppelaar::NieuwXY (int , int , int , int)
 
 }
 
-int Ontkoppelaar::Init ( char *Input, FILE *)
+int Ontkoppelaar::Init (const char *Input, std::function<std::string()> )
 {
   float floatAdres;
 

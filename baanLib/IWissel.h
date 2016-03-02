@@ -1,6 +1,8 @@
 #ifndef IWISSEL_H
 #define IWISSEL_H
 #include <stdio.h>
+#include <functional>
+#include <string>
 
 struct BlokPointer_t;
 
@@ -9,7 +11,7 @@ class IWissel
 public:
     ~IWissel() = default;
 
-    virtual int Init(char *Input, FILE *file)=0;
+    virtual int Init(const char *Input, std::function<std::string()> newInput) = 0;
     virtual void InitRoutering ()=0;
     virtual void ZoekOngeinitializeerdeEindBlokken()=0;
     virtual void Display ()=0;

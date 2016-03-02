@@ -17,7 +17,7 @@ public:
     DraaiSchijf(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& standaardWisselDialoog, BaanInfo_t *baanInfo, int kopBlok);
     ~DraaiSchijf();
     // IWissel
-    virtual int Init(char *Input, FILE *file) override;
+    virtual int Init(const char *Input, std::function<std::string()> newInput) override;
     virtual void InitRoutering () override;
     virtual void ZoekOngeinitializeerdeEindBlokken() override;
     virtual void Display () override;
@@ -45,6 +45,9 @@ private:
     IMainWindowDrawing& mMainWindowDrawing;
     IWisselDialoog& mStandaardWisselDialoog;
     BaanInfo_t* mBaanInfo;
+    int Coord1X;
+    int Coord1Y;
+    int Radius;
 
     // middelpunt is het middelpunt van de rect
     std::vector<DraaiSchijfAansluiting> aansluiting;

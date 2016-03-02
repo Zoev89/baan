@@ -886,7 +886,12 @@ BaanDoc::baanDocParseBlkFile (FILE * file)
                                   mBaanInfo->AantalSpoelen));
             return 1;
         }
-        if ((err = mWissels.Init (i, Array, file)) != 0)
+        if ((err = mWissels.Init (i, Array, [&]()
+        {
+          char temp[MAX_FILENAME + 1];
+          EricFgets (temp, 200, file);
+          return std::string(temp);
+        })) != 0)
         {
             switch (err)
             {

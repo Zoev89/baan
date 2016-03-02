@@ -49,7 +49,7 @@ public:
   int Stand;
   Rectangle rec;
 
-  virtual int Init(char *Input, FILE *file) override;
+  virtual int Init(const char *Input, std::function<std::string()> newInput) override;
   virtual void InitRoutering () override;
   virtual void ZoekOngeinitializeerdeEindBlokken() override;
   virtual void Display () override;

@@ -80,7 +80,7 @@ void Lamp::ZoekOngeinitializeerdeEindBlokken()
 
 }
 
-int Lamp::Init (char *Input, FILE *)
+int Lamp::Init (const char *Input, std::function<std::string()> )
 {
     float floatAdres;
     int x, y, w, h;

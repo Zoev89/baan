@@ -10,7 +10,8 @@ LIBS =  -lgmock -lgmock_main ../baanLib/libbaanLib.a ../baanShared/libbaanShared
 SOURCES += \
     baanZoek.cxx \
     baanLibTest.cxx \
-    TdTest.cxx
+    TdTest.cxx \
+    draaischijfTest.cxx
 
 HEADERS += \
     IMessageMock.h \
@@ -31,7 +32,8 @@ HEADERS += \
     IRegelaarInstellingenDialoogMock.h \
     ITelefoonConnectieMock.h \
     ITdMock.h \
-    IErrorPrintMock.h
+    IErrorPrintMock.h \
+    baanLibSetup.h
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../baanLib/release/ -lbaanLib

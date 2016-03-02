@@ -111,9 +111,22 @@ void DraaiSchijf::UpdateRec ()
     // implementeer iets
 }
 
-
-int DraaiSchijf::Init (char *Input, FILE *file)
+int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInput)
 {
+    float floatAdres;
+    int Blok1;
+
+    /* Lees alle velden in */
+    if (sscanf (Input, "%d%f%d%d%d%d",
+                &Type,
+                &floatAdres,
+                &Coord1X,
+                &Coord1Y,
+                &Radius,
+                &Blok1
+                ) != 6)
+        return WISSEL_ERR_NIET_ALLES_AANWEZIG;
+
     return 0;
 }
 
