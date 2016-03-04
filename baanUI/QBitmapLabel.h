@@ -31,6 +31,8 @@ protected:
     void paintEvent( QPaintEvent * event );
     void mousePressEvent(QMouseEvent *ev);
     void mouseMoveEvent(QMouseEvent *ev);
+    virtual void keyPressEvent(QKeyEvent * event);
+
 
 public Q_SLOTS:
     void DrawLineSlot(int fromx, int fromy, int tox, int toy, int dikte, int color);

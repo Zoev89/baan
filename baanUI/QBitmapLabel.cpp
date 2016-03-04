@@ -9,6 +9,7 @@ QBitmapLabel::QBitmapLabel(QWidget * parent, BaanLib *baanLib, UIRegelaars *rege
     , mBaanLib(baanLib)
     , mRegelaars(regelaars)
 {
+   setFocusPolicy(Qt::ClickFocus);
 }
 
 void QBitmapLabel::paintEvent ( QPaintEvent * /*event*/ )
@@ -49,6 +50,14 @@ void QBitmapLabel::mousePressEvent(QMouseEvent *ev)
     }
 }
 
+void QBitmapLabel::keyPressEvent(QKeyEvent * event)
+{
+    if (event->key() == Qt::Key_Delete)
+        mBaanLib->HandleKeyBoardEvent(IView::DeleteKey);
+    else
+        QLabel::keyPressEvent(event);
+
+}
 
 void QBitmapLabel::SetBitmapSlot(const QString bitmapName)
 {

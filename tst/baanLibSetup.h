@@ -24,7 +24,7 @@ public:
     {
 
     }
-    ITdMock td; // moet bovenaan staan zodat die geinitializeerd is!
+    testing::NiceMock<ITdMock> td; // moet bovenaan staan zodat die geinitializeerd is!
 
     BaanWT baanWT;
     Blok blok;

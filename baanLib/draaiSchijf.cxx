@@ -114,18 +114,28 @@ void DraaiSchijf::UpdateRec ()
 int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInput)
 {
     float floatAdres;
-    int Blok1;
 
     /* Lees alle velden in */
-    if (sscanf (Input, "%d%f%d%d%d%d",
+    if (sscanf (Input, "%d%f%d%d%d",
                 &Type,
                 &floatAdres,
                 &Coord1X,
                 &Coord1Y,
-                &Radius,
-                &Blok1
-                ) != 6)
+                &Radius
+                ) != 5)
         return WISSEL_ERR_NIET_ALLES_AANWEZIG;
+    hardwareAdres = (int)floatAdres;
+    hardwareBit = 0;
+    if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
+    {
+        return WISSEL_ERR_INVALID_ADRES;
+    }
+/*    if (mBaanInfo->BlokPointer[Blok1].BlokIONummer == -1)
+    {
+        return WISSEL_ERR_INVALID_ADRES;
+    }*/
+
+    pBlok1 = &mBaanInfo->BlokPointer[hardwareAdres];
 
     return 0;
 }
@@ -239,24 +249,17 @@ void DraaiSchijf::String (char *string)
 //    }
 //    else
 //    {
-        mBlok.BlokNaam (sString, StopBlokPointer[0].pVolgendBlok);
+//        mBlok.BlokNaam (sString, StopBlokPointer[0].pVolgendBlok);
 //    }
-    mBlok.BlokNaam (bString, pBlok1);
+//    mBlok.BlokNaam (bString, pBlok1);
 
-//    sprintf (string, "%d %7.2f %4d %4d %4d %4d %4d %4d %8s %8s %4d %4d %4d %4d",
-//             Type,
-//             WisselAdres(),
-//             Coord1X,
-//             Coord1Y,
-//             Coord2X,
-//             Coord2Y,
-//             Coord3X,
-//             Coord3Y,
-//             &bString[1],
-//            sString,
-//            Lengte12,
-//            Lengte13,
-//            MaxSnelheid12, MaxSnelheid13);
+    sprintf (string, "%d %7.2f %4d %4d %4d",
+             Type,
+             WisselAdres(),
+             Coord1X,
+             Coord1Y,
+             Radius
+             );
 }
 
 void DraaiSchijf::NieuwXY (int selectionX,
