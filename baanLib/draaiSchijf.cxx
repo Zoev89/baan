@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <boost/format.hpp>
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -43,6 +44,7 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     mStandaardWisselDialoog(standaardWisselDialoog),
     mBaanInfo(baanInfo)
 {
+    routeKnoopPunt.resize(3);
     pBlok1 = &mBaanInfo->BlokPointer[kopBlok];
 
 }
@@ -96,6 +98,19 @@ int DraaiSchijf::CheckWissel()
     return 0;
 }
 
+// TODO remove this when mBaanMessage.Post supports a std::function
+int DraaiSchijf::WisselNummer()
+{
+    for (size_t i=0;i<mBaanInfo->IOBits.size();i++)
+    {
+        if (this == mBaanInfo->IOBits[i].get())
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return 0;
+}
+
 void DraaiSchijf::TestIOTimer ()
 {
 
@@ -109,6 +124,10 @@ float DraaiSchijf::GetAdres()
 void DraaiSchijf::UpdateRec ()
 {
     // implementeer iets
+    rec.x (Coord1X-Radius-2);
+    rec.y (Coord1Y-Radius-2);
+    rec.w (2*Radius+4);
+    rec.h (2*Radius+6);
 }
 
 int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInput)
@@ -126,6 +145,8 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
         return WISSEL_ERR_NIET_ALLES_AANWEZIG;
     hardwareAdres = (int)floatAdres;
     hardwareBit = 0;
+    Stand = 100;
+    UpdateRec();
     if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
     {
         return WISSEL_ERR_INVALID_ADRES;
@@ -193,6 +214,22 @@ void DraaiSchijf::Display ()
     {
         color = IMainWindowDrawing::Black;
     }
+    double angle = 0;
+    if ((Stand > 99) && (Stand < 148))
+    {
+        angle = 7.5*(Stand-100);
+    }
+    if ((Stand > 199) && (Stand < 248))
+    {
+        angle = 7.5*(Stand-200)+180;
+    }
+    angle = std::atan(1.0)*4.0 * angle/180.0;
+    int xOffset = (int)(std::sin(angle) *Radius);
+    int yOffset = (int)(std::cos(angle) *Radius);
+
+
+    mMainWindowDrawing.DrawLine(Coord1X-xOffset,Coord1Y-yOffset, Coord1X+xOffset, Coord1Y+yOffset,5,color);
+    mMainWindowDrawing.DrawLine(Coord1X+3*xOffset/4,Coord1Y+3*yOffset/4, Coord1X+xOffset, Coord1Y+yOffset,8,color);
 
     if (Stand == 12)
     {
@@ -232,6 +269,48 @@ void DraaiSchijf::Bedien ()
 
 int DraaiSchijf::Aanvraag (int stand)
 {
+    int NieuweStand;
+    if (IOAANVRAAG_REFRESH == stand)
+    {
+        Bedien ();
+        return 0;
+    }
+
+    if (IOAANVRAAG_DEFAULT == stand)
+    {
+        stand = 100;
+    }
+
+    if (stand == IOAANVRAAG_TOGGLE)
+    {
+        NieuweStand = Stand + 1;
+        if (NieuweStand == 148)
+        {
+            NieuweStand = 200;
+        }
+        else if (NieuweStand == 248)
+        {
+            NieuweStand = 100;
+        }
+    }
+    else
+    {
+        // test of de stand binnen bereik ligt
+        if (((stand < 100) || (stand > 247)) ||
+                ((stand>147) && (stand <200)))
+        {
+            return IOGEWIJGERD;
+        }
+        NieuweStand = stand;
+    }
+    if (NieuweStand == Stand)
+        return 0;
+
+    Stand = NieuweStand;
+
+    Bedien ();
+    mBaanMessage.Post (WM_WISSEL_DISPLAY, WisselNummer(), 0, 0);
+
     return 0;
 }
 
@@ -267,6 +346,20 @@ void DraaiSchijf::NieuwXY (int selectionX,
 {
     if (mBaanInfo->selectedWisselPoint == -1)
     {
+        if ((selectionX > (Coord1X-Radius/2)) && (selectionX < (Coord1X+Radius/2)) &&
+            (selectionY > (Coord1Y-Radius/2)) && (selectionY < (Coord1Y+Radius/2)))
+        {
+            mBaanInfo->selectedWisselPoint = 1;  // midpoint
+        }
+        else
+        {
+            if ((selectionX > (Coord1X-Radius)) && (selectionX < (Coord1X+Radius)) &&
+                (selectionY > (Coord1Y-Radius)) && (selectionY < (Coord1Y))) // top half
+            {
+                mBaanInfo->selectedWisselPoint = 2;  // radius update
+            }
+
+        }
 //        int afstand1, afstand2, x, y;
 //        afstand1 = SQR (Coord1X - selectionX) +
 //                SQR (Coord1Y - selectionY);
@@ -298,16 +391,15 @@ void DraaiSchijf::NieuwXY (int selectionX,
 
     }
 
-//    switch (mBaanInfo->selectedWisselPoint)
-//    {
-//    case 1:
-//        Coord1X += deltaX;
-//        Coord1Y += deltaY;
-//        break;
-//    case 2:
-//        Coord2X += deltaX;
-//        Coord2Y += deltaY;
-//        break;
+    switch (mBaanInfo->selectedWisselPoint)
+    {
+    case 1:
+        Coord1X += deltaX;
+        Coord1Y += deltaY;
+        break;
+    case 2:
+        Radius += (deltaX+deltaY)/2;
+        break;
 //    case 3:
 //        Coord3X += deltaX;
 //        Coord3Y += deltaY;
@@ -320,7 +412,7 @@ void DraaiSchijf::NieuwXY (int selectionX,
 //        Coord3X += deltaX;
 //        Coord3Y += deltaY;
 //        break;
-//    }
+    }
     mMainWindowDrawing.RedrawRec(rec.x(), rec.y(), rec.w(), rec.h());
     UpdateRec ();
 
@@ -347,7 +439,7 @@ void DraaiSchijf::InitDialoog ()
                 "blok genomen\n");
     mStandaardWisselDialoog.SetAdres(WisselAdres());
 
-    mBlok.BlokNaam (string, StopBlokPointer[0].blokRicht[0]);
+    //mBlok.BlokNaam (string, StopBlokPointer[0].blokRicht[0]);
     /*
     mStandaardWisselDialoog.SetAansluiting3(string);
     mStandaardWisselDialoog.SetAansluiting3ToolTip("Gebruik de B/W/w notatie geef B-1 voor een wissel in tegen richting.");

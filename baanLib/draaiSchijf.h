@@ -38,6 +38,7 @@ public:
 private:
     void UpdateRec ();
     void Bedien ();
+    int WisselNummer();
     IMessage& mMessage;
     IBlok& mBlok;
     IWissels& mWissels;
