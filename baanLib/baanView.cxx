@@ -285,7 +285,35 @@ BaanView::HandleMouseEvents (MouseEventType type, MouseButtonType button,int x, 
             }
             handled = true;
         }
+        else
+        {
+            // Controlle of een spoel zich aangesproken voelt
+            for (i = 0; i < mBaanInfo->AantalSpoelen; i++)
+            {
+                if (mBaanInfo->IOBits[i].get()->Type)
+                {
+                    if ((x >= mBaanInfo->IOBits[i].get()->rec.x ()) &&
+                            (x <= mBaanInfo->IOBits[i].get()->rec.r ()) &&
+                            (y >= mBaanInfo->IOBits[i].get()->rec.y ()) &&
+                            (y <= mBaanInfo->IOBits[i].get()->rec.b ()))
+                    {
+                        IOAanvraag_t IOAanvraag;
+
+                        // Het gegeven punt ligt in deze wissel dus roep
+                        // de workthread aan met een wissel request
+                        IOAanvraag.stand = IOAANVRAAG_TOGGLE | x<<16 | y;
+                        IOAanvraag.IONummer = i;
+                        mWissels.Aanvraag (&IOAanvraag);
+
+                        i = mBaanInfo->AantalSpoelen;
+                    }
+                }
+            }
+
+
+        }
     }
+
     vorigKey = button;
     vorigEvent = type;
     vorigX = x;

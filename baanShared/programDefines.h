@@ -19,9 +19,9 @@
 #define TIMER_HERHALEND 1
 #define TIMEOUT_MAX 2147483647
 
-#define IOAANVRAAG_TOGGLE -1
+#define IOAANVRAAG_REFRESH -1  // alleen intern gebruik
 #define IOAANVRAAG_DEFAULT -2
-#define IOAANVRAAG_REFRESH 0x800000  // alleen intern gebruik
+#define IOAANVRAAG_TOGGLE 0x80000000  // x en y worden ook nog erin gecodeerd
 #define IOGEWIJGERD 1
 #define IOTIMEOUT   2
 

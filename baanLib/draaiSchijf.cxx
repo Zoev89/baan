@@ -283,15 +283,28 @@ int DraaiSchijf::Aanvraag (int stand)
 
     if (stand == IOAANVRAAG_TOGGLE)
     {
-        NieuweStand = Stand + 1;
-        if (NieuweStand == 148)
+        // nu kan die gaan draaien
+        NieuweStand = Stand;
+    }
+    else if (stand & IOAANVRAAG_TOGGLE)
+    {
+        int x = (stand>>16) & 0x7fff;
+        int y = stand &0x7fff;
+        int iSaved =0;
+        int maxLength = 0x7fffffff;
+        for (int s=0;s<48;s++)
         {
-            NieuweStand = 200;
+            double angle = s*7.5/180 * 4*std::atan(1.0);
+            int xOffset = (int)(std::sin(angle) *Radius);
+            int yOffset = (int)(std::cos(angle) *Radius);
+            int length = SQR(x - (Coord1X+xOffset)) + SQR(y-(Coord1Y+yOffset));
+            if (length < maxLength)
+            {
+                iSaved = s;
+                maxLength = length;
+            }
         }
-        else if (NieuweStand == 248)
-        {
-            NieuweStand = 100;
-        }
+        NieuweStand = 100 + iSaved;
     }
     else
     {
