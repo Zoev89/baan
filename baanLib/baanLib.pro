@@ -49,7 +49,8 @@ SOURCES += \
     baanUtility.cxx \
     TelefoonConnectie.cxx \
     draaiSchijf.cxx \
-    IoBits.cxx
+    IoBits.cxx \
+    Dispatcher.cpp
 
 HEADERS +=\
     baanDoc.h \
@@ -114,7 +115,8 @@ HEADERS +=\
     ITd.h \
     IErrorPrint.h \
     draaiSchijf.h \
-    IIoBits.h
+    IIoBits.h \
+    Dispatcher.h
 
 unix {
     target.path = /usr/lib

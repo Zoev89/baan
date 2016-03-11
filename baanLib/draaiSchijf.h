@@ -10,6 +10,7 @@
 #include "IMainWindowDrawing.h"
 #include "IBaanMessage.h"
 #include "IWisselDialoog.h"
+#include "Dispatcher.h"
 
 class DraaiSchijf: public IOBits_t
 {
@@ -37,7 +38,9 @@ public:
 
 private:
     void UpdateRec ();
-    void Bedien ();
+    void WachtOp(int status);
+    void GaNaarPositie(int positie) ;
+    void Bedien (int adres, int data, bool returnGewenst=false);
     int WisselNummer();
     IMessage& mMessage;
     IBlok& mBlok;
@@ -46,9 +49,14 @@ private:
     IMainWindowDrawing& mMainWindowDrawing;
     IWisselDialoog& mStandaardWisselDialoog;
     BaanInfo_t* mBaanInfo;
+    Dispatcher mWorker;
     int Coord1X;
     int Coord1Y;
     int Radius;
+    int NieuweStand;
+    bool StartDrag;  // click drag dan kan je draaien en bevestig met click
+    bool AndereKant; // de andere kant word gebruikt
+    bool mHomed;
 
     // middelpunt is het middelpunt van de rect
     std::vector<DraaiSchijfAansluiting> aansluiting;

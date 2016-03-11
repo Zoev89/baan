@@ -11,7 +11,8 @@ SOURCES += \
     baanZoek.cxx \
     baanLibTest.cxx \
     TdTest.cxx \
-    draaischijfTest.cxx
+    draaischijfTest.cxx \
+    DispatcherTest.cpp
 
 HEADERS += \
     IMessageMock.h \
