@@ -53,6 +53,7 @@ private:
     int Coord1X;
     int Coord1Y;
     int Radius;
+    int OffsetAngle;
     int NieuweStand;
     bool StartDrag;  // click drag dan kan je draaien en bevestig met click
     bool AndereKant; // de andere kant word gebruikt

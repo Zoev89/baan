@@ -46,6 +46,7 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , NieuweStand(100)
     , StartDrag(false)
     , AndereKant(false)
+    , OffsetAngle(0)
 {
     routeKnoopPunt.resize(3);
     pBlok1 = &mBaanInfo->BlokPointer[kopBlok];
@@ -138,13 +139,14 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     float floatAdres;
 
     /* Lees alle velden in */
-    if (sscanf (Input, "%d%f%d%d%d",
+    if (sscanf (Input, "%d%f%d%d%d%d",
                 &Type,
                 &floatAdres,
                 &Coord1X,
                 &Coord1Y,
-                &Radius
-                ) != 5)
+                &Radius,
+                &OffsetAngle
+                ) != 6)
         return WISSEL_ERR_NIET_ALLES_AANWEZIG;
     hardwareAdres = (int)floatAdres;
     hardwareBit = 0;
@@ -223,11 +225,11 @@ void DraaiSchijf::Display ()
     double angle = 0;
     if ((NieuweStand > 99) && (NieuweStand < 148))
     {
-        angle = 7.5*(NieuweStand-100);
+        angle = 7.5*(NieuweStand-100)+OffsetAngle;
     }
     if ((NieuweStand > 199) && (NieuweStand < 248))
     {
-        angle = 7.5*(NieuweStand-200)+180;
+        angle = 7.5*(NieuweStand-200)+180+OffsetAngle;
     }
     angle = std::atan(1.0)*4.0 * angle/180.0;
     int xOffset = (int)(std::sin(angle) *Radius);
@@ -267,7 +269,6 @@ void DraaiSchijf::GaNaarPositie(int positie)
             mHomed = true;
         }
         auto bedienPos = (positie >=200) ? positie-200: positie-100;
-        std::cout <<  "Pos " << bedienPos << std::endl;
         Bedien(hardwareAdres+2,bedienPos);
         WachtOp(Turning);
     });
@@ -275,7 +276,6 @@ void DraaiSchijf::GaNaarPositie(int positie)
 
 void DraaiSchijf::Bedien (int adres, int data, bool returnGewenst)
 {
-std::cout << adres << " " << data << std::endl;
     hardwareArray_t bedien;
     bedien.blokIO = HW_IO;
     bedien.adres = adres;
@@ -324,7 +324,7 @@ int DraaiSchijf::Aanvraag (int stand)
         if (StartDrag)
         {
             int stand = (NieuweStand >= 200) ? NieuweStand-200: NieuweStand - 100;
-            double angle = stand*7.5/180 * 4*std::atan(1.0);
+            double angle = (stand*7.5+OffsetAngle)/180 * 4*std::atan(1.0);
 
             int xOffset = (int)(std::sin(angle) *Radius);
             int yOffset = (int)(std::cos(angle) *Radius);
@@ -347,7 +347,7 @@ int DraaiSchijf::Aanvraag (int stand)
         for (int s=0;s<48;s++)
         {
             int mult = (AndereKant) ? -1: 1;
-            double angle = s*7.5/180 * 4*std::atan(1.0);
+            double angle = (s*7.5+OffsetAngle)/180 * 4*std::atan(1.0);
             int xOffset = (int)(std::sin(angle) *Radius);
             int yOffset = (int)(std::cos(angle) *Radius);
             int length = SQR(x - (Coord1X+mult*xOffset)) + SQR(y-(Coord1Y+mult*yOffset));
@@ -357,6 +357,7 @@ int DraaiSchijf::Aanvraag (int stand)
                 maxLength = length;
             }
         }
+        std::cout<< iSaved << std::endl;
         NieuweStand = 100 + iSaved;
     }
     else
@@ -369,8 +370,6 @@ int DraaiSchijf::Aanvraag (int stand)
         }
         NieuweStand = stand;
     }
-    if (NieuweStand == Stand)
-        return 0;
 
     mBaanMessage.Post (WM_WISSEL_DISPLAY, WisselNummer(), 0, 0);
     return 0;
@@ -394,12 +393,13 @@ void DraaiSchijf::String (char *string)
 //    }
 //    mBlok.BlokNaam (bString, pBlok1);
 
-    sprintf (string, "%d %7.2f %4d %4d %4d",
+    sprintf (string, "%d %7.2f %4d %4d %4d %4d",
              Type,
              WisselAdres(),
              Coord1X,
              Coord1Y,
-             Radius
+             Radius,
+             OffsetAngle
              );
 }
 
