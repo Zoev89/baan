@@ -23,6 +23,7 @@ class IOBits_t: public IWissel
 {
 public:
     IOBits_t();
+    virtual ~IOBits_t()=default;
 
     std::vector<RouteringKnoopPunt_t> routeKnoopPunt;
   /*

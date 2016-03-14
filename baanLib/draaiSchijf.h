@@ -16,7 +16,7 @@ class DraaiSchijf: public IOBits_t
 {
 public:
     DraaiSchijf(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& standaardWisselDialoog, BaanInfo_t *baanInfo, int kopBlok);
-    ~DraaiSchijf();
+    virtual ~DraaiSchijf();
     // IWissel
     virtual int Init(const char *Input, std::function<std::string()> newInput) override;
     virtual void InitRoutering () override;
@@ -54,10 +54,9 @@ private:
     int Coord1Y;
     int Radius;
     int OffsetAngle;
-    int NieuweStand;
+    int NieuweStand; // geeft de positie aan waar de lock binnenkomt dat is niet de draaischijf stand
     bool StartDrag;  // click drag dan kan je draaien en bevestig met click
     bool AndereKant; // de andere kant word gebruikt
-    bool mHomed;
 
     // middelpunt is het middelpunt van de rect
     std::vector<DraaiSchijfAansluiting> aansluiting;

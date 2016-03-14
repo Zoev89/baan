@@ -9,7 +9,6 @@ struct BlokPointer_t;
 class IWissel
 {
 public:
-    ~IWissel() = default;
 
     virtual int Init(const char *Input, std::function<std::string()> newInput) = 0;
     virtual void InitRoutering ()=0;
@@ -28,8 +27,11 @@ public:
     virtual int GetRichting() = 0;
     virtual int WisselLengte(int from, int to) = 0;
 
+protected:
+    virtual ~IWissel() {}
 
 
 };
+
 
 #endif // IWISSEL_H

@@ -11,6 +11,7 @@ Dispatcher::~Dispatcher()
 {
     mStop = true;
     execWorker.notify_one();
+    WorkerFuture.wait();
 }
 
 void Dispatcher::Worker()

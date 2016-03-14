@@ -152,7 +152,6 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     hardwareBit = 0;
     NieuweStand = Stand = 100;
     hardwareReturnWaarde = 0;
-    mHomed = false;
 
     UpdateRec();
     if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
@@ -245,6 +244,7 @@ void DraaiSchijf::Display ()
 #define Homing 60
 #define GetStatus 63
 #define Turning 1
+#define NeedsHoming 0x4
 void DraaiSchijf::WachtOp(int status)
 {
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -262,13 +262,15 @@ void DraaiSchijf::GaNaarPositie(int positie)
     std::cout <<  "Pos " << positie << std::endl;
     mWorker.Dispatch([=]()
     {
-        if (mHomed == false)
+        Bedien(hardwareAdres+2,GetStatus, true);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        if (hardwareReturnWaarde & NeedsHoming)
         {
             Bedien(hardwareAdres+2,Homing);
             WachtOp(Turning);
-            mHomed = true;
         }
-        auto bedienPos = (positie >=200) ? positie-200: positie-100;
+
+        auto bedienPos = (positie >=200) ? (positie-200+48/2)%48: positie - 100;
         Bedien(hardwareAdres+2,bedienPos);
         WachtOp(Turning);
     });
@@ -295,6 +297,7 @@ int DraaiSchijf::Aanvraag (int stand)
     if (IOAANVRAAG_REFRESH == stand)
     {
 //        Bedien ();
+        NieuweStand = Stand; // initializatie van stand is buiten ons om gegaan dus refresh het
         return 0;
     }
 
@@ -323,7 +326,7 @@ int DraaiSchijf::Aanvraag (int stand)
         int y = stand &0x7fff;
         if (StartDrag)
         {
-            int stand = (NieuweStand >= 200) ? NieuweStand-200: NieuweStand - 100;
+            int stand = (NieuweStand >= 200) ? (NieuweStand-200+48/2)%48: NieuweStand - 100;
             double angle = (stand*7.5+OffsetAngle)/180 * 4*std::atan(1.0);
 
             int xOffset = (int)(std::sin(angle) *Radius);
@@ -346,7 +349,7 @@ int DraaiSchijf::Aanvraag (int stand)
         int maxLength = 0x7fffffff;
         for (int s=0;s<48;s++)
         {
-            int mult = (AndereKant) ? -1: 1;
+            int mult = (AndereKant) ? 1: 1;
             double angle = (s*7.5+OffsetAngle)/180 * 4*std::atan(1.0);
             int xOffset = (int)(std::sin(angle) *Radius);
             int yOffset = (int)(std::cos(angle) *Radius);
@@ -357,8 +360,8 @@ int DraaiSchijf::Aanvraag (int stand)
                 maxLength = length;
             }
         }
-        std::cout<< iSaved << std::endl;
-        NieuweStand = 100 + iSaved;
+        NieuweStand = (AndereKant) ? iSaved + 200: iSaved+100;
+        std::cout<< NieuweStand << std::endl;
     }
     else
     {
@@ -369,6 +372,8 @@ int DraaiSchijf::Aanvraag (int stand)
             return IOGEWIJGERD;
         }
         NieuweStand = stand;
+        GaNaarPositie(NieuweStand);
+        Stand = NieuweStand;
     }
 
     mBaanMessage.Post (WM_WISSEL_DISPLAY, WisselNummer(), 0, 0);
