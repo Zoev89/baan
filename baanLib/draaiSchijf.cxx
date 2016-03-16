@@ -271,7 +271,7 @@ void DraaiSchijf::GaNaarPositie(int positie)
         }
 
         auto bedienPos = (positie >=200) ? (positie-200+48/2)%48: positie - 100;
-        Bedien(hardwareAdres+2,bedienPos);
+        Bedien(hardwareAdres + 2 + (positie >=200),bedienPos);
         WachtOp(Turning);
     });
 }

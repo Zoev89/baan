@@ -590,6 +590,7 @@ int BaanWT::BaanAansturing (hardwareCom_t * huidigeArray,
     {
         // we hebben minder terug gekregen dan verwacht dus exit deze loop
         // en trigger een reset hardware
+        std::cout << "received " << cx << " verwacht " << vorigeArray->aantal << std::endl;
         return 2;
     }
 
@@ -766,6 +767,8 @@ void BaanWT::StartHardware ()
     }
 
     printf ("start hw in %s\n", (pInfo->Simulatie == 1) ? "sim" : "hw");
+    pInfo->hardwareSnelheid.aantal = 0;
+    pInfo->hardwareDetection.aantal = 0;
 
     if (pInfo->Simulatie != 0)
     {

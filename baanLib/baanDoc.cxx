@@ -1868,7 +1868,8 @@ BaanDoc::baanDocIniFile ()
             wisselNummer = mWissels.ZoekWisselNummer (mBaanInfo->IOBits, adres);
             // check of dit nog steeds een zelfde type wissel is
             if ((wisselNummer < 0)
-                    || (mBaanInfo->IOBits[wisselNummer].get()->Type != type))
+                    || (mBaanInfo->IOBits[wisselNummer].get()->Type != type)  // niet dezelfde wissel type dus er is iets gewijzigd
+                    || (mBaanInfo->IOBits[wisselNummer].get()->Type == DRAAISCHIJF)) // voor draaischijf doen we geen recover
             {
                 continue;         // deze wissel is niet meer dezelfde wissel niet gebruiken dus
             }
