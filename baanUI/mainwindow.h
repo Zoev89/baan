@@ -25,6 +25,7 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionNieuweTrein_triggered();
     void on_actionTd_Dump_triggered();
+    void on_actionNieuw_IO_triggered();
 
 private:
     Ui::MainWindow *ui;

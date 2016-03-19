@@ -15,7 +15,7 @@ public:
     virtual void ZoekOngeinitializeerdeEindBlokken()=0;
     virtual void Display ()=0;
     virtual int Aanvraag(int stand)=0;
-    virtual void String(char *string)=0;
+    virtual std::string String()=0;
     virtual void NieuwXY (int selectionX, int selectionY, int deltaX, int deltaY)=0;
     virtual void InitDialoog ()=0;
     virtual void DialoogOk ()=0;

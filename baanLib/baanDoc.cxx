@@ -253,8 +253,8 @@ BaanDoc::baanDocSchrijfBlkFile ()
                 {
                     if (mBaanInfo->IOBits[i].get()->Type == w)
                     {
-                        mWissels.String (i, string);
-                        fprintf (blkFile, "%s\n", string);
+                        auto str = mWissels.String (i);
+                        fprintf (blkFile, "%s\n", str.c_str());
                     }
                 }
             }
@@ -1128,7 +1128,7 @@ BaanDoc::baanDocRightMouseButtonDown (int x, int y)
     // een lamp dialoog kunnen oppoppen
     for (i = 0; i < mBaanInfo->AantalSpoelen; i++)
     {
-        if ((mBaanInfo->IOBits[i].get()->Type == LAMP) || (mBaanInfo->editMode))
+        if ((mBaanInfo->IOBits[i].get()->Type == LAMP) || (mBaanInfo->IOBits[i].get()->Type == DRAAISCHIJF) || (mBaanInfo->editMode))
         {
 
             int w, h;
@@ -2060,6 +2060,7 @@ BaanDoc::baanDocNieuwIo ()
     labels.push_back("engelse wissel");
     labels.push_back("drieweg wissel");
     labels.push_back("Lamp");
+    labels.push_back("Draaischijf");
     mNieuwIODialoog.SetTypeLabels(labels);
 
     if (mNieuwIODialoog.RunDialogOk())

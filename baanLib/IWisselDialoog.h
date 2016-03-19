@@ -3,6 +3,14 @@
 #include <string>
 #include <vector>
 
+struct DraaiSchijfAansluiting
+{
+    int aansluitingNummer; // [0..47]
+    int blok; //-1 voor blok wat onder de draaischijf zit [-1..1024]
+    bool gndFirst;
+    bool richtingVooruit;
+};
+
 class IWisselDialoog
 {
 public:
@@ -58,6 +66,10 @@ public:
     virtual void  SetMaxSnelheid(int index, int snelheid) = 0;
     virtual int   GetMaxSnelheid(int index) = 0;
     virtual void  SetMaxSnelheidToolTip(int index, const std::string& tooltip) = 0;
+
+    // draaischijf spul
+    virtual void SetDraaiAansluitingen(std::vector<DraaiSchijfAansluiting> aansluitingen) = 0;
+    virtual std::vector<DraaiSchijfAansluiting> GetDraaiAansluitingen() = 0;
 
 };
 

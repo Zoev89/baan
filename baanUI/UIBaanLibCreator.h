@@ -12,7 +12,7 @@
 #include "QtWisselDialoog.h"
 #include "UILampInstDialoog.h"
 #include "QtKopRichtingDialoog.h"
-#include "UINieuwIODialoog.h"
+#include "QtNieuwIODialoog.h"
 #include "UIAddBlokDialoog.h"
 #include "UIRegelaarInstellingenDialoog.h"
 #include "UIRegelaarViewUpdates.h"
@@ -30,7 +30,7 @@ public:
     QtWisselDialoog wisselDialoog;
     UILampInstDialoog lampInstDialoog;
     QtKopRichtingDialoog kopRichtingDialoog;
-    UINieuwIODialoog nieuwIODialoog;
+    QtNieuwIODialoog nieuwIODialoog;
     UIAddBlokDialoog addBlok;
     std::unique_ptr<UIRegelaarViewUpdates> regelaarViewUpdates;
     UIRegelaarInstellingenDialoog regelaarInstellingenDialoog;

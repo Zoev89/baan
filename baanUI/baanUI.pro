@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     UIMainWindowDrawing.cpp \
     UITreinenDialoog.cpp \
     UILampInstDialoog.cpp \
-    UINieuwIODialoog.cpp \
     UIRegelaarViewUpdates.cpp \
     UIRegelaarInstellingenDialoog.cpp \
     UIBaanLibCreator.cpp \
@@ -32,7 +31,9 @@ SOURCES += main.cpp\
     UIRegelaar.cpp \
     QtKopRichtingDialoog.cpp \
     QtBlokInstDialoog.cpp \
-    QtWisselDialoog.cpp
+    QtWisselDialoog.cpp \
+    QtDraaiAansluiting.cpp \
+    QtNieuwIODialoog.cpp
 
 HEADERS  += mainwindow.h \
     UIAddBlokDialoog.h \
@@ -41,7 +42,6 @@ HEADERS  += mainwindow.h \
     UIMainWindowDrawing.h \
     UITreinenDialoog.h \
     UILampInstDialoog.h \
-    UINieuwIODialoog.h \
     UIRegelaarViewUpdates.h \
     UIRegelaarInstellingenDialoog.h \
     UIBaanLibCreator.h \
@@ -50,13 +50,17 @@ HEADERS  += mainwindow.h \
     UIRegelaar.h \
     QtKopRichtingDialoog.h \
     QtBlokInstDialoog.h \
-    QtWisselDialoog.h
+    QtWisselDialoog.h \
+    QtDraaiAansluiting.h \
+    QtNieuwIODialoog.h
 
 FORMS    += mainwindow.ui \
     UIRegelaar.ui \
     QtKopRichtingDialoog.ui \
     QtBlokInstDialoog.ui \
-    QtWisselDialoog.ui
+    QtWisselDialoog.ui \
+    QtDraaiAansluiting.ui \
+    QtNieuwIODialoog.ui
 
 # Specify that we depend on the library (which, logically would be implicit from
 # the fact that we are linking to it)

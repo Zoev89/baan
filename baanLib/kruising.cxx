@@ -340,10 +340,11 @@ void Kruising::Display()
 
 }
 
-void Kruising::String (char *string)
+std::string Kruising::String ()
 {
     char sString[20];
     char bString[20];
+    char string[200];
 
     mBlok.BlokNaam (sString, StopBlokPointer[0].pVolgendBlok);
     mBlok.BlokNaam (bString, pBlok1);
@@ -359,7 +360,7 @@ void Kruising::String (char *string)
              Coord3Y,
              Coord4X,
              Coord4Y, &bString[1], sString);
-
+    return string;
 }
 
 

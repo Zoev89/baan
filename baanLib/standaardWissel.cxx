@@ -466,10 +466,11 @@ int StandaardWissel::WisselNummer()
     return 0;
 }
 
-void StandaardWissel::String (char *string)
+std::string StandaardWissel::String ()
 {
     char sString[20];
     char bString[20];
+    char string[200];
 
     if (Richting)
     {
@@ -496,6 +497,7 @@ void StandaardWissel::String (char *string)
             Lengte12,
             Lengte13,
             MaxSnelheid12, MaxSnelheid13);
+    return string;
 }
 
 void StandaardWissel::NieuwXY (int selectionX,

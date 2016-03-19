@@ -120,11 +120,6 @@ typedef struct
 } GeefVrijAanvraag_t;
 
 
-struct DraaiSchijfAansluiting
-{
-    bool groundFirst;
-};
-
 typedef struct
 {
   SeinState_t SeinState;

@@ -34,7 +34,7 @@ public:
     virtual void ZoekOngeinitializeerdeEindBlokken(int WisselNummer)=0;
     virtual void Display (int WisselNummer, bool updateBitmap) = 0;
     virtual int Aanvraag (IOAanvraag_t * aanvraag)=0;
-    virtual void String(int WisselNummer, char *string)=0;
+    virtual std::string String(int WisselNummer)=0;
     virtual void NieuwXY (int WisselNummer,int selectionX, int selectionY, int deltaX, int deltaY)=0;
     virtual bool InitDialoog (int WisselNummer)=0;
     virtual void DialoogOk (int WisselNummer)=0;

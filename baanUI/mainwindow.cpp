@@ -74,3 +74,8 @@ void MainWindow::on_actionTd_Dump_triggered()
 {
     mBaanCreator->mBaanLib->TdDump();
 }
+
+void MainWindow::on_actionNieuw_IO_triggered()
+{
+    mBaanCreator->mBaanLib->BaanDocNieuwIo();
+}

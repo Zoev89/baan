@@ -58,6 +58,8 @@ public:
     MOCK_METHOD1(GetMaxSnelheid, int(int));
     MOCK_METHOD2(SetMaxSnelheidToolTip, void(int, const std::string&));
 
+    MOCK_METHOD1(SetDraaiAansluitingen, void(std::vector<DraaiSchijfAansluiting>));
+    MOCK_METHOD0(GetDraaiAansluitingen, std::vector<DraaiSchijfAansluiting>());
 };
 
 #endif // IWISSELDIALOOGMOCK_H

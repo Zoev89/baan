@@ -202,10 +202,11 @@ void Ontkoppelaar::TestIOTimer()
     }
 }
 
-void Ontkoppelaar::String (char *string)
+std::string Ontkoppelaar::String ()
 {
+    char string[200];
 
-  sprintf (string, "%d %7.2f %4d %4d %4d %4d %4d %4d %4d %4d %4d",
+    sprintf (string, "%d %7.2f %4d %4d %4d %4d %4d %4d %4d %4d %4d",
            Type,
            WisselAdres(),
            Tijd,
@@ -217,6 +218,7 @@ void Ontkoppelaar::String (char *string)
            ActiefY1,
            ActiefX2, ActiefY2);
 
+    return string;
 
 }
 

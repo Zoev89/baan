@@ -27,7 +27,7 @@ public:
     virtual void ZoekOngeinitializeerdeEindBlokken(int WisselNummer) override;
     virtual void Display (int WisselNummer, bool bitmap) override;
     virtual int Aanvraag (IOAanvraag_t * aanvraag) override;
-    virtual void String(int WisselNummer, char *string) override;
+    virtual std::string String(int WisselNummer) override;
     virtual void NieuwXY (int WisselNummer,int selectionX, int selectionY, int deltaX, int deltaY) override;
     virtual bool InitDialoog (int WisselNummer) override;
     virtual void DialoogOk (int WisselNummer) override;

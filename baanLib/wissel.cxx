@@ -283,14 +283,10 @@ BlokPointer_t * Wissels::wisselKrijgPointer (int BlokType, float adres)
     return pBlok;
 }
 
-void Wissels::String (int WisselNummer, char *string)
+std::string Wissels::String (int WisselNummer)
 {
-    // default initializatie op niets.
-
-    sprintf (string, "Onbekend wissel %d\n", WisselNummer);
-
-    mBaanInfo->IOBits[WisselNummer].get()->
-            String (string);
+    return mBaanInfo->IOBits[WisselNummer].get()->
+            String ();
 }
 
 void Wissels::NieuwXY (int WisselNummer, int selectionX,

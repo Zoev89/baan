@@ -11,6 +11,7 @@
 #include "IBaanMessage.h"
 #include "IWisselDialoog.h"
 #include "Dispatcher.h"
+#include <boost/optional.hpp>
 
 class DraaiSchijf: public IOBits_t
 {
@@ -23,7 +24,7 @@ public:
     virtual void ZoekOngeinitializeerdeEindBlokken() override;
     virtual void Display () override;
     virtual int Aanvraag (int stand) override;
-    virtual void String(char *string) override;
+    virtual std::string String() override;
     virtual void NieuwXY (int selectionX, int selectionY, int deltaX, int deltaY) override;
     virtual void InitDialoog () override;
     virtual void DialoogOk () override;
@@ -47,7 +48,7 @@ private:
     IWissels& mWissels;
     IBaanMessage& mBaanMessage;
     IMainWindowDrawing& mMainWindowDrawing;
-    IWisselDialoog& mStandaardWisselDialoog;
+    IWisselDialoog& mDraaiWisselDialoog;
     BaanInfo_t* mBaanInfo;
     Dispatcher mWorker;
     int Coord1X;
@@ -59,7 +60,7 @@ private:
     bool AndereKant; // de andere kant word gebruikt
 
     // middelpunt is het middelpunt van de rect
-    std::vector<DraaiSchijfAansluiting> aansluiting;
+    std::array<boost::optional<DraaiSchijfAansluiting>, 48> m_aansluitingen;
 
     BlokPointer_t *pBlok1;	/* altijd een baan blok */
 

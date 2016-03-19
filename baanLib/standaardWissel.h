@@ -23,7 +23,7 @@ public:
     virtual void ZoekOngeinitializeerdeEindBlokken() override;
     virtual void Display () override;
     virtual int Aanvraag (int stand) override;
-    virtual void String(char *string) override;
+    virtual std::string String() override;
     virtual void NieuwXY (int selectionX, int selectionY, int deltaX, int deltaY) override;
     virtual void InitDialoog () override;
     virtual void DialoogOk () override;

@@ -283,8 +283,9 @@ void Lamp::TestIOTimer ()
     }
 }
 
-void Lamp::String (char *string)
+std::string Lamp::String ()
 {
+    char string[200];
     sprintf (string, "%d %7.2f %5d %5d %5d %5d %5d %4d %4d %4d %4d", Type, WisselAdres(), hwAan,    // niet gebruikt alleen belanrijk voor de microcontroller
              hwTot, // niet gebruikt alleen belanrijk voor de microcontroller
              hwType,        // niet gebruikt alleen belanrijk voor de microcontroller
@@ -292,6 +293,7 @@ void Lamp::String (char *string)
              UitTijd,
              rec.x (),
              rec.y (), rec.w (), rec.h ());
+    return string;
 }
 
 

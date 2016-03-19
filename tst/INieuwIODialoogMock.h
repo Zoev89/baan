@@ -13,6 +13,5 @@ public:
     MOCK_METHOD1(SetTypeIndex, void(int));
     MOCK_METHOD0(GetTypeIndex, int());
     MOCK_METHOD1(SetTypeLabels, void(std::vector<std::string> ));
-    MOCK_METHOD0(GetTypeLabels, std::vector<std::string> ());
 };
 #endif // INIEUWIODIALOOGMOCK_H

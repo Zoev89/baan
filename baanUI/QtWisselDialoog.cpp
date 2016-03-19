@@ -2,6 +2,8 @@
 #include "ui_QtWisselDialoog.h"
 #include <sstream>
 #include <iomanip>
+#include <QtDraaiAansluiting.h>
+#include <QHeaderView>
 
 QtWisselDialoog::QtWisselDialoog(QWidget *parent) :
     QDialog(parent)
@@ -34,7 +36,14 @@ QtWisselDialoog::QtWisselDialoog(QWidget *parent) :
     ui->uitTijd->setValidator(m_intValidator);
     ui->hoogte->setValidator(m_intValidator);
     ui->breedte->setValidator(m_intValidator);
+    ui->draaiAansluiting->setColumnCount(4);
 
+    QStringList horzHeaders;
+    horzHeaders << "aansl" << "gndFirst" << "blok" << "V/T";
+    ui->draaiAansluiting->setHorizontalHeaderLabels( horzHeaders );
+    ui->draaiAansluiting->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->draaiAansluiting->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->draaiAansluiting->setSelectionBehavior(QAbstractItemView::SelectRows);
     ClearAllFields();
 }
 
@@ -62,6 +71,9 @@ void QtWisselDialoog::ClearAllFields()
     m_breedte = 0;
     m_breedteToolTip.clear();
     ui->type->clear();
+    m_draaiAansluitingen.clear();
+    m_draaiSchijf = true;
+    ui->draaiAansluiting->setRowCount(0);
     for(int i=0; i<editFields; ++i)
     {
         m_aansluiting[i] = boost::none;
@@ -105,6 +117,16 @@ bool QtWisselDialoog::RunDialogOk()
         ui->breedte->setText(std::to_string(m_breedte).c_str());
         ui->breedte->setToolTip(m_breedteToolTip.c_str());
 
+    }
+    else if (m_draaiSchijf)
+    {
+        ui->stack->setCurrentIndex(2);
+        for (int cellIndex=0;cellIndex < static_cast<int>(m_draaiAansluitingen.size()); ++cellIndex)
+        {
+            ui->draaiAansluiting->rowCount();
+            ui->draaiAansluiting->insertRow( ui->draaiAansluiting->rowCount() );
+            UpdateTable(cellIndex);
+        }
     }
     else
     {
@@ -312,6 +334,7 @@ void QtWisselDialoog::SetBreedteToolTip(const std::string &tooltip)
 
 void QtWisselDialoog::SetAansluiting(int index, const std::string &aansluiting)
 {
+    m_draaiSchijf = false;
     m_aansluiting[index] = aansluiting;
 }
 
@@ -357,3 +380,65 @@ void QtWisselDialoog::SetMaxSnelheidToolTip(int index, const std::string &toolti
     m_maxSnelheidToolTip[index] = tooltip;
 }
 
+void QtWisselDialoog::SetDraaiAansluitingen(std::vector<DraaiSchijfAansluiting> aansluitingen)
+{
+    m_draaiAansluitingen = aansluitingen;
+}
+
+std::vector<DraaiSchijfAansluiting> QtWisselDialoog::GetDraaiAansluitingen()
+{
+    return m_draaiAansluitingen;
+}
+
+void QtWisselDialoog::on_Add_clicked()
+{
+    QtDraaiAansluiting aansluiting(this);
+    DraaiSchijfAansluiting waardes={0,-1,true,true};
+    aansluiting.SetValues(waardes);
+    auto dialogRet = aansluiting.exec();
+    if (dialogRet==QDialog::Accepted)
+    {
+        waardes = aansluiting.GetValues();
+        int cellIndex = ui->draaiAansluiting->rowCount();
+        ui->draaiAansluiting->insertRow( ui->draaiAansluiting->rowCount() );
+        m_draaiAansluitingen.emplace_back(waardes);
+        UpdateTable(cellIndex);
+    }
+}
+
+void QtWisselDialoog::UpdateTable(int cellIndex)
+{
+    auto waardes=m_draaiAansluitingen[cellIndex];
+    ui->draaiAansluiting->setItem(cellIndex, 0, new QTableWidgetItem(QString("%1").arg(waardes.aansluitingNummer)));
+    ui->draaiAansluiting->setItem(cellIndex, 1, new QTableWidgetItem(QString("%1").arg((waardes.gndFirst)? 'J' : 'N')));
+    ui->draaiAansluiting->setItem(cellIndex, 2, new QTableWidgetItem(QString("%1").arg(waardes.blok)));
+    ui->draaiAansluiting->setItem(cellIndex, 3, new QTableWidgetItem(QString("%1").arg((waardes.richtingVooruit)? 'V' : 'T')));
+}
+
+void QtWisselDialoog::on_Edit_clicked()
+{
+    if (!ui->draaiAansluiting->selectedRanges().empty())
+    {
+        QtDraaiAansluiting aansluiting(this);
+        auto cellIndex = ui->draaiAansluiting->currentRow();
+        std::cout << cellIndex << std::endl;
+        aansluiting.SetValues(m_draaiAansluitingen[cellIndex]);
+        auto dialogRet = aansluiting.exec();
+        if (dialogRet==QDialog::Accepted)
+        {
+            m_draaiAansluitingen[cellIndex] = aansluiting.GetValues();
+            UpdateTable(cellIndex);
+        }
+
+    }
+}
+
+void QtWisselDialoog::on_Delete_clicked()
+{
+    if (!ui->draaiAansluiting->selectedRanges().empty())
+    {
+        auto cellIndex = ui->draaiAansluiting->currentRow();
+        m_draaiAansluitingen.erase(std::next(m_draaiAansluitingen.begin(), cellIndex));
+        ui->draaiAansluiting->removeRow(cellIndex);
+    }
+}

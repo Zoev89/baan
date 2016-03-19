@@ -608,10 +608,11 @@ int EngelseWissel::WisselNummer()
 }
 
 
-void EngelseWissel::String (char *string)
+std::string EngelseWissel::String ()
 {
     char sString[20];
     char bString[20];
+    char string[200];
 
     mBlok.BlokNaam (sString, StopBlokPointer[0].pVolgendBlok);
     mBlok.BlokNaam (bString, pBlok1);
@@ -637,6 +638,7 @@ void EngelseWissel::String (char *string)
             Lengte42,
             Lengte43,
             MaxSnelheid13, MaxSnelheid12);
+    return string;
 
 }
 

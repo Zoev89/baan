@@ -41,12 +41,12 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , mWissels(wissels)
     , mBaanMessage(baanMessage)
     , mMainWindowDrawing(mainWindowDrawing)
-    , mStandaardWisselDialoog(standaardWisselDialoog)
+    , mDraaiWisselDialoog(standaardWisselDialoog)
     , mBaanInfo(baanInfo)
     , NieuweStand(100)
+    , OffsetAngle(0)
     , StartDrag(false)
     , AndereKant(false)
-    , OffsetAngle(0)
 {
     routeKnoopPunt.resize(3);
     pBlok1 = &mBaanInfo->BlokPointer[kopBlok];
@@ -122,7 +122,7 @@ void DraaiSchijf::TestIOTimer ()
 
 float DraaiSchijf::GetAdres()
 {
-    return mStandaardWisselDialoog.GetAdres();
+    return mDraaiWisselDialoog.GetAdres();
 }
 
 void DraaiSchijf::UpdateRec ()
@@ -137,21 +137,46 @@ void DraaiSchijf::UpdateRec ()
 int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInput)
 {
     float floatAdres;
+    int aantal;
 
     /* Lees alle velden in */
-    if (sscanf (Input, "%d%f%d%d%d%d",
+    if (sscanf (Input, "%d%f%d%d%d%d%d",
                 &Type,
                 &floatAdres,
                 &Coord1X,
                 &Coord1Y,
                 &Radius,
-                &OffsetAngle
-                ) != 6)
+                &OffsetAngle,
+                &aantal
+                ) != 7)
         return WISSEL_ERR_NIET_ALLES_AANWEZIG;
     hardwareAdres = (int)floatAdres;
     hardwareBit = 0;
     NieuweStand = Stand = 100;
     hardwareReturnWaarde = 0;
+    for (int i=0;i<aantal;++i)
+    {
+        auto string = extraInput();
+        DraaiSchijfAansluiting aansturing;
+        int gnd,vt;
+        if (sscanf (string.c_str(), "%d%d%d%d",
+                    &aansturing.aansluitingNummer,
+                    &gnd,
+                    &aansturing.blok,
+                    &vt) != 4)
+            return WISSEL_ERR_NIET_ALLES_AANWEZIG;
+        aansturing.gndFirst = (gnd == 0) ? false: true;
+        aansturing.richtingVooruit = (vt == 0) ? false: true;
+        if ((aansturing.aansluitingNummer < 0) || (aansturing.aansluitingNummer >= 48))
+        {
+            mMessage.message(str(boost::format
+                                 ("Foutief aansluiting nummer at %d voor draaischijf %d string %s") %
+                                 EricFgetsGetLastLineCount ()% hardwareAdres%
+                                  string.c_str()));
+            return WISSEL_ERR_MESSAGE_AL_GEGEVEN;
+         }
+         m_aansluitingen[aansturing.aansluitingNummer] = aansturing;
+    }
 
     UpdateRec();
     if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
@@ -381,31 +406,41 @@ int DraaiSchijf::Aanvraag (int stand)
 }
 
 
-void DraaiSchijf::String (char *string)
+std::string DraaiSchijf::String ()
 {
-    char sString[20];
-    char bString[20];
+    char string[200];
+    std::string ret;
 
+    std::vector<DraaiSchijfAansluiting> aansluitingen;
+    for(auto i :m_aansluitingen )
+    {
+        if (i)
+        {
+            aansluitingen.emplace_back(*i);
+        }
+    }
 
-//    if (Richting)
-//    {
-//        // richting terug
-//        strcpy (sString, "B-1");
-//    }
-//    else
-//    {
-//        mBlok.BlokNaam (sString, StopBlokPointer[0].pVolgendBlok);
-//    }
-//    mBlok.BlokNaam (bString, pBlok1);
-
-    sprintf (string, "%d %7.2f %4d %4d %4d %4d",
+    sprintf (string, "%d %7.2f %4d %4d %4d %4d %4d",
              Type,
              WisselAdres(),
              Coord1X,
              Coord1Y,
              Radius,
-             OffsetAngle
+             OffsetAngle,
+             static_cast<int>(aansluitingen.size())
              );
+    ret = string;
+    for (size_t i=0;i<aansluitingen.size();++i)
+    {
+        sprintf (string, "\n%4d %4d %4d %4d"
+                 ,aansluitingen[i].aansluitingNummer
+                 ,aansluitingen[i].gndFirst
+                 ,aansluitingen[i].blok
+                 ,aansluitingen[i].richtingVooruit);
+        ret += string;
+    }
+    return ret;
+
 }
 
 void DraaiSchijf::NieuwXY (int selectionX,
@@ -490,21 +525,20 @@ void DraaiSchijf::InitDialoog ()
 {
     char string[20];
 
-    mStandaardWisselDialoog.SetUitleg(
-                "12 is de rechte kant en 13 is buigend.\n"
-                "Een gebogen wissel 12 is de grote bocht en 13 is\n"
-                "de krappe bocht.\n"
-                "Een wissel kan op twee manieren liggen namelijk:\n"
-                "  Voorwaards         Achterwaards\n"
-                "       /----2--    --3----\n"
-                " -1---/                   /---1-\n"
-                "        ----3--    --2----/\n"
-                "Een voorwaardse wissel 3 is het volgende blok/wissel.\n"
-                "Een achterwaardse wissel 3 is B-1 deze wordt dan door\n"
-                "een andere wissel of baanvak ingevult (Wxxxx.yy)\n"
-                "Bij een negatieve lengte wordt de lengte van het\n"
+    mDraaiWisselDialoog.SetUitleg(
+                "DRAAISCHIJF.\n"
                 "blok genomen\n");
-    mStandaardWisselDialoog.SetAdres(WisselAdres());
+    std::vector<DraaiSchijfAansluiting> aansluitingen;
+    for(auto i :m_aansluitingen )
+    {
+        if (i)
+        {
+            aansluitingen.emplace_back(*i);
+        }
+    }
+    mDraaiWisselDialoog.SetAdres(WisselAdres());
+
+    mDraaiWisselDialoog.SetDraaiAansluitingen(aansluitingen);
 
     //mBlok.BlokNaam (string, StopBlokPointer[0].blokRicht[0]);
     /*
@@ -527,6 +561,17 @@ void DraaiSchijf::DialoogOk ()
     char blokType[2];
     float adres;
     int richting;
+
+    hardwareAdres = static_cast<int>(mDraaiWisselDialoog.GetAdres());
+    auto aansluitingen = mDraaiWisselDialoog.GetDraaiAansluitingen();
+    for(auto i :m_aansluitingen )
+    {
+        i = boost::none;
+    }
+    for(auto i:aansluitingen)
+    {
+        m_aansluitingen[i.aansluitingNummer] = i;
+    }
 
 /*
     Lengte12 = mStandaardWisselDialoog.GetLengte12();

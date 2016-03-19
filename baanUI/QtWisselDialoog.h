@@ -68,8 +68,20 @@ public:
     virtual int   GetMaxSnelheid(int index) override;
     virtual void  SetMaxSnelheidToolTip(int index, const std::string& tooltip) override;
 
+    virtual void SetDraaiAansluitingen(std::vector<DraaiSchijfAansluiting> aansluitingen) override;
+    virtual std::vector<DraaiSchijfAansluiting> GetDraaiAansluitingen() override;
+
+private slots:
+    void on_Add_clicked();
+
+    void on_Edit_clicked();
+
+    void on_Delete_clicked();
 
 private:
+    void UpdateTable(int cellIndex);
+
+
     Ui::QtWisselDialoog *ui;
 
     std::string m_uitleg;
@@ -100,6 +112,8 @@ private:
     std::array<QLineEdit *,editFields> m_editMaxSnelheid;
     QValidator *m_adresValidator;
     QValidator *m_intValidator;
+    std::vector<DraaiSchijfAansluiting> m_draaiAansluitingen;
+    bool m_draaiSchijf;
 
 };
 

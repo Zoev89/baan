@@ -18,7 +18,6 @@ public:
     virtual void  SetTypeIndex(int index) = 0;
     virtual int   GetTypeIndex() = 0;
     virtual void  SetTypeLabels(std::vector<std::string> labels) = 0;
-    virtual std::vector<std::string> GetTypeLabels() = 0;
 };
 
 

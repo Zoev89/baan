@@ -64,7 +64,7 @@ int IOBits_t::Aanvraag (int )
     return 0;
 }
 
-void IOBits_t::String(char *)
+std::string IOBits_t::String()
 {
 
 }

@@ -608,11 +608,12 @@ int DriewegWissel::WisselNummer()
 }
 
 
-void DriewegWissel::String (char *string)
+std::string DriewegWissel::String ()
 {
     char s1String[20];
     char s2String[20];
     char bString[20];
+    char string[200];
 
     if (Richting)
     {
@@ -647,6 +648,7 @@ void DriewegWissel::String (char *string)
             Lengte14,
             MaxSnelheid12,
             MaxSnelheid13, MaxSnelheid14);
+    return string;
 
 }
 
