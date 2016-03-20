@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "INieuwIODialoog.h"
+#include "QValidator"
 
 namespace Ui {
 class QtNieuwIODialoog;
@@ -29,6 +30,12 @@ public:
 
 private:
     Ui::QtNieuwIODialoog *ui;
+    QValidator *m_adresValidator;
+    QValidator *m_blokValidator;
+    float m_adres;
+    int m_kopBlok;
+    int m_typeIndex;
+
 };
 
 #endif // QTNIEUWIODIALOOG_H

@@ -68,6 +68,10 @@ public:
     virtual int   GetMaxSnelheid(int index) override;
     virtual void  SetMaxSnelheidToolTip(int index, const std::string& tooltip) override;
 
+    virtual void  SetAngle(int angle) override;
+    virtual int   GetAngle() override;
+    virtual void  SetAngleToolTip(const std::string& tooltip) override;
+
     virtual void SetDraaiAansluitingen(std::vector<DraaiSchijfAansluiting> aansluitingen) override;
     virtual std::vector<DraaiSchijfAansluiting> GetDraaiAansluitingen() override;
 
@@ -113,6 +117,8 @@ private:
     QValidator *m_adresValidator;
     QValidator *m_intValidator;
     std::vector<DraaiSchijfAansluiting> m_draaiAansluitingen;
+    int m_angle;
+    std::string m_angleToolTip;
     bool m_draaiSchijf;
 
 };

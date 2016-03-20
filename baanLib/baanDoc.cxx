@@ -718,7 +718,7 @@ BaanDoc::baanDocParseBlkFile (FILE * file)
             if (mBaanInfo->BlokPointer[x].BlokIONummer != -1)
             {
                 // blok is gebruikt
-                if (mBaanInfo->BlokPointer[x].BlokIONummer == hardwareAdres)
+                if ((mBaanInfo->BlokPointer[x].BlokIONummer == hardwareAdres) && (type != DRAAISCHIJF)) // draaischijf neemt een blok over
                 {
                     mMessage.message
                             (str(boost::format("Regel %d: IO adres %d is al een belegd!\n%s") %

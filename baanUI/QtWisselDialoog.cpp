@@ -72,6 +72,8 @@ void QtWisselDialoog::ClearAllFields()
     m_breedteToolTip.clear();
     ui->type->clear();
     m_draaiAansluitingen.clear();
+    m_angle = 0;
+    m_angleToolTip.clear();
     m_draaiSchijf = true;
     ui->draaiAansluiting->setRowCount(0);
     for(int i=0; i<editFields; ++i)
@@ -120,7 +122,9 @@ bool QtWisselDialoog::RunDialogOk()
     }
     else if (m_draaiSchijf)
     {
-        ui->stack->setCurrentIndex(2);
+        ui->stack->setCurrentIndex(2); // selecteer de draaischijf knoppen
+        ui->Angle->setText(std::to_string(m_angle).c_str());
+        ui->Angle->setToolTip(m_angleToolTip.c_str());
         for (int cellIndex=0;cellIndex < static_cast<int>(m_draaiAansluitingen.size()); ++cellIndex)
         {
             ui->draaiAansluiting->rowCount();
@@ -165,6 +169,10 @@ bool QtWisselDialoog::RunDialogOk()
 
             m_hoogte = std::stoi(ui->hoogte->text().toStdString());
             m_breedte = std::stoi(ui->breedte->text().toStdString());
+        }
+        else if (m_draaiSchijf)
+        {
+            m_angle = std::stoi(ui->Angle->text().toStdString());
         }
         else
         {
@@ -358,7 +366,6 @@ int QtWisselDialoog::GetLengte(int index)
     return m_lengte[index].get();
 }
 
-
 void QtWisselDialoog::SetLengteToolTip(int index, const std::string &tooltip)
 {
     m_lengteToolTip[index] = tooltip;
@@ -389,6 +396,23 @@ std::vector<DraaiSchijfAansluiting> QtWisselDialoog::GetDraaiAansluitingen()
 {
     return m_draaiAansluitingen;
 }
+
+void QtWisselDialoog::SetAngle(int angle)
+{
+    m_angle = angle;
+}
+
+int QtWisselDialoog::GetAngle()
+{
+    return m_angle;
+}
+
+void QtWisselDialoog::SetAngleToolTip(const std::string &tooltip)
+{
+    m_angleToolTip = tooltip;
+
+}
+
 
 void QtWisselDialoog::on_Add_clicked()
 {

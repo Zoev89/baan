@@ -60,6 +60,11 @@ public:
 
     MOCK_METHOD1(SetDraaiAansluitingen, void(std::vector<DraaiSchijfAansluiting>));
     MOCK_METHOD0(GetDraaiAansluitingen, std::vector<DraaiSchijfAansluiting>());
+
+    MOCK_METHOD1(SetAngle, void(int));
+    MOCK_METHOD0(GetAngle, int());
+    MOCK_METHOD1(SetAngleToolTip, void(const std::string&));
+
 };
 
 #endif // IWISSELDIALOOGMOCK_H

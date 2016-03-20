@@ -21,7 +21,7 @@
 
 #define IOAANVRAAG_REFRESH -1  // alleen intern gebruik
 #define IOAANVRAAG_DEFAULT -2
-#define IOAANVRAAG_TOGGLE 0x80000000  // x en y worden ook nog erin gecodeerd
+#define IOAANVRAAG_TOGGLE (int)0x80000000  // x en y worden ook nog erin gecodeerd
 #define IOGEWIJGERD 1
 #define IOTIMEOUT   2
 

@@ -43,8 +43,11 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , mMainWindowDrawing(mainWindowDrawing)
     , mDraaiWisselDialoog(standaardWisselDialoog)
     , mBaanInfo(baanInfo)
-    , NieuweStand(100)
+    , Coord1X(30)
+    , Coord1Y(30)
+    , Radius(20)
     , OffsetAngle(0)
+    , NieuweStand(100)
     , StartDrag(false)
     , AndereKant(false)
 {
@@ -167,6 +170,9 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
             return WISSEL_ERR_NIET_ALLES_AANWEZIG;
         aansturing.gndFirst = (gnd == 0) ? false: true;
         aansturing.richtingVooruit = (vt == 0) ? false: true;
+        auto err = checkAansluiting(aansturing);
+        if (err)
+            return err;
         if ((aansturing.aansluitingNummer < 0) || (aansturing.aansluitingNummer >= 48))
         {
             mMessage.message(str(boost::format
@@ -174,8 +180,25 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
                                  EricFgetsGetLastLineCount ()% hardwareAdres%
                                   string.c_str()));
             return WISSEL_ERR_MESSAGE_AL_GEGEVEN;
-         }
-         m_aansluitingen[aansturing.aansluitingNummer] = aansturing;
+        }
+        // check  of the baanblok aan die kant vrij is
+        if (mBlok.BlokIsBlokNummer(aansturing.blok)==0)
+        {
+            mMessage.message(str(boost::format
+                                 ("Foutief blok nummer at %d voor draaischijf %d blok nummer %d") %
+                                 EricFgetsGetLastLineCount ()% hardwareAdres%
+                                  aansturing.blok));
+            return WISSEL_ERR_INVALID_ADRES;
+        }
+        if (mBaanInfo->BlokPointer[aansturing.blok].blokRicht[aansturing.richtingVooruit] != &mBaanInfo->EindBlokPointer)
+        {
+            mMessage.message(str(boost::format
+                                 ("Blok niet vrij %d at %d voor draaischijf %d") %
+                                 aansturing.blok % EricFgetsGetLastLineCount ()% hardwareAdres));
+            return WISSEL_ERR_INVALID_ADRES;
+        }
+
+        m_aansluitingen[aansturing.aansluitingNummer] = aansturing;
     }
 
     UpdateRec();
@@ -183,16 +206,47 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     {
         return WISSEL_ERR_INVALID_ADRES;
     }
-/*    if (mBaanInfo->BlokPointer[Blok1].BlokIONummer == -1)
+
+    if (mBaanInfo->BlokPointer[hardwareAdres].BlokIONummer == -1)
     {
-        return WISSEL_ERR_INVALID_ADRES;
-    }*/
+        // blok nog niet belegd door de draaischijf creer die
+        mBaanInfo->BlokPointer[hardwareAdres].BlokIONummer = hardwareAdres;
+        mBaanInfo->AantalBlokken += 1;
+    }
 
     pBlok1 = &mBaanInfo->BlokPointer[hardwareAdres];
 
     return 0;
 }
 
+
+int DraaiSchijf::checkAansluiting(const DraaiSchijfAansluiting& aansturing)
+{
+    if ((aansturing.aansluitingNummer < 0) || (aansturing.aansluitingNummer >= 48))
+    {
+        mMessage.message(str(boost::format
+                             ("Foutief aansluiting nummer %d at %d voor draaischijf %d") %
+                             aansturing.aansluitingNummer % EricFgetsGetLastLineCount ()% hardwareAdres));
+        return WISSEL_ERR_MESSAGE_AL_GEGEVEN;
+    }
+    // check  of the baanblok aan die kant vrij is
+    if (mBlok.BlokIsBlokNummer(aansturing.blok)==0)
+    {
+        mMessage.message(str(boost::format
+                             ("Foutief blok nummer at %d voor draaischijf %d blok nummer %d") %
+                             EricFgetsGetLastLineCount ()% hardwareAdres%
+                              aansturing.blok));
+        return WISSEL_ERR_INVALID_ADRES;
+    }
+    if (mBaanInfo->BlokPointer[aansturing.blok].blokRicht[aansturing.richtingVooruit] != &mBaanInfo->EindBlokPointer)
+    {
+        mMessage.message(str(boost::format
+                             ("Blok niet vrij %d at %d voor draaischijf %d") %
+                             aansturing.blok % EricFgetsGetLastLineCount ()% hardwareAdres));
+        return WISSEL_ERR_INVALID_ADRES;
+    }
+    return 0;
+}
 
 void DraaiSchijf::InitRoutering ()
 {
@@ -284,7 +338,23 @@ void DraaiSchijf::WachtOp(int status)
 
 void DraaiSchijf::GaNaarPositie(int positie)
 {
-    std::cout <<  "Pos " << positie << std::endl;
+    std::cout <<  "from " << Stand<< " to Pos " << positie << std::endl;
+    // eerst de baan vakken omleggen
+    int stand = (Stand >=200) ? Stand-200: Stand - 100;
+    mBaanInfo->BlokPointer[hardwareAdres].blokRicht[0] = &mBaanInfo->EindBlokPointer;
+    mBaanInfo->BlokPointer[hardwareAdres].blokRicht[1] = &mBaanInfo->EindBlokPointer;
+    if (m_aansluitingen[stand])
+    {
+        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->EindBlokPointer;
+    }
+    stand = (positie >=200) ? positie-200: positie - 100;
+    if (m_aansluitingen[stand])
+    {
+        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[hardwareAdres];
+        mBaanInfo->BlokPointer[hardwareAdres].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok];
+    }
+
+
     mWorker.Dispatch([=]()
     {
         Bedien(hardwareAdres+2,GetStatus, true);
@@ -462,34 +532,6 @@ void DraaiSchijf::NieuwXY (int selectionX,
             }
 
         }
-//        int afstand1, afstand2, x, y;
-//        afstand1 = SQR (Coord1X - selectionX) +
-//                SQR (Coord1Y - selectionY);
-//        if (Stand == 12)
-//        {
-//            mBaanInfo->selectedWisselPoint = 2;
-//            x = Coord2X;
-//            y = Coord2Y;
-//        }
-//        else
-//        {
-//            mBaanInfo->selectedWisselPoint = 3;
-//            x = Coord3X;
-//            y = Coord3Y;
-//        }
-//        afstand2 = SQR (x - selectionX) + SQR (y - selectionY);
-//        if (afstand1 < afstand2)
-//        {
-//            afstand2 = afstand1;
-//            mBaanInfo->selectedWisselPoint = 1;
-//        }
-//        x = rec.center_x ();
-//        y = rec.center_y ();
-//        afstand1 = SQR (x - selectionX) + SQR (y - selectionY);
-//        if (afstand1 < afstand2)
-//        {
-//            mBaanInfo->selectedWisselPoint = 4;
-//        }
 
     }
 
@@ -502,18 +544,6 @@ void DraaiSchijf::NieuwXY (int selectionX,
     case 2:
         Radius += (deltaX+deltaY)/2;
         break;
-//    case 3:
-//        Coord3X += deltaX;
-//        Coord3Y += deltaY;
-//        break;
-//    case 4:
-//        Coord1X += deltaX;
-//        Coord1Y += deltaY;
-//        Coord2X += deltaX;
-//        Coord2Y += deltaY;
-//        Coord3X += deltaX;
-//        Coord3Y += deltaY;
-//        break;
     }
     mMainWindowDrawing.RedrawRec(rec.x(), rec.y(), rec.w(), rec.h());
     UpdateRec ();
@@ -523,12 +553,12 @@ void DraaiSchijf::NieuwXY (int selectionX,
 
 void DraaiSchijf::InitDialoog ()
 {
-    char string[20];
-
     mDraaiWisselDialoog.SetUitleg(
                 "DRAAISCHIJF.\n"
                 "blok genomen\n");
     std::vector<DraaiSchijfAansluiting> aansluitingen;
+    mDraaiWisselDialoog.SetAngle(OffsetAngle);
+    mDraaiWisselDialoog.SetAngleToolTip("Offset hoek vanaf de default plek in graden");
     for(auto i :m_aansluitingen )
     {
         if (i)
@@ -539,94 +569,23 @@ void DraaiSchijf::InitDialoog ()
     mDraaiWisselDialoog.SetAdres(WisselAdres());
 
     mDraaiWisselDialoog.SetDraaiAansluitingen(aansluitingen);
-
-    //mBlok.BlokNaam (string, StopBlokPointer[0].blokRicht[0]);
-    /*
-    mStandaardWisselDialoog.SetAansluiting3(string);
-    mStandaardWisselDialoog.SetAansluiting3ToolTip("Gebruik de B/W/w notatie geef B-1 voor een wissel in tegen richting.");
-    mStandaardWisselDialoog.SetLengte12(Lengte12);
-    mStandaardWisselDialoog.SetLengte12ToolTip("De lengte in stand 12. Geef -1 als de lengte van blok 1 correct is.");
-    mStandaardWisselDialoog.SetLengte13(Lengte13);
-    mStandaardWisselDialoog.SetLengte13ToolTip("De lengte in stand 13. Geef -1 als de lengte van blok 1 correct is.");
-    mStandaardWisselDialoog.SetMaxSnelheid12(MaxSnelheid12);
-    mStandaardWisselDialoog.SetMaxSnelheid12ToolTip("Geef de snelheid limitatie voor 12 stand. Geef -1 voor geen limiet.");
-    mStandaardWisselDialoog.SetMaxSnelheid13(MaxSnelheid13);
-    mStandaardWisselDialoog.SetMaxSnelheid13ToolTip("Geef de snelheid limitatie voor 13 stand. Geef -1 voor geen limiet.");
-    */
 }
 
 void DraaiSchijf::DialoogOk ()
 {
-    BlokPointer_t *wisselBlok;
-    char blokType[2];
-    float adres;
-    int richting;
 
     hardwareAdres = static_cast<int>(mDraaiWisselDialoog.GetAdres());
     auto aansluitingen = mDraaiWisselDialoog.GetDraaiAansluitingen();
-    for(auto i :m_aansluitingen )
+    for(auto& i :m_aansluitingen )
     {
         i = boost::none;
     }
     for(auto i:aansluitingen)
     {
-        m_aansluitingen[i.aansluitingNummer] = i;
-    }
-
-/*
-    Lengte12 = mStandaardWisselDialoog.GetLengte12();
-    Lengte13 = mStandaardWisselDialoog.GetLengte13();
-    MaxSnelheid12 = mStandaardWisselDialoog.GetMaxSnelheid12();
-    MaxSnelheid13 = mStandaardWisselDialoog.GetMaxSnelheid13();
-
-
-    // volgend blok gewijzigd
-    if (sscanf
-            (mStandaardWisselDialoog.GetAansluiting3().c_str(), "%1s%f", blokType, &adres) == 2)
-    {
-        wisselBlok = mWissels.wisselKrijgPointer (blokType[0], adres);
-        if (wisselBlok == NULL)
+        if (checkAansluiting(i) == 0)
         {
-            mMessage.message(str(boost::format
-                                 ("Het volgend blok bestaat niet %s") %
-                                 mStandaardWisselDialoog.GetAansluiting3().c_str()));
-            // wijziging ongedaan gemaakt
-        }
-        else if (wisselBlok == pBlok1)
-        {
-            mMessage.message(str(boost::format
-                                 ("Het volgend blok %s is hetzelfde als het wissel blok wijzing niet gedaan")%
-                                 mStandaardWisselDialoog.GetAansluiting3().c_str()));
-        }
-        else
-        {
-            // wisselBlok wijst naar een blok
-            if (wisselBlok == &mBaanInfo->EindBlokPointer)
-            {
-                richting = 1;
-            }
-            else
-            {
-                richting = 0;
-            }
-            if ((richting != Richting) || (richting == 0))
-            {
-
-                mBlok.BlokEndPointDelete (&(StopBlokPointer[0]),
-                        Richting);
-
-                StopBlokPointer[0].blokRicht[richting] = wisselBlok;
-                mBlok.BlokEndPointInsert (&(StopBlokPointer[0]), richting);
-                Richting = richting;
-            }
-
+            m_aansluitingen[i.aansluitingNummer] = i;
         }
     }
-    else
-    {
-        mMessage.message(str(boost::format
-                             ("Blok %s op aansluiting 3 voldoet niet aan B/W/w notatie.") %
-                             mStandaardWisselDialoog.GetAansluiting3().c_str()));
-    }
-    */
+    OffsetAngle = mDraaiWisselDialoog.GetAngle();
 }

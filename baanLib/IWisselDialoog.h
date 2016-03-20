@@ -68,6 +68,9 @@ public:
     virtual void  SetMaxSnelheidToolTip(int index, const std::string& tooltip) = 0;
 
     // draaischijf spul
+    virtual void SetAngle(int angle) = 0;
+    virtual int  GetAngle() = 0;
+    virtual void SetAngleToolTip(const std::string& tooltip) = 0;
     virtual void SetDraaiAansluitingen(std::vector<DraaiSchijfAansluiting> aansluitingen) = 0;
     virtual std::vector<DraaiSchijfAansluiting> GetDraaiAansluitingen() = 0;
 

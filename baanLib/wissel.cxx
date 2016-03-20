@@ -428,13 +428,13 @@ void Wissels::WisselNieuw (float adres, int type, int kopBlok)
         {
         case ONTKOPPELAAR:
         case LAMP:
+        case DRAAISCHIJF:
             // hebben geen kopblok
             break;
         case STANDAARD_WISSEL:
         case KRUISING:
         case ENGELSE_WISSEL:
         case DRIEWEG_WISSEL:
-        case DRAAISCHIJF:
             if ((kopBlok <= 0) || (kopBlok >= MAX_NOBLOKS)
                     || (mBaanInfo->BlokPointer[kopBlok].BlokIONummer == -1))
             {
