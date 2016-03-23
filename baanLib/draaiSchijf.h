@@ -40,10 +40,11 @@ public:
 private:
     void UpdateRec ();
     void WachtOp(int status);
-    void GaNaarPositie(int positie) ;
+    bool GaNaarPositie(int positie) ;
     void Bedien (int adres, int data, bool returnGewenst=false);
     int WisselNummer();
     int checkAansluiting(const DraaiSchijfAansluiting& aansturing);
+    void DraaiSchijfBlokAangesproken();
 
     IMessage& mMessage;
     IBlok& mBlok;

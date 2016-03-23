@@ -1542,6 +1542,9 @@ void BaanWT::BaanSnelheidControl (void)
         BaanTestBelegCheckblok (Regelaar);
 
         pBlok = pInfo->RegelArray[Regelaar].pKopBlok;
+        if (pBlok->pBlok->specialProcessing)
+            pBlok->pBlok->specialProcessing();
+
         State = pBlok->pBlok->State;
         if (State == BLOK_VOORUIT)
             pKop = pBlok->pVolgendBlok;
@@ -1857,6 +1860,9 @@ void BaanWT::BaanDetection (hardwareCom_t * array)
             {
                 int Spanning;
 
+                if (pVolgBlok->pBlok->specialProcessing)
+                    pVolgBlok->pBlok->specialProcessing();
+
                 // Alleen als het volgende blok een dezelfde regelaar is
                 // Dan mogen we kijken naar de detector
                 Detect = 0;
@@ -2035,6 +2041,7 @@ void BaanWT::InitWorkThread (void)
         pInfo->BlokPointer[i].BlokIONummer = -1;  // ongebruikt blok
         pInfo->BlokPointer[i].BlokType = BAAN_BLOK;
         pInfo->Blok[i].State = BLOK_VRIJ;
+        pInfo->Blok[i].hostBlokNmr = 0;
         pInfo->Blok[i].Snelheid = 0;
         pInfo->Blok[i].MaxSnelheid = MAX_SNELHEID;
         pInfo->Blok[i].blokSein = GEEN_SEIN;
@@ -2065,6 +2072,7 @@ void BaanWT::InitWorkThread (void)
     pInfo->EindBlokPointer.BlokIONummer = -1;
     pInfo->EindBlokPointer.BlokType = STOP_BLOK;
     pInfo->EindBlok.State = BLOK_STOP;
+    pInfo->EindBlok.hostBlokNmr = 0;
     pInfo->EindBlok.Snelheid = 0;
     pInfo->EindBlok.MaxSnelheid = MAX_SNELHEID;
     pInfo->EindBlok.blokSein = GEEN_SEIN;

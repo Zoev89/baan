@@ -66,7 +66,7 @@ int IOBits_t::Aanvraag (int )
 
 std::string IOBits_t::String()
 {
-
+    return "";
 }
 
 void IOBits_t::NieuwXY (int , int , int , int )

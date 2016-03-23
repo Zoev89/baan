@@ -40,7 +40,7 @@ std::unique_ptr<T> make_unique( Args&& ...args )
 #define MAX_MICRO_MEM_ALLOCATION (MAX_AANTAL_REGELAARS + MAX_MICRO_MEM - MAX_ACTIVE_REGELAARS)
 
 
-#define MAX_NOBLOKS           310
+#define MAX_NOBLOKS           350
 
 // size of regelaar bitmap
 #define REGELBITMAP_X 38

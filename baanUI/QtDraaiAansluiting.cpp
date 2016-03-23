@@ -4,8 +4,8 @@
 QtDraaiAansluiting::QtDraaiAansluiting(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::QtDraaiAansluiting)
-    , m_blokValidator(new QIntValidator(-1, 1023, this))
     , m_aansluitingValidator(new QIntValidator(0, 47, this))
+    , m_blokValidator(new QIntValidator(-47, 1023, this))
 
 {
     ui->setupUi(this);

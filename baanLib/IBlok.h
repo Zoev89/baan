@@ -1,6 +1,7 @@
 #ifndef IBLOK_H
 #define IBLOK_H
 #include <string>
+#include <functional>
 
 // De volgoorde van de items in deze enum mag niet veranderd worden. Ik
 // gebruik dat voor de seinen.
@@ -34,6 +35,9 @@ enum BlokRichtingVoorkeur
 
 typedef struct Blok_t
 {
+  std::function<void(void)> specialProcessing; // call this function when the blok is used (draaischijf)
+  bool hostBlokNmr;  // word voor opstel sporen gebruikt die hun spanning van een ander blok lenen de return waarde van het host blok word overgenomen.
+
   int DetectorCount;		/* counter die aangeeft hoevaak een detect al is geweest */
 
   // de hardware status

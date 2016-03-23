@@ -31,6 +31,12 @@
 #include <boost/format.hpp>
 #include <cmath>
 
+#define Homing 60
+#define EnableMiddenDetectie 61
+#define GetStatus 63
+#define Turning 1
+#define NeedsHoming 0x4
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -77,12 +83,8 @@ int DraaiSchijf::WisselLengte(int , int )
     return 0;
 }
 
-void DraaiSchijf::VeranderBlok (BlokPointer_t * oudBlok, BlokPointer_t * nieuwBlok)
+void DraaiSchijf::VeranderBlok (BlokPointer_t * , BlokPointer_t * )
 {
-    if (pBlok1 == oudBlok)
-    {
-        pBlok1 = nieuwBlok;
-    }
 }
 
 
@@ -190,7 +192,7 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
                                   aansturing.blok));
             return WISSEL_ERR_INVALID_ADRES;
         }
-        if (mBaanInfo->BlokPointer[aansturing.blok].blokRicht[aansturing.richtingVooruit] != &mBaanInfo->EindBlokPointer)
+        if (mBaanInfo->BlokPointer[aansturing.blok].blokRicht[!aansturing.richtingVooruit] != &mBaanInfo->EindBlokPointer)
         {
             mMessage.message(str(boost::format
                                  ("Blok niet vrij %d at %d voor draaischijf %d") %
@@ -215,10 +217,21 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     }
 
     pBlok1 = &mBaanInfo->BlokPointer[hardwareAdres];
+    pBlok1->pBlok->specialProcessing = [this]() { DraaiSchijfBlokAangesproken();};
 
     return 0;
 }
 
+void DraaiSchijf::DraaiSchijfBlokAangesproken()
+{
+    mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].SetIgnoreStop(true);
+    if ((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_ACHTERUIT))
+    {
+        // enable midden detectie want er rijd een trein binnen
+        Bedien(hardwareAdres+2,EnableMiddenDetectie, false);
+    }
+
+}
 
 int DraaiSchijf::checkAansluiting(const DraaiSchijfAansluiting& aansturing)
 {
@@ -238,7 +251,7 @@ int DraaiSchijf::checkAansluiting(const DraaiSchijfAansluiting& aansturing)
                               aansturing.blok));
         return WISSEL_ERR_INVALID_ADRES;
     }
-    if (mBaanInfo->BlokPointer[aansturing.blok].blokRicht[aansturing.richtingVooruit] != &mBaanInfo->EindBlokPointer)
+    if (mBaanInfo->BlokPointer[aansturing.blok].blokRicht[!aansturing.richtingVooruit] != &mBaanInfo->EindBlokPointer)
     {
         mMessage.message(str(boost::format
                              ("Blok niet vrij %d at %d voor draaischijf %d") %
@@ -320,10 +333,6 @@ void DraaiSchijf::Display ()
 }
 
 
-#define Homing 60
-#define GetStatus 63
-#define Turning 1
-#define NeedsHoming 0x4
 void DraaiSchijf::WachtOp(int status)
 {
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -336,23 +345,40 @@ void DraaiSchijf::WachtOp(int status)
 
 }
 
-void DraaiSchijf::GaNaarPositie(int positie)
+bool DraaiSchijf::GaNaarPositie(int positie)
 {
+    // eerst controleren of we wel kunnen draaien is de schijf vrij
+    int stand = (Stand >=200) ? Stand-200: Stand - 100;
+    if ((pBlok1->pBlok->State != BLOK_VRIJ) && (m_aansluitingen[stand]))
+    {
+        // er staat iets op de schijf en het heeft misschien nog snelheid
+        if (pBlok1->pBlok->Snelheid != 0)
+        {
+            return true; // gewijgerd
+        }
+        if (pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit]->pBlok->State != BLOK_VRIJ)
+        {
+            return true; // gewijgerd trein steekt nog uit in het aangesloten blok
+        }
+    }
     std::cout <<  "from " << Stand<< " to Pos " << positie << std::endl;
     // eerst de baan vakken omleggen
-    int stand = (Stand >=200) ? Stand-200: Stand - 100;
-    mBaanInfo->BlokPointer[hardwareAdres].blokRicht[0] = &mBaanInfo->EindBlokPointer;
-    mBaanInfo->BlokPointer[hardwareAdres].blokRicht[1] = &mBaanInfo->EindBlokPointer;
+    pBlok1->blokRicht[0] = &mBaanInfo->EindBlokPointer;
+    pBlok1->blokRicht[1] = &mBaanInfo->EindBlokPointer;
     if (m_aansluitingen[stand])
     {
-        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->EindBlokPointer;
+        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->EindBlokPointer;
     }
     stand = (positie >=200) ? positie-200: positie - 100;
     if (m_aansluitingen[stand])
     {
-        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[hardwareAdres];
-        mBaanInfo->BlokPointer[hardwareAdres].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok];
+        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = pBlok1;
+        pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok];
     }
+
+    //m_aansluitingen[stand]->blok nog niet goed want die kan nu negatief zijn.
+    // als die negatief is init relais nummer en laat hem wijzen naar een intern draaischijf blok.
+
 
 
     mWorker.Dispatch([=]()
@@ -369,6 +395,7 @@ void DraaiSchijf::GaNaarPositie(int positie)
         Bedien(hardwareAdres + 2 + (positie >=200),bedienPos);
         WachtOp(Turning);
     });
+    return false;
 }
 
 void DraaiSchijf::Bedien (int adres, int data, bool returnGewenst)
@@ -410,8 +437,13 @@ int DraaiSchijf::Aanvraag (int stand)
         else
         {
             // nu kan die gaan draaien
-            GaNaarPositie(NieuweStand);
             StartDrag = false;
+            if (GaNaarPositie(NieuweStand))
+            {
+                NieuweStand = Stand;
+                mBaanMessage.Post (WM_WISSEL_DISPLAY, WisselNummer(), 0, 0);
+                return IOGEWIJGERD;
+            }
             Stand = NieuweStand;
         }
     }
@@ -467,7 +499,12 @@ int DraaiSchijf::Aanvraag (int stand)
             return IOGEWIJGERD;
         }
         NieuweStand = stand;
-        GaNaarPositie(NieuweStand);
+        if (GaNaarPositie(NieuweStand))
+        {
+            NieuweStand = Stand;
+            mBaanMessage.Post (WM_WISSEL_DISPLAY, WisselNummer(), 0, 0);
+            return IOGEWIJGERD;
+        }
         Stand = NieuweStand;
     }
 
