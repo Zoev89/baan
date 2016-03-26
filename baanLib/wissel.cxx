@@ -37,13 +37,14 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-Wissels::Wissels(IMessage &msg, IBlok& blok, IMainWindowDrawing &mainWindowDrawing, IBaanMessage& baanMessage, IWisselDialoog &wisselDialoog, BaanInfo_t *baanInfo):
-    mMessage(msg),
-    mBlok(blok),
-    mMainWindowDrawing(mainWindowDrawing),
-    mBaanMessage(baanMessage),
-    mWisselDialoog(wisselDialoog),
-    mBaanInfo(baanInfo)
+Wissels::Wissels(IMessage &msg, IBlok& blok, IMainWindowDrawing &mainWindowDrawing, IBaanMessage& baanMessage, IWisselDialoog &wisselDialoog, BaanInfo_t *baanInfo, IThreadSleep &threadSleep)
+    : mMessage(msg)
+    , mBlok(blok)
+    , mMainWindowDrawing(mainWindowDrawing)
+    , mBaanMessage(baanMessage)
+    , mWisselDialoog(wisselDialoog)
+    , mBaanInfo(baanInfo)
+    , mThreadSleep(threadSleep)
 {
 
 }
@@ -397,7 +398,7 @@ void Wissels::CreateNewIO(int type, int kopBlok)
         mBaanInfo->IOBits.emplace_back(std::move(make_unique<DriewegWissel>(mMessage, mBlok, *this, mBaanMessage, mMainWindowDrawing, mWisselDialoog, mBaanInfo, kopBlok)));
         break;
     case DRAAISCHIJF:
-        mBaanInfo->IOBits.emplace_back(std::move(make_unique<DraaiSchijf>(mMessage, mBlok, *this, mBaanMessage, mMainWindowDrawing, mWisselDialoog, mBaanInfo, kopBlok)));
+        mBaanInfo->IOBits.emplace_back(std::move(make_unique<DraaiSchijf>(mMessage, mBlok, *this, mBaanMessage, mMainWindowDrawing, mWisselDialoog, mBaanInfo, mThreadSleep, kopBlok)));
         break;
     default:
         return;

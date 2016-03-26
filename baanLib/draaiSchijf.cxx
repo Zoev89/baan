@@ -41,7 +41,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &standaardWisselDialoog, BaanInfo_t *baanInfo, int kopBlok)
+DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &standaardWisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep, int kopBlok)
     : mMessage(msg)
     , mBlok(blok)
     , mWissels(wissels)
@@ -49,6 +49,7 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , mMainWindowDrawing(mainWindowDrawing)
     , mDraaiWisselDialoog(standaardWisselDialoog)
     , mBaanInfo(baanInfo)
+    , mThreadSleep(threadSleep)
     , Coord1X(30)
     , Coord1Y(30)
     , Radius(20)
@@ -335,11 +336,11 @@ void DraaiSchijf::Display ()
 
 void DraaiSchijf::WachtOp(int status)
 {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    mThreadSleep.SleepFor(1);
     do
     {
         Bedien(hardwareAdres+2,GetStatus, true);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        mThreadSleep.SleepFor(1);
     }
     while (hardwareReturnWaarde & status);
 
@@ -384,7 +385,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
     mWorker.Dispatch([=]()
     {
         Bedien(hardwareAdres+2,GetStatus, true);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        mThreadSleep.SleepFor(1);
         if (hardwareReturnWaarde & NeedsHoming)
         {
             Bedien(hardwareAdres+2,Homing);

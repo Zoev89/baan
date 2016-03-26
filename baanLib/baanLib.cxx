@@ -7,7 +7,8 @@
 
 
 BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWindowDrawing& mainWindowDrawing, ITreinenDialoog &treinenDialoog, IBlokInst& blokInst, IRegelaarViewUpdates& regelaarViewUpdates,
-                 IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog &wisselDialoog, ILampInstDialoog& lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog &nieuwIODialoog, IAddBlokDialoog &addBlokDialoog):
+                 IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog &wisselDialoog, ILampInstDialoog& lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog &nieuwIODialoog,
+                 IAddBlokDialoog &addBlokDialoog, IThreadSleep& threadSleep):
     mTd(10000),
     mMessage(message),
     mErrorPrint(mBaanInfo.tickTimer),
@@ -18,7 +19,7 @@ BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWind
     mBlok(message, mainWindowDrawing, mTd, &mBaanInfo),
     mBaanMessage(mBaanView, mTd, mBaanInfo.RegelArray),
     mBaanView(message, mBaanDoc,mBlok, blokInst, mWissels, mainWindowDrawing, mTd, &mBaanInfo),
-    mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo),
+    mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo, threadSleep),
     mTelefoonConnectie(mBaanInfo.RegelArray)
 {
     mMessage.message("Ik ben er");

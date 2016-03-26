@@ -16,6 +16,7 @@
 #include "UIAddBlokDialoog.h"
 #include "UIRegelaarInstellingenDialoog.h"
 #include "UIRegelaarViewUpdates.h"
+#include "ThreadSleep.h"
 
 class UIBaanLibCreator
 {
@@ -34,7 +35,9 @@ public:
     UIAddBlokDialoog addBlok;
     std::unique_ptr<UIRegelaarViewUpdates> regelaarViewUpdates;
     UIRegelaarInstellingenDialoog regelaarInstellingenDialoog;
+    ThreadSleep mThreadSleep; // moet voor mBaanLib zitten want anders is de distuctie volgoorde niet goed
     std::unique_ptr<BaanLib> mBaanLib;
+
 };
 
 #endif // UIBAANLIBCREATOR_H

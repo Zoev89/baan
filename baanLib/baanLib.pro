@@ -50,7 +50,8 @@ SOURCES += \
     TelefoonConnectie.cxx \
     draaiSchijf.cxx \
     IoBits.cxx \
-    Dispatcher.cpp
+    Dispatcher.cpp \
+    ThreadSleep.cpp
 
 HEADERS +=\
     baanDoc.h \
@@ -116,7 +117,9 @@ HEADERS +=\
     IErrorPrint.h \
     draaiSchijf.h \
     IIoBits.h \
-    Dispatcher.h
+    Dispatcher.h \
+    ThreadSleep.h \
+    IThreadSleep.h
 
 unix {
     target.path = /usr/lib

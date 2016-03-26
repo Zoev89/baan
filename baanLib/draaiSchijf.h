@@ -11,12 +11,13 @@
 #include "IBaanMessage.h"
 #include "IWisselDialoog.h"
 #include "Dispatcher.h"
+#include "IThreadSleep.h"
 #include <boost/optional.hpp>
 
 class DraaiSchijf: public IOBits_t
 {
 public:
-    DraaiSchijf(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& standaardWisselDialoog, BaanInfo_t *baanInfo, int kopBlok);
+    DraaiSchijf(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& standaardWisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep, int kopBlok);
     virtual ~DraaiSchijf();
     // IWissel
     virtual int Init(const char *Input, std::function<std::string()> newInput) override;
@@ -53,7 +54,9 @@ private:
     IMainWindowDrawing& mMainWindowDrawing;
     IWisselDialoog& mDraaiWisselDialoog;
     BaanInfo_t* mBaanInfo;
+    IThreadSleep &mThreadSleep;
     Dispatcher mWorker;
+
     int Coord1X;
     int Coord1Y;
     int Radius;

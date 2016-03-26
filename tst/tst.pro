@@ -34,7 +34,8 @@ HEADERS += \
     ITelefoonConnectieMock.h \
     ITdMock.h \
     IErrorPrintMock.h \
-    baanLibSetup.h
+    baanLibSetup.h \
+    IThreadSleepMock.h
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../baanLib/release/ -lbaanLib

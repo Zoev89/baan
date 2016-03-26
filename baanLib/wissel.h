@@ -15,12 +15,13 @@
 #include "IMainWindowDrawing.h"
 #include "IBaanMessage.h"
 #include "IWisselDialoog.h"
+#include "IThreadSleep.h"
 
 class Wissels: public IWissels
 {
 public:
     Wissels(IMessage& msg, IBlok& blok, IMainWindowDrawing &mainWindowDrawing, IBaanMessage& baanMessage
-            , IWisselDialoog& wisselDialoog, BaanInfo_t *baanInfo);
+            , IWisselDialoog& wisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep);
     // IWissels
     virtual int Init(int WisselNummer, const char *Input, std::function<std::string()> newInput) override;
     virtual void InitRoutering (int WisselNummer) override;
@@ -69,6 +70,7 @@ private:
     IBaanMessage& mBaanMessage;
     IWisselDialoog& mWisselDialoog;
     BaanInfo_t *mBaanInfo;
+    IThreadSleep &mThreadSleep;
 };
 
 #endif // !defined(_BAANWT_H_)

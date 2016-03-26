@@ -18,11 +18,11 @@ public:
     InitObjects(BaanInfo_t *baanInfo) :
         baanWT(message,baanMessage,wissels, td, baanInfo),
         blok(message,mainWindowDrawing, td, baanInfo),
-        wissels(message, blok, mainWindowDrawing, baanMessage, wisselDialoog, baanInfo),
+        wissels(message, blok, mainWindowDrawing, baanMessage, wisselDialoog, baanInfo, threadSleep),
         baanDoc(message, baanWT, baanTreinen, blok, wissels, mainScreenControls, mainWindowDrawing,regelaarViewUpdates,
                 baanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog, telefoonConnectie, td, errorPrint, baanInfo)
     {
-
+        baanWT.InitWorkThread();
     }
     testing::NiceMock<ITdMock> td; // moet bovenaan staan zodat die geinitializeerd is!
 
@@ -49,6 +49,7 @@ public:
     IRegelaarViewUpdatesMock regelaarViewUpdates;
     ITelefoonConnectieMock telefoonConnectie;
     IErrorPrintMock errorPrint;
+    IThreadSleepMock threadSleep;
 
 };
 

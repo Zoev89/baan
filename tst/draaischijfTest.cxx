@@ -141,3 +141,12 @@ TEST_F(draaischijfTest, UIWisselStand)
 
 }
 
+TEST_F(draaischijfTest, UIWisselStandMetTrein)
+{
+    objects->wissels.CreateNewIO(7);
+    EXPECT_EQ(0,objects->wissels.Init(0,"7 300.0 1000 100 50 0 1",[]()
+    {
+        return "6 1 100 0";
+    }));
+    baanInfo->IOBits[0]->hardwareReturnWaarde = 0; // return waarde van de hardware is klaar
+}

@@ -19,4 +19,5 @@
 #include "ITelefoonConnectieMock.h"
 #include "ITdMock.h"
 #include "IErrorPrintMock.h"
+#include "IThreadSleepMock.h"
 #endif // ALLMOCKS_H
