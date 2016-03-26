@@ -1,6 +1,6 @@
 #include "hardwareCom.h"
 
-ChardwareCom::ChardwareCom ()
+HardwareCom::HardwareCom ()
 {
   // breng leeg conditie aan
   kop = 0;
@@ -9,7 +9,7 @@ ChardwareCom::ChardwareCom ()
 }
 
 int
-ChardwareCom::aantalItems ()
+HardwareCom::aantalItems ()
 {
   int max;
   max = kop - staart;
@@ -21,7 +21,7 @@ ChardwareCom::aantalItems ()
 }
 
 int
-ChardwareCom::nieuwItem (hardwareArray_t * data)
+HardwareCom::nieuwItem (const hardwareArray_t &data)
 {
   int nieuwKop;
   int max;
@@ -40,7 +40,7 @@ ChardwareCom::nieuwItem (hardwareArray_t * data)
       // note verhoog kop alleen in de andere case
       return 1;
     }
-  array[kop] = *data;
+  array[kop] = data;
   kop = nieuwKop;
   max = kop - staart;
   if (max < 0)
@@ -55,7 +55,7 @@ ChardwareCom::nieuwItem (hardwareArray_t * data)
 }
 
 int
-ChardwareCom::krijgItem (hardwareArray_t * data)
+HardwareCom::krijgItem (hardwareArray_t &data)
 {
   int nieuwStaart;
 
@@ -69,7 +69,7 @@ ChardwareCom::krijgItem (hardwareArray_t * data)
     {
       nieuwStaart = 0;
     }
-  *data = array[staart];
+  data = array[staart];
   staart = nieuwStaart;
   return 0;
 }

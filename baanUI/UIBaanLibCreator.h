@@ -17,6 +17,7 @@
 #include "UIRegelaarInstellingenDialoog.h"
 #include "UIRegelaarViewUpdates.h"
 #include "ThreadSleep.h"
+#include "hardwareCom.h"
 
 class UIBaanLibCreator
 {
@@ -36,6 +37,8 @@ public:
     std::unique_ptr<UIRegelaarViewUpdates> regelaarViewUpdates;
     UIRegelaarInstellingenDialoog regelaarInstellingenDialoog;
     ThreadSleep mThreadSleep; // moet voor mBaanLib zitten want anders is de distuctie volgoorde niet goed
+    HardwareCom mHardwareHoog;
+    HardwareCom mHardwareLaag;
     std::unique_ptr<BaanLib> mBaanLib;
 
 };

@@ -13,7 +13,7 @@ class draaischijfTest : public ::testing::Test {
 protected:
     virtual void SetUp()
     {
-        baanInfo = std::move(make_unique<BaanInfo_t>());
+        baanInfo = std::move(make_unique<BaanInfo_t>(mHardwareHoog, mHardwareLaag));
         objects =  std::move(make_unique<InitObjects>(baanInfo.get())); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
     }
 
@@ -29,7 +29,7 @@ protected:
         data.adres= 0;
         data.data =0;
         int count = 0;
-        while ((count <5) && (baanInfo->hardwareHoog.krijgItem (&data)==1))
+        while ((count <5) && (baanInfo->hardwareHoog.krijgItem (data)==1))
         {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             count += 1;
@@ -40,7 +40,8 @@ protected:
 
     std::unique_ptr<BaanInfo_t> baanInfo;
     std::unique_ptr<InitObjects> objects;
-
+    IHardwareComMock mHardwareHoog;
+    IHardwareComMock mHardwareLaag;
 };
 
 TEST_F(draaischijfTest, Constructie)

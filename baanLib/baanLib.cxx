@@ -8,19 +8,20 @@
 
 BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWindowDrawing& mainWindowDrawing, ITreinenDialoog &treinenDialoog, IBlokInst& blokInst, IRegelaarViewUpdates& regelaarViewUpdates,
                  IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog &wisselDialoog, ILampInstDialoog& lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog &nieuwIODialoog,
-                 IAddBlokDialoog &addBlokDialoog, IThreadSleep& threadSleep):
-    mTd(10000),
-    mMessage(message),
-    mErrorPrint(mBaanInfo.tickTimer),
-    mBaanWT(message,mBaanMessage, mWissels, mTd, &mBaanInfo),
-    mBaanDoc(message, mBaanWT, mBaanTreinen, mBlok, mWissels, mainControls, mainWindowDrawing, regelaarViewUpdates, mBaanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog,
-             mTelefoonConnectie, mTd, mErrorPrint, &mBaanInfo),
-    mBaanTreinen(mBaanDoc, treinenDialoog),
-    mBlok(message, mainWindowDrawing, mTd, &mBaanInfo),
-    mBaanMessage(mBaanView, mTd, mBaanInfo.RegelArray),
-    mBaanView(message, mBaanDoc,mBlok, blokInst, mWissels, mainWindowDrawing, mTd, &mBaanInfo),
-    mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo, threadSleep),
-    mTelefoonConnectie(mBaanInfo.RegelArray)
+                 IAddBlokDialoog &addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag)
+    : mBaanInfo(hardwareHoog,hardwareLaag)
+    , mTd(10000)
+    , mMessage(message)
+    , mErrorPrint(mBaanInfo.tickTimer)
+    , mBaanWT(message,mBaanMessage, mWissels, mTd, &mBaanInfo)
+    , mBaanDoc(message, mBaanWT, mBaanTreinen, mBlok, mWissels, mainControls, mainWindowDrawing, regelaarViewUpdates, mBaanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog,
+             mTelefoonConnectie, mTd, mErrorPrint, &mBaanInfo)
+    , mBaanTreinen(mBaanDoc, treinenDialoog)
+    , mBlok(message, mainWindowDrawing, mTd, &mBaanInfo)
+    , mBaanMessage(mBaanView, mTd, mBaanInfo.RegelArray)
+    , mBaanView(message, mBaanDoc,mBlok, blokInst, mWissels, mainWindowDrawing, mTd, &mBaanInfo)
+    , mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo, threadSleep)
+    , mTelefoonConnectie(mBaanInfo.RegelArray)
 {
     mMessage.message("Ik ben er");
 }

@@ -623,11 +623,11 @@ CProgramma::zetSpanning (int adres, int spanning, int returnGewenst,
     data.returnGewenst = returnGewenst;
     if (prioriteit)
     {
-        mBaanInfo->hardwareHoog.nieuwItem (&data);
+        mBaanInfo->hardwareHoog.nieuwItem (data);
     }
     else
     {
-        mBaanInfo->hardwareLaag.nieuwItem (&data);
+        mBaanInfo->hardwareLaag.nieuwItem (data);
     }
 }
 
@@ -652,11 +652,11 @@ CProgramma::zetBit (int adres, int bit, int waarde, int returnGewenst,
         data.returnGewenst = returnGewenst;
         if (prioriteit)
         {
-            mBaanInfo->hardwareHoog.nieuwItem (&data);
+            mBaanInfo->hardwareHoog.nieuwItem (data);
         }
         else
         {
-            mBaanInfo->hardwareLaag.nieuwItem (&data);
+            mBaanInfo->hardwareLaag.nieuwItem (data);
         }
     }
 }

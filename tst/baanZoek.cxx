@@ -5,26 +5,9 @@
 
 static InitObjects *objects;
 static BaanInfo_t* baanInfo = NULL;
+static IHardwareComMock mHardwareHoog;
+static IHardwareComMock mHardwareLaag;
 
-void TestFrameWorkInitBaan()
-{
-    if (baanInfo == NULL)
-    {
-        baanInfo = new BaanInfo_t;
-        objects =  new InitObjects(baanInfo); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
-
-        {
-            for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
-                baanInfo->RegelArray.push_back(Regelaar(objects->regelaarViewUpdates, objects->baanTreinen, objects->baanDoc, objects->regelaarInstellingenDialoog, objects->baanMessage,
-                                                        objects->telefoonConnectie, objects->td));
-        }
-
-        std::string doc="/home/eric/trein/ezb/baan.blk";
-        FILE * blkFile = objects->baanDoc.baanDocFileOpen (doc.c_str(), "rb", baanInfo->blkDir, &baanInfo->blkName);
-        baanInfo->spoorInfo.LoadData("/home/eric/trein/ezb/baan");
-        ASSERT_FALSE(objects->baanDoc.baanDocParseBlkFile (blkFile));
-   }
-}
 
 class BaanZoekTest : public ::testing::Test {
  protected:
@@ -37,6 +20,26 @@ class BaanZoekTest : public ::testing::Test {
     }
 
 public:
+    void TestFrameWorkInitBaan()
+    {
+        if (baanInfo == NULL)
+        {
+            baanInfo = new BaanInfo_t(mHardwareHoog,mHardwareLaag);
+            objects =  new InitObjects(baanInfo); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
+
+            {
+                for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
+                    baanInfo->RegelArray.push_back(Regelaar(objects->regelaarViewUpdates, objects->baanTreinen, objects->baanDoc, objects->regelaarInstellingenDialoog, objects->baanMessage,
+                                                            objects->telefoonConnectie, objects->td));
+            }
+
+            std::string doc="/home/eric/trein/ezb/baan.blk";
+            FILE * blkFile = objects->baanDoc.baanDocFileOpen (doc.c_str(), "rb", baanInfo->blkDir, &baanInfo->blkName);
+            baanInfo->spoorInfo.LoadData("/home/eric/trein/ezb/baan");
+            ASSERT_FALSE(objects->baanDoc.baanDocParseBlkFile (blkFile));
+       }
+    }
+
     void printZoekPad(std::vector<BaanZoekResultaat> &pad)
     {
         for(unsigned int i=0;i<pad.size();++i)
@@ -95,6 +98,7 @@ public:
         return objects->wissels.ZoekWisselNummer (mBaanInfo->IOBits, num);
     };
     BaanInfo_t *mBaanInfo;
+
 protected:
   
 };

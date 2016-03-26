@@ -19,7 +19,7 @@
 #include "IRegelaarInstellingenDialoog.h"
 #include "IBaanMessage.h"
 #include "array"
-#include  "hardwareCom.h"
+#include  "IHardwareCom.h"
 
 // Het aantal stop blokken per wissel; voor een drie weg wissel heb ik er 3 nodig
 // Ik zou strikt genomen met 2 stopblokken kunnen volstaan bij een drieweg wissel,
@@ -147,6 +147,13 @@ typedef struct
 struct BaanInfo_t
 {
 public:
+  BaanInfo_t(IHardwareCom &_hardwareHoog, IHardwareCom &_hardwareLaag)
+      : hardwareHoog(_hardwareHoog)
+      , hardwareLaag(_hardwareLaag)
+  {
+
+  }
+
   pbaanSemaphore_t semCriticalSection;
   pbaanSemaphore_t semStarted;
 
@@ -187,8 +194,8 @@ public:
   hardwareCom_t hardwareDetection;	// detection verzend data
   hardwareCom_t hardwareSnelheid;	// snelheid verzend data
 
-  ChardwareCom hardwareHoog;	// hoge prioritijd IO afhandeling
-  ChardwareCom hardwareLaag;	// lage prioritijd IO afhandeling
+  IHardwareCom & hardwareHoog;	// hoge prioritijd IO afhandeling
+  IHardwareCom & hardwareLaag;	// lage prioritijd IO afhandeling
 
   pbaanSemaphore_t semWorkerThreadStopped;	// einde semaphore
 

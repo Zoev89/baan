@@ -31,7 +31,7 @@ class BaanLib: public IView
 public:
     BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWindowDrawing& mainWindowDrawing, ITreinenDialoog& treinenDialoog, IBlokInst& blokInst, IRegelaarViewUpdates& regelaarViewUpdates,
             IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog& wisselDialoog, ILampInstDialoog &lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog& nieuwIODialoog,
-            IAddBlokDialoog& addBlokDialoog, IThreadSleep& threadSleep);
+            IAddBlokDialoog& addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag);
     ~BaanLib();
 
     // Interface to main document

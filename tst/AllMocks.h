@@ -20,4 +20,6 @@
 #include "ITdMock.h"
 #include "IErrorPrintMock.h"
 #include "IThreadSleepMock.h"
+#include "IHardwareComMock.h"
+
 #endif // ALLMOCKS_H

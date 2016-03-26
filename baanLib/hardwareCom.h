@@ -1,36 +1,20 @@
 #ifndef _HARDWARECOM_H_
 #define _HARDWARECOM_H_
-
-#define MAX_AANTAL_AANVRAGEN  40
-
-typedef enum
-{
-  HW_BLOK,
-  HW_IO
-} hardwareBIO_t;
-
-typedef struct
-{
-  hardwareBIO_t blokIO;
-  int adres;			// -1 als het niet in gebruik is
-  int data;
-  // het nummer in de blok of wisselSpoelArray ook altijd invullen (ivm kortsluit test)!
-  int nummer;
-  int returnGewenst;
-} hardwareArray_t;
+#include "IHardwareCom.h"
 
 
-class ChardwareCom
+class HardwareCom: public IHardwareCom
 {
   // PASOP de implementatie is niet reenterend!
   // nieuwItem en krijgItem kunnen wel van
   // twee processen gecalled worden
   // Construction
 public:
-  ChardwareCom ();		// constructor de ~ChardwareCom descructor is niet nodig
-  int nieuwItem (hardwareArray_t * data);	// zet een nieuwItem in de array return 1 dan is die vol
-  int krijgItem (hardwareArray_t * data);	// krijg het oudste item uit de array return 1 als leeg
-  int aantalItems ();
+  HardwareCom ();		// constructor de ~ChardwareCom descructor is niet nodig
+  // IHardwareCom
+  virtual int nieuwItem (const hardwareArray_t & data) override;	// zet een nieuwItem in de array return 1 dan is die vol
+  virtual int krijgItem (hardwareArray_t & data) override;	// krijg het oudste item uit de array return 1 als leeg
+  virtual int aantalItems () override;
 protected:
 
 private:

@@ -152,7 +152,7 @@ int Ontkoppelaar::Aanvraag (int)
   bedien.nummer = 0;
   bedien.returnGewenst = 0;
 
-  if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+  if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
     {
       mMessage.message ("hardware hoog vol info lost ontkoppelaar!");
     }
@@ -187,7 +187,7 @@ void Ontkoppelaar::TestIOTimer()
               bedien.nummer = 0;
               bedien.returnGewenst = 0;
 
-              if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+              if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
                 {
                   mMessage.message ("hardware hoog vol info lost ontkoppelaar!");
                 }

@@ -119,7 +119,8 @@ HEADERS +=\
     IIoBits.h \
     Dispatcher.h \
     ThreadSleep.h \
-    IThreadSleep.h
+    IThreadSleep.h \
+    IHardwareCom.h
 
 unix {
     target.path = /usr/lib

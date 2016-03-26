@@ -443,7 +443,7 @@ void DriewegWissel::Bedien ()
         // wissel gebogen
         bedien.data |= IO_COMMAND3;
     }
-    if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+    if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
     {
         mMessage.message ("hardware hoog vol info lost drieweg wissel!");
     }
@@ -454,7 +454,7 @@ void DriewegWissel::Bedien ()
         // wissel gebogen
         bedien.data |= IO_COMMAND3;
     }
-    if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+    if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
     {
         mMessage.message ("hardware hoog vol info lost drieweg wissel!");
     }

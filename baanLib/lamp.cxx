@@ -169,7 +169,7 @@ int Lamp::Aanvraag (int stand)
         // het uit gaan wordt door de baanWT via TestSpoelLamp gedaan
         mBaanMessage.Post (WM_WISSEL_DISPLAY, WisselNummer(), 0, 0);
     }
-    if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+    if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
     {
         mMessage.message ("hardware hoog vol info lost lamp!");
     }
@@ -218,7 +218,7 @@ void Lamp::TestIOTimer ()
                 bedien.nummer = 0;
                 bedien.returnGewenst = 0;
 
-                if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+                if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
                 {
                     mMessage.message ("hardware hoog vol info lost lamp!");
                 }
@@ -242,7 +242,7 @@ void Lamp::TestIOTimer ()
                 bedien.nummer = 0;
                 bedien.returnGewenst = 0;
 
-                if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+                if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
                 {
                     mMessage.message ("hardware hoog vol info lost lamp!");
                 }
@@ -274,7 +274,7 @@ void Lamp::TestIOTimer ()
             bedien.nummer = 0;
             bedien.returnGewenst = 0;
 
-            if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+            if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
             {
                 mMessage.message ("hardware hoog vol info lost lamp!");
             }

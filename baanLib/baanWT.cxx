@@ -967,7 +967,7 @@ void BaanWT::SetSnelheid (int Regelaar, int Snelheid)
 
                 array.adres = pBlok->pBlok->hardwareAdres;
                 array.nummer = array.adres;
-                if (pInfo->hardwareLaag.nieuwItem (&array) == 0)
+                if (pInfo->hardwareLaag.nieuwItem (array) == 0)
                 {
                     // als het gelukt is dan de state veranderen
                     pBlok->pBlok->hardwareState = pBlok->pBlok->State;
@@ -985,7 +985,7 @@ void BaanWT::SetSnelheid (int Regelaar, int Snelheid)
                 array.adres = pBlok->pBlok->hardwareAdres;
                 array.nummer = array.adres;
                 array.data = Snelheid;
-                if (pInfo->hardwareLaag.nieuwItem (&array) == 0)
+                if (pInfo->hardwareLaag.nieuwItem (array) == 0)
                 {
                     pBlok->pBlok->Snelheid = Snelheid;
                     // ervoor zorgen dat er geen junk in de return waarde staat
@@ -1128,7 +1128,7 @@ void BaanWT::SetSnelheid (int Regelaar, int Snelheid)
                         array.adres = pBlok->pBlok->hardwareAdres;
                         array.nummer = array.adres;
                         array.data = Snelheid;
-                        if (pInfo->hardwareLaag.nieuwItem (&array) == 0)
+                        if (pInfo->hardwareLaag.nieuwItem (array) == 0)
                         {
                             pBlok->pBlok->Snelheid = Snelheid;
                         }
@@ -1178,7 +1178,7 @@ void BaanWT::GeefBlokVrij (BlokPointer_t * pBlok)
     // Misschien toch in de aansturing de hardware state zetten?
     // liever eigenlijk van de state afblijven in de aansturing misschien alleen
     // de snelheid
-    if (pInfo->hardwareLaag.nieuwItem (&array) == 0)
+    if (pInfo->hardwareLaag.nieuwItem (array) == 0)
     {
         // Alleen als het commando verzonden is mag ik aan de state komen
         // anders laten we het blok maar aan staan
@@ -1267,7 +1267,7 @@ void BaanWT::zetSein (BlokPointer_t * pBlok, hardwareArray_t * array,
         default:
             assert (0);
         }
-        if (pInfo->hardwareLaag.nieuwItem (array) == 0)
+        if (pInfo->hardwareLaag.nieuwItem (*array) == 0)
         {
             // sein wordt omgezet dus update het seinState veld
             pBlok->pBlok->hardwareSeinState = sein;
@@ -1794,14 +1794,11 @@ void BaanWT::BaanBehandelIO (hardwareCom_t * array)
     array->aantal = aantal;
     for (; i < MAX_MICRO_MEM; i++)
     {
-        hardwareArray_t *parray;
-
-        parray = &array->array[i];
         // een ongebruikte entry check eerst de hoge prioriteit
-        if (pInfo->hardwareHoog.krijgItem (parray))
+        if (pInfo->hardwareHoog.krijgItem (array->array[i]))
         {
             // die is leeg dus nu de lage prioriteit
-            if (pInfo->hardwareLaag.krijgItem (parray))
+            if (pInfo->hardwareLaag.krijgItem (array->array[i]))
             {
                 // die is ook leeg dus einde
                 return;

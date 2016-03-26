@@ -408,7 +408,7 @@ void DraaiSchijf::Bedien (int adres, int data, bool returnGewenst)
     bedien.nummer = WisselNummer();
     bedien.returnGewenst = returnGewenst;
 
-    if (mBaanInfo->hardwareHoog.nieuwItem (&bedien))
+    if (mBaanInfo->hardwareHoog.nieuwItem (bedien))
     {
         mMessage.message (str(boost::format
                               ("hardware hoog vol info lost standaard wissel!")));

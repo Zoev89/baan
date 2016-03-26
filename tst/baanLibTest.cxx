@@ -29,11 +29,13 @@ TEST_F(baanLibTest, Constructie)
     IRegelaarViewUpdatesMock regelaarViewUpdates;
     IRegelaarInstellingenDialoogMock regelaarInstellingenDialoog;
     IThreadSleepMock threadSleep;
+    IHardwareComMock hardwareHoog;
+    IHardwareComMock hardwareLaag;
 
     EXPECT_CALL(message,message(_));
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,
-                       addBlok, threadSleep);
+                       addBlok, threadSleep, hardwareHoog, hardwareLaag);
 }
 
 TEST_F(baanLibTest, ConstructieNogmaals)
@@ -51,9 +53,11 @@ TEST_F(baanLibTest, ConstructieNogmaals)
     IRegelaarViewUpdatesMock regelaarViewUpdates;
     IRegelaarInstellingenDialoogMock regelaarInstellingenDialoog;
     IThreadSleepMock threadSleep;
+    IHardwareComMock hardwareHoog;
+    IHardwareComMock hardwareLaag;
 
     EXPECT_CALL(message,message(_));
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,
-                       addBlok, threadSleep);
+                       addBlok, threadSleep, hardwareHoog, hardwareLaag);
 }

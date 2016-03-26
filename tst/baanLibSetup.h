@@ -50,7 +50,6 @@ public:
     ITelefoonConnectieMock telefoonConnectie;
     IErrorPrintMock errorPrint;
     IThreadSleepMock threadSleep;
-
 };
 
 #endif // BAANLIBSETUP_H
