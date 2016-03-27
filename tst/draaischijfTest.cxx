@@ -176,9 +176,22 @@ TEST_F(draaischijfTest, UIWisselStand)
 TEST_F(draaischijfTest, UIWisselStandMetTrein)
 {
     objects->wissels.CreateNewIO(7);
+    EXPECT_CALL(objects->baanMessage, Post(WM_WISSEL_DISPLAY, 0, 0, 0)).Times(3); // 3 testen
     EXPECT_EQ(0,objects->wissels.Init(0,"7 300.0 1000 100 50 0 1",[]()
     {
-        return "6 1 100 0";
+        return "0 1 100 0"; // default 0 adres
     }));
+    // een trein met snelheid
     baanInfo->IOBits[0]->hardwareReturnWaarde = 0; // return waarde van de hardware is klaar
+    baanInfo->Blok[300].State = BLOK_VOORUIT;
+    baanInfo->Blok[300].Snelheid = 10;
+    EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(112));
+    baanInfo->Blok[300].State = BLOK_VOORUIT;
+    baanInfo->Blok[300].Snelheid = 0;
+    baanInfo->Blok[100].State = BLOK_VOORUIT; // blok op aansluiting 100 is niet vrij dus de trein staat er overheen
+    EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(112));
+    baanInfo->Blok[100].State = BLOK_VRIJ; // blok op aansluiting 100 is niet vrij dus de trein staat er overheen
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillRepeatedly(Return(0));
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(112));
+
 }

@@ -219,6 +219,12 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
 
     pBlok1 = &mBaanInfo->BlokPointer[hardwareAdres];
     pBlok1->pBlok->specialProcessing = [this]() { DraaiSchijfBlokAangesproken();};
+    if (m_aansluitingen[0])
+    {
+        // aansluiting in gebruik dus initializeer de blok pointers
+        mBaanInfo->BlokPointer[m_aansluitingen[0]->blok].blokRicht[!m_aansluitingen[0]->richtingVooruit] = pBlok1;
+        pBlok1->blokRicht[m_aansluitingen[0]->richtingVooruit] = &mBaanInfo->BlokPointer[m_aansluitingen[0]->blok];
+    }
 
     return 0;
 }
@@ -349,14 +355,14 @@ bool DraaiSchijf::GaNaarPositie(int positie)
 {
     // eerst controleren of we wel kunnen draaien is de schijf vrij
     int stand = (Stand >=200) ? Stand-200: Stand - 100;
-    if ((pBlok1->pBlok->State != BLOK_VRIJ) && (m_aansluitingen[stand]))
+    if (pBlok1->pBlok->State != BLOK_VRIJ)
     {
         // er staat iets op de schijf en het heeft misschien nog snelheid
         if (pBlok1->pBlok->Snelheid != 0)
         {
             return true; // gewijgerd
         }
-        if (pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit]->pBlok->State != BLOK_VRIJ)
+        if ((m_aansluitingen[stand]) && (pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit]->pBlok->State != BLOK_VRIJ))
         {
             return true; // gewijgerd trein steekt nog uit in het aangesloten blok
         }
@@ -488,7 +494,6 @@ int DraaiSchijf::Aanvraag (int stand)
             }
         }
         NieuweStand = (AndereKant) ? iSaved + 200: iSaved+100;
-        std::cout<< NieuweStand << std::endl;
     }
     else
     {
