@@ -25,6 +25,7 @@ public:
         baanWT.InitWorkThread();
     }
     testing::NiceMock<ITdMock> td; // moet bovenaan staan zodat die geinitializeerd is!
+    IThreadSleepMock threadSleep; // destruction order voor
 
     BaanWT baanWT;
     Blok blok;
@@ -49,7 +50,6 @@ public:
     IRegelaarViewUpdatesMock regelaarViewUpdates;
     ITelefoonConnectieMock telefoonConnectie;
     IErrorPrintMock errorPrint;
-    IThreadSleepMock threadSleep;
 };
 
 #endif // BAANLIBSETUP_H

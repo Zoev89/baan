@@ -50,6 +50,7 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , mDraaiWisselDialoog(standaardWisselDialoog)
     , mBaanInfo(baanInfo)
     , mThreadSleep(threadSleep)
+    , mStopWorker(false)
     , Coord1X(30)
     , Coord1Y(30)
     , Radius(20)
@@ -65,8 +66,7 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
 
 DraaiSchijf::~DraaiSchijf()
 {
-
-
+    mStopWorker = true;
 }
 
 BlokPointer_t * DraaiSchijf::GetWisselBlok()
@@ -342,8 +342,7 @@ void DraaiSchijf::WachtOp(int status)
         Bedien(hardwareAdres+2,GetStatus, true);
         mThreadSleep.SleepFor(1);
     }
-    while (hardwareReturnWaarde & status);
-
+    while ((hardwareReturnWaarde & status) && (mStopWorker ==false));
 }
 
 bool DraaiSchijf::GaNaarPositie(int positie)

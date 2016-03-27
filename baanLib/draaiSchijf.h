@@ -55,6 +55,7 @@ private:
     IWisselDialoog& mDraaiWisselDialoog;
     BaanInfo_t* mBaanInfo;
     IThreadSleep &mThreadSleep;
+    bool mStopWorker;
     Dispatcher mWorker;
 
     int Coord1X;

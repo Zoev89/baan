@@ -3,11 +3,12 @@
 #include "baanLibSetup.h"
 #include "chrono"
 #include "thread"
-
-//using ::testing::_;
+#include "future"
 
 using ::testing::Return;
 using ::testing::_;
+using ::testing::Invoke;
+using ::testing::InSequence;
 
 class draaischijfTest : public ::testing::Test {
 protected:
@@ -15,33 +16,19 @@ protected:
     {
         baanInfo = std::move(make_unique<BaanInfo_t>(mHardwareHoog, mHardwareLaag));
         objects =  std::move(make_unique<InitObjects>(baanInfo.get())); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
+        EXPECT_CALL(objects->threadSleep,SleepFor(_)).WillRepeatedly(Return());
     }
 
     virtual void TearDown()
     {
-        objects.reset();
         baanInfo.reset();
+        objects.reset();
     }
 
-    hardwareArray_t PopItemFromHardwareHoog()
-    {
-        hardwareArray_t data;
-        data.adres= 0;
-        data.data =0;
-        int count = 0;
-        while ((count <5) && (baanInfo->hardwareHoog.krijgItem (data)==1))
-        {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-            count += 1;
-        }
-        EXPECT_LT(count, 5);
-        return data;
-    }
-
-    std::unique_ptr<BaanInfo_t> baanInfo;
-    std::unique_ptr<InitObjects> objects;
     IHardwareComMock mHardwareHoog;
     IHardwareComMock mHardwareLaag;
+    std::unique_ptr<InitObjects> objects;
+    std::unique_ptr<BaanInfo_t> baanInfo;
 };
 
 TEST_F(draaischijfTest, Constructie)
@@ -70,17 +57,33 @@ TEST_F(draaischijfTest, ZetWisselStand)
     EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(12));
 
     EXPECT_CALL(objects->baanMessage, Post(WM_WISSEL_DISPLAY, 0, 0, 0));
+    std::promise<void> done;
+    {
+        InSequence in;
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(63,data.data); // get status
+        return 0;
+    }));
+
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(12,data.data);
+        return 0;
+    }));
+
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(63,data.data); // get status
+        done.set_value();
+        return 0;
+    }));
+    }
+
 
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(112));
     EXPECT_EQ(112,baanInfo->IOBits[0]->Stand);
-
-    auto data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(63,data.data); // get status
-
-    data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(12,data.data);
+    EXPECT_EQ(std::future_status::ready, done.get_future().wait_for(std::chrono::seconds(1)));
 }
 
 TEST_F(draaischijfTest, UIWisselStand)
@@ -100,21 +103,36 @@ TEST_F(draaischijfTest, UIWisselStand)
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE | (1000<<16) | (100-40)  ));
     // click drag rechts midden
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE | (1040<<16) | 100  ));
-    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE));
+
+
+    std::promise<void> done1;
+    {
+        InSequence in;
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(63,data.data); // get status
+        return 0;
+    }));
+
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+        EXPECT_EQ(303,data.adres);
+        EXPECT_EQ(36,data.data);
+        return 0;
+    }));
+
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done1] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(63,data.data); // get status
+        done1.set_value();
+        return 0;
+    }));
+    }
+
+
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE)); // nu wordt die bedient
     EXPECT_EQ(212,baanInfo->IOBits[0]->Stand);
 
-
-    auto data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(63,data.data); // get status
-
-    data = PopItemFromHardwareHoog();
-    EXPECT_EQ(303,data.adres);
-    EXPECT_EQ(36,data.data);
-
-    data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(63,data.data); // get status
+    EXPECT_EQ(std::future_status::ready, done1.get_future().wait_for(std::chrono::seconds(1)));
 
 
     // nu zit het huisje links midden draai 180 graden
@@ -124,21 +142,34 @@ TEST_F(draaischijfTest, UIWisselStand)
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE | (960<<16) | (100)  ));
     // click drag rechts midden
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE | (1040<<16) | 100  ));
-    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE));
+
+    std::promise<void> done2;
+    {
+        InSequence in;
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(63,data.data); // get status
+        return 0;
+    }));
+
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(12,data.data);
+        return 0;
+    }));
+
+    EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done2] (const hardwareArray_t & data){
+        EXPECT_EQ(302,data.adres);
+        EXPECT_EQ(63,data.data); // get status
+        done2.set_value();
+        return 0;
+    }));
+    }
+
+
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(IOAANVRAAG_TOGGLE));// nu wordt die bedient
     EXPECT_EQ(112,baanInfo->IOBits[0]->Stand);
-
-    data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(63,data.data); // get status
-
-    data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(12,data.data);
-
-    data = PopItemFromHardwareHoog();
-    EXPECT_EQ(302,data.adres);
-    EXPECT_EQ(63,data.data); // get status
-
+    EXPECT_EQ(std::future_status::ready, done2.get_future().wait_for(std::chrono::seconds(1)));
 
 }
 
