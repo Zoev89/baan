@@ -195,3 +195,182 @@ TEST_F(draaischijfTest, UIWisselStandMetTrein)
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(112));
 
 }
+
+
+TEST_F(draaischijfTest, RelaisControle)
+{
+    objects->wissels.CreateNewIO(7);
+    EXPECT_CALL(objects->baanMessage, Post(WM_WISSEL_DISPLAY, 0, 0, 0)).WillRepeatedly(Return(0)); // 3 testen
+    EXPECT_EQ(0,objects->wissels.Init(0,"7 300.0 1000 100 50 0 2",[]()
+    {
+        static int aantal=0;
+        aantal += 1;
+        if (aantal==1) return "0 1 100 0"; // default 0 adres
+        else return "3 0 -1 0"; // adres 3 geen gnd first
+    }));
+    // een trein met snelheid
+    baanInfo->IOBits[0]->hardwareReturnWaarde = 0; // return waarde van de hardware is klaar
+
+    //
+    // eerst draaien naar 103
+    //
+    std::promise<void> done1;
+    {
+        InSequence in;
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(1,data.data); // relais 1 aan
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(0x3f,data.data); // richting inverted
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(3,data.data); // draai naar positie 3
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done1] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            done1.set_value();
+            return 0;
+        }));
+    }
+
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(103));
+    EXPECT_EQ(std::future_status::ready, done1.get_future().wait_for(std::chrono::seconds(1)));
+    EXPECT_EQ(103,baanInfo->IOBits[0]->Stand);
+
+    //
+    // dan terug naar 0
+    //
+
+    std::promise<void> done2;
+    {
+        InSequence in;
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(48,data.data); // alle relais uit
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(0x3e,data.data); // richting normaal
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(0,data.data); // draai naar positie 0
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done2] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            done2.set_value();
+            return 0;
+        }));
+    }
+
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(100));
+    EXPECT_EQ(std::future_status::ready, done2.get_future().wait_for(std::chrono::seconds(1)));
+    EXPECT_EQ(100,baanInfo->IOBits[0]->Stand);
+
+    //
+    // dan naar 203 (huisje aan de andere kant
+    //
+    std::promise<void> done3;
+    {
+        InSequence in;
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(1,data.data); // relais 1 aan
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(0x3e,data.data); // richting normaal
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(303,data.adres);
+            EXPECT_EQ(27,data.data); // draai naar positie 3 andersom
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done3] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            done3.set_value();
+            return 0;
+        }));
+    }
+
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(203));
+    EXPECT_EQ(std::future_status::ready, done3.get_future().wait_for(std::chrono::seconds(1)));
+    EXPECT_EQ(203,baanInfo->IOBits[0]->Stand);
+
+
+    //
+    // dan naar 200 (huisje aan de andere kant
+    //
+    std::promise<void> done4;
+    {
+        InSequence in;
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(48,data.data); // alle relais uit
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(301,data.adres);
+            EXPECT_EQ(0x3f,data.data); // richting inverted
+            return 0;
+        }));
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [] (const hardwareArray_t & data){
+            EXPECT_EQ(303,data.adres);
+            EXPECT_EQ(24,data.data); // draai naar positie 0 andersom
+            return 0;
+        }));
+
+        EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillOnce(Invoke( [&done4] (const hardwareArray_t & data){
+            EXPECT_EQ(302,data.adres);
+            EXPECT_EQ(63,data.data); // get status
+            done4.set_value();
+            return 0;
+        }));
+    }
+
+    EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(200));
+    EXPECT_EQ(std::future_status::ready, done4.get_future().wait_for(std::chrono::seconds(1)));
+    EXPECT_EQ(200,baanInfo->IOBits[0]->Stand);
+
+}

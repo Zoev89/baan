@@ -65,7 +65,8 @@ private:
     int NieuweStand; // geeft de positie aan waar de lock binnenkomt dat is niet de draaischijf stand
     bool StartDrag;  // click drag dan kan je draaien en bevestig met click
     bool AndereKant; // de andere kant word gebruikt
-
+    bool mTurning;
+    bool mIsStarted;
     // middelpunt is het middelpunt van de rect
     std::array<boost::optional<DraaiSchijfAansluiting>, 48> m_aansluitingen;
 

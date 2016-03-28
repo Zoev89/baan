@@ -58,6 +58,8 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , NieuweStand(100)
     , StartDrag(false)
     , AndereKant(false)
+    , mTurning(false)
+    , mIsStarted(false)
 {
     routeKnoopPunt.resize(3);
     pBlok1 = &mBaanInfo->BlokPointer[kopBlok];
@@ -160,6 +162,7 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     hardwareBit = 0;
     NieuweStand = Stand = 100;
     hardwareReturnWaarde = 0;
+    mIsStarted = false;
 
     if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
     {
@@ -233,12 +236,20 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
 
 void DraaiSchijf::DraaiSchijfBlokAangesproken()
 {
+    if (!mIsStarted)
+    {
+        // zorg dat de aansluiten electisch kloppen bij startup
+        // dit is het laatste moment dat ik dit nog kan doen
+        Aanvraag(100);
+        // mIsStarted = true in gaNaarPositie
+    }
     mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].SetIgnoreStop(true);
     if ((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_ACHTERUIT))
     {
         // enable midden detectie want er rijd een trein binnen
         Bedien(hardwareAdres+2,EnableMiddenDetectie, false);
     }
+    if (mTurning) mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].SetSnelheid(0);
 
 }
 
@@ -375,6 +386,7 @@ void DraaiSchijf::WachtOp(int status)
 
 bool DraaiSchijf::GaNaarPositie(int positie)
 {
+    mIsStarted = true; // er is een positie commando dus we zijn nu gestart
     // eerst controleren of we wel kunnen draaien is de schijf vrij
     int stand = (Stand >=200) ? Stand-200: Stand - 100;
     if (pBlok1->pBlok->State != BLOK_VRIJ)
@@ -391,6 +403,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
     }
     std::cout <<  "from " << Stand<< " to Pos " << positie << std::endl;
     // eerst de baan vakken omleggen
+    mTurning = true;
     pBlok1->blokRicht[0] = &mBaanInfo->EindBlokPointer;
     pBlok1->blokRicht[1] = &mBaanInfo->EindBlokPointer;
     if (m_aansluitingen[stand])
@@ -400,9 +413,21 @@ bool DraaiSchijf::GaNaarPositie(int positie)
     stand = (positie >=200) ? positie-200: positie - 100;
     if (m_aansluitingen[stand])
     {
-        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = pBlok1;
-        pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok];
+        DraaiSchijfAansluiting aansluiting = *m_aansluitingen[stand];
+        mBaanInfo->BlokPointer[aansluiting.blok].blokRicht[!aansluiting.richtingVooruit] = pBlok1;
+        pBlok1->blokRicht[aansluiting.richtingVooruit] = &mBaanInfo->BlokPointer[aansluiting.blok];
+        if (aansluiting.blok == (hardwareAdres+stand+1))
+        {
+            // draaischijf controlled blok
+            Bedien(hardwareAdres +1,aansluiting.relaisNummer);
+        }
+        else
+        {
+            Bedien(hardwareAdres +1,48); // zet het 48 ste relais aan die bestaat niet per definitie....
+        }
+        Bedien(hardwareAdres +1,((aansluiting.gndFirst & (positie<200)) ||(!aansluiting.gndFirst & (positie>=200))  )? 0x3e: 0x3f); // richting relais
     }
+
 
     mWorker.Dispatch([=]()
     {
@@ -417,6 +442,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         auto bedienPos = (positie >=200) ? (positie-200+48/2)%48: positie - 100;
         Bedien(hardwareAdres + 2 + (positie >=200),bedienPos);
         WachtOp(Turning);
+        mTurning = false;
     });
     return false;
 }
