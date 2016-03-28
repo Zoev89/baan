@@ -27,7 +27,12 @@ HardwareCom::nieuwItem (const hardwareArray_t &data)
   int max;
 
   //if (mBaanInfo->editMode)
-  //  return 0;                   // hardware communicatie niet mogelijk
+  //   return 0;                   // hardware communicatie niet mogelijk
+
+  if (data.adres == -1)
+  {
+      return 0;
+  }
 
   nieuwKop = kop + 1;
   if (nieuwKop == MAX_AANTAL_AANVRAGEN)

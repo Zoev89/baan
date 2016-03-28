@@ -417,7 +417,7 @@ void QtWisselDialoog::SetAngleToolTip(const std::string &tooltip)
 void QtWisselDialoog::on_Add_clicked()
 {
     QtDraaiAansluiting aansluiting(this);
-    DraaiSchijfAansluiting waardes={0,-1,true,true};
+    DraaiSchijfAansluiting waardes={0,-1,true,true,0};
     aansluiting.SetValues(waardes);
     auto dialogRet = aansluiting.exec();
     if (dialogRet==QDialog::Accepted)

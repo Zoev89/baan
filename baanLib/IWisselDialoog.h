@@ -6,9 +6,10 @@
 struct DraaiSchijfAansluiting
 {
     int aansluitingNummer; // [0..47]
-    int blok; //-1 voor blok wat onder de draaischijf zit [-1..1024]
+    int blok; //[1..1023] voor een normaal blok en [-47..0] voor aansluitingen via een relais het relais nummer is dan abs(blok)
     bool gndFirst;
     bool richtingVooruit;
+    int relaisNummer; // word in de code gezet niet via input van de gebruiker zie blok
 };
 
 class IWisselDialoog

@@ -160,6 +160,21 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     hardwareBit = 0;
     NieuweStand = Stand = 100;
     hardwareReturnWaarde = 0;
+
+    if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
+    {
+        return WISSEL_ERR_INVALID_ADRES;
+    }
+
+    if (mBaanInfo->BlokPointer[hardwareAdres].BlokIONummer == -1)
+    {
+        // blok nog niet belegd door de draaischijf creer die
+        mBaanInfo->BlokPointer[hardwareAdres].BlokIONummer = hardwareAdres;
+        mBaanInfo->AantalBlokken += 1;
+    }
+    pBlok1 = &mBaanInfo->BlokPointer[hardwareAdres];
+    pBlok1->pBlok->specialProcessing = [this]() { DraaiSchijfBlokAangesproken();};
+
     for (int i=0;i<aantal;++i)
     {
         auto string = extraInput();
@@ -205,20 +220,7 @@ int DraaiSchijf::Init (const char *Input, std::function<std::string()> extraInpu
     }
 
     UpdateRec();
-    if ((hardwareAdres < HARDWARE_MIN_ADRES) || (hardwareAdres >= MAX_NOBLOKS))
-    {
-        return WISSEL_ERR_INVALID_ADRES;
-    }
 
-    if (mBaanInfo->BlokPointer[hardwareAdres].BlokIONummer == -1)
-    {
-        // blok nog niet belegd door de draaischijf creer die
-        mBaanInfo->BlokPointer[hardwareAdres].BlokIONummer = hardwareAdres;
-        mBaanInfo->AantalBlokken += 1;
-    }
-
-    pBlok1 = &mBaanInfo->BlokPointer[hardwareAdres];
-    pBlok1->pBlok->specialProcessing = [this]() { DraaiSchijfBlokAangesproken();};
     if (m_aansluitingen[0])
     {
         // aansluiting in gebruik dus initializeer de blok pointers
@@ -240,7 +242,7 @@ void DraaiSchijf::DraaiSchijfBlokAangesproken()
 
 }
 
-int DraaiSchijf::checkAansluiting(const DraaiSchijfAansluiting& aansturing)
+int DraaiSchijf::checkAansluiting(DraaiSchijfAansluiting& aansturing)
 {
     if ((aansturing.aansluitingNummer < 0) || (aansturing.aansluitingNummer >= 48))
     {
@@ -249,6 +251,26 @@ int DraaiSchijf::checkAansluiting(const DraaiSchijfAansluiting& aansturing)
                              aansturing.aansluitingNummer % EricFgetsGetLastLineCount ()% hardwareAdres));
         return WISSEL_ERR_MESSAGE_AL_GEGEVEN;
     }
+    if (aansturing.blok < 1)
+    {
+        // aansluiting aan een intern blok
+        aansturing.relaisNummer = std::abs(aansturing.blok);
+        aansturing.blok = aansturing.aansluitingNummer + hardwareAdres + 1;
+        mBaanInfo->Blok[aansturing.blok].hardwareAdres = hardwareAdres;
+        mBaanInfo->Blok[aansturing.blok].specialProcessing = [=]()
+        {
+            // zet the returnwaarde van het draaischijf blok over op dit blok
+            mBaanInfo->Blok[aansturing.blok].hardwareReturnWaarde = mBaanInfo->Blok[hardwareAdres].hardwareReturnWaarde;
+        };
+        if (mBaanInfo->BlokPointer[aansturing.blok].BlokIONummer == -1)
+        {
+            // blok nog niet belegd door de draaischijf creer die
+            mBaanInfo->BlokPointer[aansturing.blok].BlokIONummer = aansturing.blok;
+            mBaanInfo->AantalBlokken += 1;
+        }
+
+    }
+
     // check  of the baanblok aan die kant vrij is
     if (mBlok.BlokIsBlokNummer(aansturing.blok)==0)
     {
@@ -381,11 +403,6 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = pBlok1;
         pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok];
     }
-
-    //m_aansluitingen[stand]->blok nog niet goed want die kan nu negatief zijn.
-    // als die negatief is init relais nummer en laat hem wijzen naar een intern draaischijf blok.
-
-
 
     mWorker.Dispatch([=]()
     {
@@ -544,11 +561,17 @@ std::string DraaiSchijf::String ()
     ret = string;
     for (size_t i=0;i<aansluitingen.size();++i)
     {
+        DraaiSchijfAansluiting aansluiting = aansluitingen[i];
+        if (aansluiting.blok == (hardwareAdres + aansluiting.aansluitingNummer +1))
+        {
+            aansluiting.blok = -aansluiting.relaisNummer;
+        }
+
         sprintf (string, "\n%4d %4d %4d %4d"
-                 ,aansluitingen[i].aansluitingNummer
-                 ,aansluitingen[i].gndFirst
-                 ,aansluitingen[i].blok
-                 ,aansluitingen[i].richtingVooruit);
+                 ,aansluiting.aansluitingNummer
+                 ,aansluiting.gndFirst
+                 ,aansluiting.blok
+                 ,aansluiting.richtingVooruit);
         ret += string;
     }
     return ret;
@@ -605,7 +628,13 @@ void DraaiSchijf::InitDialoog ()
     {
         if (i)
         {
-            aansluitingen.emplace_back(*i);
+            DraaiSchijfAansluiting aansluiting = *i;
+            if (aansluiting.blok == (hardwareAdres + aansluiting.aansluitingNummer +1))
+            {
+                aansluiting.blok = -aansluiting.relaisNummer;
+            }
+
+            aansluitingen.emplace_back(aansluiting);
         }
     }
     mDraaiWisselDialoog.SetAdres(WisselAdres());

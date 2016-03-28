@@ -44,7 +44,7 @@ private:
     bool GaNaarPositie(int positie) ;
     void Bedien (int adres, int data, bool returnGewenst=false);
     int WisselNummer();
-    int checkAansluiting(const DraaiSchijfAansluiting& aansturing);
+    int checkAansluiting(DraaiSchijfAansluiting &aansturing);
     void DraaiSchijfBlokAangesproken();
 
     IMessage& mMessage;
