@@ -8,14 +8,14 @@
 
 BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWindowDrawing& mainWindowDrawing, ITreinenDialoog &treinenDialoog, IBlokInst& blokInst, IRegelaarViewUpdates& regelaarViewUpdates,
                  IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog &wisselDialoog, ILampInstDialoog& lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog &nieuwIODialoog,
-                 IAddBlokDialoog &addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag)
+                 IAddBlokDialoog &addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag, IDraaiSchijfTuning &draaiSchijfTuning)
     : mBaanInfo(hardwareHoog,hardwareLaag)
     , mTd(10000)
     , mMessage(message)
     , mErrorPrint(mBaanInfo.tickTimer)
     , mBaanWT(message,mBaanMessage, mWissels, mTd, &mBaanInfo)
     , mBaanDoc(message, mBaanWT, mBaanTreinen, mBlok, mWissels, mainControls, mainWindowDrawing, regelaarViewUpdates, mBaanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog,
-             mTelefoonConnectie, mTd, mErrorPrint, &mBaanInfo)
+             mTelefoonConnectie, mTd, mErrorPrint, &mBaanInfo, draaiSchijfTuning)
     , mBaanTreinen(mBaanDoc, treinenDialoog)
     , mBlok(message, mainWindowDrawing, mTd, &mBaanInfo)
     , mBaanMessage(mBaanView, mTd, mBaanInfo.RegelArray)
@@ -171,4 +171,16 @@ std::string BaanLib::GetBitmapFileName(int regelaar)
     return mBaanInfo.RegelArray[regelaar].GetBitmapFileName();
 }
 
-
+int BaanLib::HardwareReq(int adres, int data, bool hogePrioriteit)
+{
+    hardwareArray_t hardwareReq;
+    hardwareReq.adres = adres;
+    hardwareReq.data = data;
+    hardwareReq.blokIO = HW_IO;
+    hardwareReq.returnGewenst = 0;
+    std::cout << "hardwareReq " << adres << " " << data;
+    if (hogePrioriteit)
+        return mBaanInfo.hardwareHoog.nieuwItem (hardwareReq);
+    else
+        return mBaanInfo.hardwareLaag.nieuwItem (hardwareReq);
+}

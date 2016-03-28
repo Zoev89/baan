@@ -20,6 +20,7 @@
 #include "ITelefoonConnectie.h"
 #include "ITd.h"
 #include "IErrorPrint.h"
+#include "IDraaiSchijfTuning.h"
 
 #include <vector>
 
@@ -29,7 +30,7 @@ public:
     BaanDoc(IMessage& msg, IBaanWT& baanWT, IBaanTreinen &baanTreinen, IBlok& blok, IWissels& wissels, IMainScreenControls& mainScreenControls, IMainWindowDrawing &mainWindowDrawing, IRegelaarViewUpdates& regelaarViewUpdates,
             IBaanMessage& baanMessage, ILampInstDialoog& lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog& nieuwIODialoog, IAddBlokDialoog& addBlokDialoog,
             IRegelaarInstellingenDialoog& regelaarInstellingenDialoog,
-            ITelefoonConnectie& telefoonConnectie, ITd& td, IErrorPrint &errorPrint, BaanInfo_t *baanInfo);
+            ITelefoonConnectie& telefoonConnectie, ITd& td, IErrorPrint &errorPrint, BaanInfo_t *baanInfo, IDraaiSchijfTuning &draaiSchijfTuning);
 
     // IBaanDoc
     virtual void baanDocLeftMouseButtonDown(int x,int y);
@@ -76,6 +77,8 @@ private:
     ITd& mTd;
     IErrorPrint& mErrorPrint;
     BaanInfo_t *mBaanInfo;
+    IDraaiSchijfTuning& mDraaiSchijfTuning;
+
     char iniFileName[MAX_FILENAME];
     char blkFileName[MAX_FILENAME];
     char iniBlkFileName[MAX_FILENAME];       // de orginele filename in de blk file

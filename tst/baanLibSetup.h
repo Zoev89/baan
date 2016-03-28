@@ -20,7 +20,7 @@ public:
         blok(message,mainWindowDrawing, td, baanInfo),
         wissels(message, blok, mainWindowDrawing, baanMessage, wisselDialoog, baanInfo, threadSleep),
         baanDoc(message, baanWT, baanTreinen, blok, wissels, mainScreenControls, mainWindowDrawing,regelaarViewUpdates,
-                baanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog, telefoonConnectie, td, errorPrint, baanInfo)
+                baanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog, telefoonConnectie, td, errorPrint, baanInfo, draaiSchijfTuning)
     {
         baanWT.InitWorkThread();
     }
@@ -50,6 +50,7 @@ public:
     IRegelaarViewUpdatesMock regelaarViewUpdates;
     ITelefoonConnectieMock telefoonConnectie;
     IErrorPrintMock errorPrint;
+    IDraaiSchijfTuningMock draaiSchijfTuning;
 };
 
 #endif // BAANLIBSETUP_H

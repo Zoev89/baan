@@ -120,7 +120,8 @@ HEADERS +=\
     Dispatcher.h \
     ThreadSleep.h \
     IThreadSleep.h \
-    IHardwareCom.h
+    IHardwareCom.h \
+    IDraaiSchijfTuning.h
 
 unix {
     target.path = /usr/lib

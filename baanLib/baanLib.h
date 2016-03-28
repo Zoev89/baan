@@ -22,6 +22,7 @@
 #include "IAddBlokDialoog.h"
 #include "IRegelaarViewUpdates.h"
 #include "IRegelaarInstellingenDialoog.h"
+#include "IDraaiSchijfTuning.h"
 #include "TelefoonConnectie.h"
 #include "td.h"
 #include "errorPrint.h"
@@ -31,7 +32,7 @@ class BaanLib: public IView
 public:
     BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWindowDrawing& mainWindowDrawing, ITreinenDialoog& treinenDialoog, IBlokInst& blokInst, IRegelaarViewUpdates& regelaarViewUpdates,
             IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog& wisselDialoog, ILampInstDialoog &lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog& nieuwIODialoog,
-            IAddBlokDialoog& addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag);
+            IAddBlokDialoog& addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag , IDraaiSchijfTuning& draaiSchijfTuning);
     ~BaanLib();
 
     // Interface to main document
@@ -49,6 +50,7 @@ public:
     int BaanCheckDatabase();
     void TreinenDialogActivateRegelaar(int regelaarNummer);
     std::string baanDocGetBitmapname();
+    int HardwareReq(int adres, int data, bool hogePrioriteit);
 
 
     // IView

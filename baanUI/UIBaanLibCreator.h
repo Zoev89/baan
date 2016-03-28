@@ -10,6 +10,7 @@
 #include "UITreinenDialoog.h"
 #include "QtBlokInstDialoog.h"
 #include "QtWisselDialoog.h"
+#include "QtDraaiSchijfTuning.h"
 #include "UILampInstDialoog.h"
 #include "QtKopRichtingDialoog.h"
 #include "QtNieuwIODialoog.h"
@@ -33,6 +34,7 @@ public:
     UILampInstDialoog lampInstDialoog;
     QtKopRichtingDialoog kopRichtingDialoog;
     QtNieuwIODialoog nieuwIODialoog;
+    QtDraaiSchijfTuning draaiSchijfTuningDialoog;
     UIAddBlokDialoog addBlok;
     std::unique_ptr<UIRegelaarViewUpdates> regelaarViewUpdates;
     UIRegelaarInstellingenDialoog regelaarInstellingenDialoog;

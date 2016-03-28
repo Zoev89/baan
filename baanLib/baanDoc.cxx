@@ -23,24 +23,25 @@
 BaanDoc::BaanDoc(IMessage &msg, IBaanWT &baanWT, IBaanTreinen &baanTreinen, IBlok &blok, IWissels& wissels, IMainScreenControls &mainScreenControls, IMainWindowDrawing& mainWindowDrawing, IRegelaarViewUpdates& regelaarViewUpdates,
                  IBaanMessage &baanMessage, ILampInstDialoog &lampInstDialoog, IKopRichtingDialoog &kopRichtingDialoog, INieuwIODialoog &nieuwIODialoog, IAddBlokDialoog& addBlokDialoog,
                  IRegelaarInstellingenDialoog& regelaarInstellingenDialoog,
-                 ITelefoonConnectie& telefoonConnectie, ITd &td, IErrorPrint &errorPrint, BaanInfo_t *mBaanInfo) :
-    mMessage(msg),
-    mMainControls(mainScreenControls),
-    mBaanWT(baanWT),
-    mBaanTreinen(baanTreinen),
-    mBlok(blok),
-    mWissels(wissels),
-    mMainWindowDrawing(mainWindowDrawing),
-    mBaanMessage(baanMessage),
-    mLampInstDialoog(lampInstDialoog),
-    mKopRichtingDialoog(kopRichtingDialoog),
-    mNieuwIODialoog(nieuwIODialoog),
-    mAddBlokDialoog(addBlokDialoog),
-    mTelefoonConnectie(telefoonConnectie),
-    mTd(td),
-    mErrorPrint(errorPrint),
-    mBaanInfo(mBaanInfo),
-    globaalProg(msg, wissels, baanMessage, mainWindowDrawing, td, errorPrint, mBaanInfo)
+                 ITelefoonConnectie& telefoonConnectie, ITd &td, IErrorPrint &errorPrint, BaanInfo_t *mBaanInfo, IDraaiSchijfTuning &draaiSchijfTuning)
+    : mMessage(msg)
+    , mMainControls(mainScreenControls)
+    , mBaanWT(baanWT)
+    , mBaanTreinen(baanTreinen)
+    , mBlok(blok)
+    , mWissels(wissels)
+    , mMainWindowDrawing(mainWindowDrawing)
+    , mBaanMessage(baanMessage)
+    , mLampInstDialoog(lampInstDialoog)
+    , mKopRichtingDialoog(kopRichtingDialoog)
+    , mNieuwIODialoog(nieuwIODialoog)
+    , mAddBlokDialoog(addBlokDialoog)
+    , mTelefoonConnectie(telefoonConnectie)
+    , mTd(td)
+    , mErrorPrint(errorPrint)
+    , mBaanInfo(mBaanInfo)
+    , mDraaiSchijfTuning(draaiSchijfTuning)
+    , globaalProg(msg, wissels, baanMessage, mainWindowDrawing, td, errorPrint, mBaanInfo)
 {
     for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
         regelProg.push_back(CProgramma(msg, wissels, baanMessage, mainWindowDrawing, td, errorPrint, mBaanInfo));
@@ -1155,6 +1156,10 @@ BaanDoc::baanDocRightMouseButtonDown (int x, int y)
                     mBaanInfo->selectedWisselY = y;
                     mBaanInfo->selectedWissel->Display();
 
+                }
+                if (mBaanInfo->IOBits[i].get()->Type == DRAAISCHIJF)
+                {
+                    mDraaiSchijfTuning.show(mBaanInfo->IOBits[i].get()->hardwareAdres);
                 }
                 else
                 {

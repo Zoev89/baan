@@ -31,11 +31,12 @@ TEST_F(baanLibTest, Constructie)
     IThreadSleepMock threadSleep;
     IHardwareComMock hardwareHoog;
     IHardwareComMock hardwareLaag;
+    IDraaiSchijfTuningMock draaiSchijfTuning;
 
     EXPECT_CALL(message,message(_));
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,
-                       addBlok, threadSleep, hardwareHoog, hardwareLaag);
+                       addBlok, threadSleep, hardwareHoog, hardwareLaag, draaiSchijfTuning);
 }
 
 TEST_F(baanLibTest, ConstructieNogmaals)
@@ -55,9 +56,10 @@ TEST_F(baanLibTest, ConstructieNogmaals)
     IThreadSleepMock threadSleep;
     IHardwareComMock hardwareHoog;
     IHardwareComMock hardwareLaag;
+    IDraaiSchijfTuningMock draaiSchijfTuning;
 
     EXPECT_CALL(message,message(_));
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,
-                       addBlok, threadSleep, hardwareHoog, hardwareLaag);
+                       addBlok, threadSleep, hardwareHoog, hardwareLaag, draaiSchijfTuning);
 }
