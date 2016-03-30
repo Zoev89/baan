@@ -45,7 +45,8 @@ void UIRegelaars::RichtingVeranderingSlot(int regelaarNummer, int richting)
 
 void UIRegelaars::IgnoreStopSlot(int regelaarNummer, bool ignore)
 {
-
+    mRegelaars[regelaarNummer].ignoreStop = ignore;
+    updateRegelaar(regelaarNummer);
 }
 
 void UIRegelaars::ShowRegelaarSlot(int regelaarNummer, bool show)
@@ -69,6 +70,7 @@ void UIRegelaars::updateRegelaar(int regelaarNummer)
         mRegelaar->ui->snelheid->setValue(mRegelaars[regelaarNummer].snelheid);
         mRegelaar->ui->snelheidProgress->setValue(mRegelaars[regelaarNummer].snelheidProgess);
         mRegelaar->ui->richting->setValue(mRegelaars[regelaarNummer].richting);
+        mRegelaar->ui->ignoreStop->setChecked(mRegelaars[regelaarNummer].ignoreStop);
     }
 }
 
@@ -89,3 +91,10 @@ void UIRegelaars::verwijderClicked()
     mBaanLib->VerwijderClicked(mActiveRegelaar);
     mRegelaar->hide();
 }
+
+void UIRegelaars::ignoreStopChangedSlot(bool ignore)
+{
+    mRegelaars[mActiveRegelaar].ignoreStop = ignore;
+    mBaanLib->SetIgnoreStop(mActiveRegelaar,ignore);
+}
+

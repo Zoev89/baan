@@ -9,6 +9,7 @@ UIRegelaar::UIRegelaar(QWidget *parent) :
     connect(this, SIGNAL(snelheidSignal(int)), parent, SLOT(snelheidSlot(int)));
     connect(this, SIGNAL(vtValueSignal(int)), parent, SLOT(vtValueSlot(int)));
     connect(this, SIGNAL(verwijderClickedSignal()), parent, SLOT(verwijderClicked()));
+    connect(this, SIGNAL(ignoreStopSignal(bool )), parent, SLOT(ignoreStopChangedSlot(bool)));
 
 }
 
@@ -30,4 +31,9 @@ void UIRegelaar::snelheid(int value)
 void UIRegelaar::on_verwijder_clicked()
 {
     emit verwijderClickedSignal();
+}
+
+void UIRegelaar::on_ignoreStop_clicked(bool checked)
+{
+    emit ignoreStopSignal(checked);
 }

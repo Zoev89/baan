@@ -31,6 +31,7 @@ public slots:
     void snelheidSlot(int value);
     void vtValueSlot(int value);
     void verwijderClicked();
+    void ignoreStopChangedSlot(bool ignore);
 
 private:
     void updateRegelaar(int regelaarNummer);
@@ -40,11 +41,12 @@ private:
     int mActiveRegelaar;
     struct RegelaarData
     {
-        RegelaarData():
-            bitmap(nullptr),
-            snelheid(0),
-            richting(0),
-            snelheidProgess(0)
+        RegelaarData()
+            : bitmap(nullptr)
+            , snelheid(0)
+            , richting(0)
+            , snelheidProgess(0)
+            , ignoreStop(false)
         {
 
         }
@@ -58,6 +60,7 @@ private:
         int snelheid;
         int richting;
         int snelheidProgess;
+        bool ignoreStop;
     };
 
     std::array<RegelaarData, MAX_AANTAL_REGELAARS>  mRegelaars;

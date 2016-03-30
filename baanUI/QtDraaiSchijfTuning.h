@@ -15,7 +15,7 @@ class QtDraaiSchijfTuning : public QDialog, public IDraaiSchijfTuning
 
 public:
     explicit QtDraaiSchijfTuning(QWidget *parent = 0);
-    virtual void show(int basisAdres) override;
+    virtual void show(int adres) override;
     void setBaanLib(BaanLib * baanLib);
 
     ~QtDraaiSchijfTuning();
@@ -49,7 +49,7 @@ private slots:
 
 private:
     Ui::QtDraaiSchijfTuning *ui;
-    int mBasisAdres;
+    int mAdres;
     BaanLib * mBaanLib;
 };
 

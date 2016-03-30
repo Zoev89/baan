@@ -1159,7 +1159,8 @@ BaanDoc::baanDocRightMouseButtonDown (int x, int y)
                 }
                 if (mBaanInfo->IOBits[i].get()->Type == DRAAISCHIJF)
                 {
-                    mDraaiSchijfTuning.show(mBaanInfo->IOBits[i].get()->hardwareAdres);
+                    int adres = mBaanInfo->IOBits[i].get()->hardwareAdres + ((mBaanInfo->IOBits[i].get()->Stand >=200)? 3:2);
+                    mDraaiSchijfTuning.show(adres);
                 }
                 else
                 {

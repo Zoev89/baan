@@ -20,6 +20,7 @@ Q_SIGNALS:
     void snelheidSignal(int value);
     void vtValueSignal(int value);
     void verwijderClickedSignal();
+    void ignoreStopSignal(bool checked);
 
 public Q_SLOTS:
     void vtValue(int);
@@ -29,6 +30,8 @@ public:
     Ui::UIRegelaar *ui;
 private slots:
     void on_verwijder_clicked();
+
+    void on_ignoreStop_clicked(bool checked);
 
 private:
 };
