@@ -12,12 +12,15 @@
 #include "IWisselDialoog.h"
 #include "Dispatcher.h"
 #include "IThreadSleep.h"
+#include "IBaanWT.h"
+
 #include <boost/optional.hpp>
 
 class DraaiSchijf: public IOBits_t
 {
 public:
-    DraaiSchijf(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& standaardWisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep, int kopBlok);
+    DraaiSchijf(IMessage& msg, IBlok& blok, IWissels& wissels, IBaanMessage& baanMessage, IMainWindowDrawing& mainWindowDrawing, IWisselDialoog& standaardWisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep,
+                IBaanWT& baanWT, int kopBlok);
     virtual ~DraaiSchijf();
     // IWissel
     virtual int Init(const char *Input, std::function<std::string()> newInput) override;
@@ -55,6 +58,7 @@ private:
     IWisselDialoog& mDraaiWisselDialoog;
     BaanInfo_t* mBaanInfo;
     IThreadSleep &mThreadSleep;
+    IBaanWT& mBaanWT;
     bool mStopWorker;
     Dispatcher mWorker;
 
@@ -65,8 +69,8 @@ private:
     int NieuweStand; // geeft de positie aan waar de lock binnenkomt dat is niet de draaischijf stand
     bool StartDrag;  // click drag dan kan je draaien en bevestig met click
     bool AndereKant; // de andere kant word gebruikt
-    bool mTurning;
     bool mIsStarted;
+    bool mMiddenDetectieEnabled;
     // middelpunt is het middelpunt van de rect
     std::array<boost::optional<DraaiSchijfAansluiting>, 48> m_aansluitingen;
 

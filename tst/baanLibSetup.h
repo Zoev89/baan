@@ -18,7 +18,7 @@ public:
     InitObjects(BaanInfo_t *baanInfo) :
         baanWT(message,baanMessage,wissels, td, baanInfo),
         blok(message,mainWindowDrawing, td, baanInfo),
-        wissels(message, blok, mainWindowDrawing, baanMessage, wisselDialoog, baanInfo, threadSleep),
+        wissels(message, blok, mainWindowDrawing, baanMessage, wisselDialoog, baanInfo, threadSleep, baanWT),
         baanDoc(message, baanWT, baanTreinen, blok, wissels, mainScreenControls, mainWindowDrawing,regelaarViewUpdates,
                 baanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog, telefoonConnectie, td, errorPrint, baanInfo, draaiSchijfTuning)
     {

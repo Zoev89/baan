@@ -60,10 +60,12 @@ class BaanWT: public IBaanWT
 {
 public:
     BaanWT(IMessage& msg, IBaanMessage& baanMessage, IWissels& wissels, ITd& td, BaanInfo_t *baanInfo);
-    virtual void InitWorkThread (void);
-    virtual void StartWorker(void);
-    virtual void StopWorker(void);
-    virtual void ericSleep (int tijdInMs);
+    // IBaanWT
+    virtual void InitWorkThread (void) override;
+    virtual void StartWorker(void) override;
+    virtual void StopWorker(void) override ;
+    virtual void ericSleep (int tijdInMs) override;
+    virtual void BaanCheckLengte (int RegelNummer, int NeemKopBlokMee) override;
 private:
     void GeefBlokVrij (BlokPointer_t * pBlok);
     void BaanSimulatie (void);
@@ -78,7 +80,6 @@ private:
     void StartHardware (void);
     void StopHardware (void);
     void ResetHardware (void);
-    void BaanCheckLengte (int RegelNummer, int NeemKopBlokMee);
     void SetSnelheid (int Regelaar, int Snelheid);
     void BaanGeefVrij (int BlokNummer);
     void zetSein (BlokPointer_t * pBlok, hardwareArray_t * array,

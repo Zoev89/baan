@@ -32,16 +32,18 @@
 #include <cmath>
 
 #define Homing 60
-#define EnableMiddenDetectie 61
+#define EnableMiddenDetectie 60
+#define DisableMiddenDetectie 61
 #define GetStatus 63
 #define Turning 1
 #define NeedsHoming 0x4
+#define MiddenDetected 0x2
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &standaardWisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep, int kopBlok)
+DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage &baanMessage, IMainWindowDrawing &mainWindowDrawing, IWisselDialoog &standaardWisselDialoog, BaanInfo_t *baanInfo, IThreadSleep & threadSleep, IBaanWT &baanWT, int kopBlok)
     : mMessage(msg)
     , mBlok(blok)
     , mWissels(wissels)
@@ -50,6 +52,7 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , mDraaiWisselDialoog(standaardWisselDialoog)
     , mBaanInfo(baanInfo)
     , mThreadSleep(threadSleep)
+    , mBaanWT(baanWT)
     , mStopWorker(false)
     , Coord1X(30)
     , Coord1Y(30)
@@ -58,8 +61,8 @@ DraaiSchijf::DraaiSchijf(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMes
     , NieuweStand(100)
     , StartDrag(false)
     , AndereKant(false)
-    , mTurning(false)
     , mIsStarted(false)
+    , mMiddenDetectieEnabled(false)
 {
     routeKnoopPunt.resize(3);
     pBlok1 = &mBaanInfo->BlokPointer[kopBlok];
@@ -244,12 +247,36 @@ void DraaiSchijf::DraaiSchijfBlokAangesproken()
         // mIsStarted = true in gaNaarPositie
     }
     mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].SetIgnoreStop(true);
-    if ((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_ACHTERUIT))
+    auto stand = (Stand >= 200) ? Stand - 200: Stand - 100;
+
+    if (((((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_VOORUITCHECK)) && (m_aansluitingen[stand]->richtingVooruit == true)) ||
+        (((pBlok1->pBlok->State == BLOK_ACHTERUIT) || (pBlok1->pBlok->State == BLOK_ACHTERUITCHECK)) && (m_aansluitingen[stand]->richtingVooruit == false)))
+            && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].getGewensteSnelheid() != 0))
     {
         // enable midden detectie want er rijd een trein binnen
-        Bedien(hardwareAdres+2,EnableMiddenDetectie, false);
+        if (!mMiddenDetectieEnabled)
+            Bedien(hardwareAdres+1,EnableMiddenDetectie, false);
+        mMiddenDetectieEnabled = true;
     }
-    if (mTurning) mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].SetSnelheid(0);
+    if (((((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_VOORUITCHECK)) && (m_aansluitingen[stand]->richtingVooruit == false)) ||
+        (((pBlok1->pBlok->State == BLOK_ACHTERUIT) || (pBlok1->pBlok->State == BLOK_ACHTERUITCHECK)) && (m_aansluitingen[stand]->richtingVooruit == true)))
+            && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].getGewensteSnelheid() != 0))
+    {
+        // disable midden detectie want er rijd een trein weg
+        if (mMiddenDetectieEnabled)
+            Bedien(hardwareAdres+1,DisableMiddenDetectie, false);
+        mMiddenDetectieEnabled = false;
+    }
+
+    Bedien(hardwareAdres+2,GetStatus, true);
+    if (hardwareReturnWaarde & MiddenDetected)
+    {
+        mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].zetGewensteSnelheid(0);
+        mBaanWT.BaanCheckLengte(pBlok1->pBlok->RegelaarNummer, 1);
+        Bedien(hardwareAdres+1,DisableMiddenDetectie, false);
+        mMiddenDetectieEnabled = false;
+    }
+
 
 }
 
@@ -401,9 +428,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
             return true; // gewijgerd trein steekt nog uit in het aangesloten blok
         }
     }
-    std::cout <<  "from " << Stand<< " to Pos " << positie << std::endl;
     // eerst de baan vakken omleggen
-    mTurning = true;
     pBlok1->blokRicht[0] = &mBaanInfo->EindBlokPointer;
     pBlok1->blokRicht[1] = &mBaanInfo->EindBlokPointer;
     if (m_aansluitingen[stand])
@@ -411,6 +436,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->EindBlokPointer;
     }
     stand = (positie >=200) ? positie-200: positie - 100;
+    // programmeer de relais
     if (m_aansluitingen[stand])
     {
         DraaiSchijfAansluiting aansluiting = *m_aansluitingen[stand];
@@ -442,7 +468,6 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         auto bedienPos = (positie >=200) ? (positie-200+48/2)%48: positie - 100;
         Bedien(hardwareAdres + 2 + (positie >=200),bedienPos);
         WachtOp(Turning);
-        mTurning = false;
     });
     return false;
 }

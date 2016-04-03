@@ -20,7 +20,7 @@ BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWind
     , mBlok(message, mainWindowDrawing, mTd, &mBaanInfo)
     , mBaanMessage(mBaanView, mTd, mBaanInfo.RegelArray)
     , mBaanView(message, mBaanDoc,mBlok, blokInst, mWissels, mainWindowDrawing, mTd, &mBaanInfo)
-    , mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo, threadSleep)
+    , mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo, threadSleep, mBaanWT)
     , mTelefoonConnectie(mBaanInfo.RegelArray)
 {
     mMessage.message("Ik ben er");
@@ -178,7 +178,6 @@ int BaanLib::HardwareReq(int adres, int data, bool hogePrioriteit)
     hardwareReq.data = data;
     hardwareReq.blokIO = HW_IO;
     hardwareReq.returnGewenst = 0;
-    std::cout << "hardwareReq " << adres << " " << data;
     if (hogePrioriteit)
         return mBaanInfo.hardwareHoog.nieuwItem (hardwareReq);
     else
