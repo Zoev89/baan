@@ -246,7 +246,10 @@ void DraaiSchijf::DraaiSchijfBlokAangesproken()
         Aanvraag(100);
         // mIsStarted = true in gaNaarPositie
     }
-    mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].SetIgnoreStop(true);
+    if ((pBlok1->pBlok->State != BLOK_VRIJ) && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].GetIgnoreStop() == 0))
+    {
+        mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].WisselIgnoreStop();
+    }
     auto stand = (Stand >= 200) ? Stand - 200: Stand - 100;
 
     if (((((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_VOORUITCHECK)) && (m_aansluitingen[stand]->richtingVooruit == true)) ||
@@ -299,6 +302,10 @@ int DraaiSchijf::checkAansluiting(DraaiSchijfAansluiting& aansturing)
         {
             // zet the returnwaarde van het draaischijf blok over op dit blok
             mBaanInfo->Blok[aansturing.blok].hardwareReturnWaarde = mBaanInfo->Blok[hardwareAdres].hardwareReturnWaarde;
+            if ((pBlok1->pBlok->State != BLOK_VRIJ) && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].GetIgnoreStop() == 0))
+            {
+                mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].WisselIgnoreStop();
+            }
         };
         if (mBaanInfo->BlokPointer[aansturing.blok].BlokIONummer == -1)
         {
@@ -415,7 +422,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
 {
     mIsStarted = true; // er is een positie commando dus we zijn nu gestart
     // eerst controleren of we wel kunnen draaien is de schijf vrij
-    int stand = (Stand >=200) ? Stand-200: Stand - 100;
+    int standOud = (Stand >=200) ? Stand-200: Stand - 100;
     if (pBlok1->pBlok->State != BLOK_VRIJ)
     {
         // er staat iets op de schijf en het heeft misschien nog snelheid
@@ -423,7 +430,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         {
             return true; // gewijgerd
         }
-        if ((m_aansluitingen[stand]) && (pBlok1->blokRicht[m_aansluitingen[stand]->richtingVooruit]->pBlok->State != BLOK_VRIJ))
+        if ((m_aansluitingen[standOud]) && (pBlok1->blokRicht[m_aansluitingen[standOud]->richtingVooruit]->pBlok->State != BLOK_VRIJ))
         {
             return true; // gewijgerd trein steekt nog uit in het aangesloten blok
         }
@@ -431,18 +438,18 @@ bool DraaiSchijf::GaNaarPositie(int positie)
     // eerst de baan vakken omleggen
     pBlok1->blokRicht[0] = &mBaanInfo->EindBlokPointer;
     pBlok1->blokRicht[1] = &mBaanInfo->EindBlokPointer;
-    if (m_aansluitingen[stand])
+    if (m_aansluitingen[standOud])
     {
-        mBaanInfo->BlokPointer[m_aansluitingen[stand]->blok].blokRicht[!m_aansluitingen[stand]->richtingVooruit] = &mBaanInfo->EindBlokPointer;
+        mBaanInfo->BlokPointer[m_aansluitingen[standOud]->blok].blokRicht[!m_aansluitingen[standOud]->richtingVooruit] = &mBaanInfo->EindBlokPointer;
     }
-    stand = (positie >=200) ? positie-200: positie - 100;
+    int standNieuw = (positie >=200) ? positie-200: positie - 100;
     // programmeer de relais
-    if (m_aansluitingen[stand])
+    if (m_aansluitingen[standNieuw])
     {
-        DraaiSchijfAansluiting aansluiting = *m_aansluitingen[stand];
+        DraaiSchijfAansluiting aansluiting = *m_aansluitingen[standNieuw];
         mBaanInfo->BlokPointer[aansluiting.blok].blokRicht[!aansluiting.richtingVooruit] = pBlok1;
         pBlok1->blokRicht[aansluiting.richtingVooruit] = &mBaanInfo->BlokPointer[aansluiting.blok];
-        if (aansluiting.blok == (hardwareAdres+stand+1))
+        if (aansluiting.blok == (hardwareAdres+standNieuw+1))
         {
             // draaischijf controlled blok
             Bedien(hardwareAdres +1,aansluiting.relaisNummer);
@@ -453,7 +460,15 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         }
         Bedien(hardwareAdres +1,((aansluiting.gndFirst & (positie<200)) ||(!aansluiting.gndFirst & (positie>=200))  )? 0x3e: 0x3f); // richting relais
     }
-
+    if (pBlok1->pBlok->State != BLOK_VRIJ)
+    {
+        if ((m_aansluitingen[standOud]) && (m_aansluitingen[standNieuw]))
+        {
+            bool aansluitingGelijk = (m_aansluitingen[standOud]->richtingVooruit == m_aansluitingen[standNieuw]->richtingVooruit);
+            if (aansluitingGelijk)
+                mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].RichtingVerandering();
+        }
+    }
 
     mWorker.Dispatch([=]()
     {
