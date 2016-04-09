@@ -34,6 +34,12 @@ TEST_F(baanLibTest, Constructie)
     IDraaiSchijfTuningMock draaiSchijfTuning;
 
     EXPECT_CALL(message,message(_));
+    EXPECT_CALL(treinenDialoog, DestroyTreinen());
+    EXPECT_CALL(mainScreenControls, mainWindowCloseDeactivate());
+    EXPECT_CALL(mainScreenControls, mainWindowTreinDeactivate());
+    EXPECT_CALL(mainScreenControls, mainWindowRedraw());
+    EXPECT_CALL(mainScreenControls, mainWindowOpenActivate());
+
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,
                        addBlok, threadSleep, hardwareHoog, hardwareLaag, draaiSchijfTuning);
@@ -57,7 +63,6 @@ TEST_F(baanLibTest, ConstructieNogmaals)
     IHardwareComMock hardwareHoog;
     IHardwareComMock hardwareLaag;
     IDraaiSchijfTuningMock draaiSchijfTuning;
-
     EXPECT_CALL(message,message(_));
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,

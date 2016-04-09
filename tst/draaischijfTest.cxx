@@ -183,14 +183,17 @@ TEST_F(draaischijfTest, UIWisselStandMetTrein)
     }));
     // een trein met snelheid
     baanInfo->IOBits[0]->hardwareReturnWaarde = 0; // return waarde van de hardware is klaar
+    baanInfo->Blok[300].RegelaarNummer = 0;
     baanInfo->Blok[300].State = BLOK_VOORUIT;
     baanInfo->Blok[300].Snelheid = 10;
     EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(112));
     baanInfo->Blok[300].State = BLOK_VOORUIT;
     baanInfo->Blok[300].Snelheid = 0;
+    baanInfo->Blok[100].RegelaarNummer = 0;
     baanInfo->Blok[100].State = BLOK_VOORUIT; // blok op aansluiting 100 is niet vrij dus de trein staat er overheen
     EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(112));
-    baanInfo->Blok[100].State = BLOK_VRIJ; // blok op aansluiting 100 is niet vrij dus de trein staat er overheen
+    baanInfo->Blok[100].RegelaarNummer = -1;
+    baanInfo->Blok[100].State = BLOK_VRIJ; // nu is het blok vrij
     EXPECT_CALL(mHardwareHoog,nieuwItem(_)).WillRepeatedly(Return(0));
     EXPECT_EQ(0,baanInfo->IOBits[0]->Aanvraag(112));
 
