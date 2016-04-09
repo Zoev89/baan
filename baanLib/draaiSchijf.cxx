@@ -246,16 +246,16 @@ void DraaiSchijf::DraaiSchijfBlokAangesproken()
         Aanvraag(100);
         // mIsStarted = true in gaNaarPositie
     }
-    if ((pBlok1->pBlok->State != BLOK_VRIJ) && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].GetIgnoreStop() == 0))
-    {
-        mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].WisselIgnoreStop();
-    }
     auto stand = (Stand >= 200) ? Stand - 200: Stand - 100;
 
     if (((((pBlok1->pBlok->State == BLOK_VOORUIT) || (pBlok1->pBlok->State == BLOK_VOORUITCHECK)) && (m_aansluitingen[stand]) && (m_aansluitingen[stand]->richtingVooruit == true)) ||
         (((pBlok1->pBlok->State == BLOK_ACHTERUIT) || (pBlok1->pBlok->State == BLOK_ACHTERUITCHECK)) && (m_aansluitingen[stand]) && (m_aansluitingen[stand]->richtingVooruit == false)))
             && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].getGewensteSnelheid() != 0))
     {
+        if ((pBlok1->pBlok->State != BLOK_VRIJ) && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].GetIgnoreStop() == 0))
+        {
+            mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].WisselIgnoreStop();
+        }
         // enable midden detectie want er rijd een trein binnen
         if (!mMiddenDetectieEnabled)
             Bedien(hardwareAdres+1,EnableMiddenDetectie, false);
@@ -274,6 +274,10 @@ void DraaiSchijf::DraaiSchijfBlokAangesproken()
     Bedien(hardwareAdres+2,GetStatus, true);
     if (hardwareReturnWaarde & MiddenDetected)
     {
+        if ((pBlok1->pBlok->State != BLOK_VRIJ) && (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].GetIgnoreStop() == 1))
+        {
+            mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].WisselIgnoreStop();
+        }
         mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].zetGewensteSnelheid(0);
         mBaanWT.BaanCheckLengte(pBlok1->pBlok->RegelaarNummer, 1);
         Bedien(hardwareAdres+1,DisableMiddenDetectie, false);
@@ -306,18 +310,18 @@ int DraaiSchijf::checkAansluiting(DraaiSchijfAansluiting& aansturing)
             // geeft schijfblok vrij als we een opstel spoor in rijden
             auto stand = (Stand >=200) ? Stand-200: Stand-100;
             auto regelaarInOpstel = mBaanInfo->Blok[aansturing.blok].RegelaarNummer;
-            if (regelaarInOpstel >=0)
+            if ((regelaarInOpstel >=0) && (pBlok1->pBlok->RegelaarNummer == regelaarInOpstel))
             {
                 // geeft draaischijf blok vrij als er een aansluiting is en draaischijf blok en aansluiting zijn van
                 // dezelfde regelaar, de regelaar point naar de aansluiting dan mogen we checken of die vrij kan
-                if ((aansturing.aansluitingNummer == stand) && (pBlok1->pBlok->RegelaarNummer == regelaarInOpstel) &&
+                if ((aansturing.aansluitingNummer == stand) &&
                         (mBaanInfo->RegelArray[pBlok1->pBlok->RegelaarNummer].pKopBlok ==  &mBaanInfo->BlokPointer[aansturing.blok]) && // regelaar wijst naar deze aansluiting
                         (((m_aansluitingen[stand]->richtingVooruit) && (pBlok1->pBlok->State == BLOK_ACHTERUIT) ) ||
                         ((!m_aansluitingen[stand]->richtingVooruit) && (pBlok1->pBlok->State == BLOK_VOORUIT) )))
                 {
                     mBaanWT.BaanCheckLengte(pBlok1->pBlok->RegelaarNummer,1);
                 }
-                // zet altij ignores stop aan in rangeer blokken
+                // zet altijd ignores stop aan in rangeer blokken
                 if (mBaanInfo->RegelArray[regelaarInOpstel].GetIgnoreStop() == 0)
                 {
                     mBaanInfo->RegelArray[regelaarInOpstel].WisselIgnoreStop();
@@ -447,7 +451,7 @@ bool DraaiSchijf::GaNaarPositie(int positie)
         {
             return true; // gewijgerd
         }
-        if ((m_aansluitingen[standOud]) && (pBlok1->blokRicht[m_aansluitingen[standOud]->richtingVooruit]->pBlok->State != BLOK_VRIJ))
+        if ((m_aansluitingen[standOud]) && (pBlok1->pBlok->RegelaarNummer == pBlok1->blokRicht[m_aansluitingen[standOud]->richtingVooruit]->pBlok->RegelaarNummer))
         {
             return true; // gewijgerd trein steekt nog uit in het aangesloten blok
         }
