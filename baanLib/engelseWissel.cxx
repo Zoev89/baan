@@ -402,7 +402,7 @@ void EngelseWissel::Bedien ()
 int EngelseWissel::Aanvraag (int stand)
 {
     BlokPointer_t *pBlok;
-    BlokPointer_t *pBlok2, *pStopBlok;
+    BlokPointer_t *pStopBlok;
     BlokPointer_t *pBezetBlok;
     int RegelaarNummer;
 
@@ -523,14 +523,14 @@ int EngelseWissel::Aanvraag (int stand)
     //
     // je wisselt dus alleen de pointers om van pBlok en pStopBlok
     */
+std::cout << Stand << " " << hardwareAdres << "." << hardwareBit << " " << WisselNummer() << std::endl;
+    auto pBlok1Temp = pBlok->pVolgendBlok;
+    auto pBlok2Temp = pStopBlok->pVolgendBlok;
 
-    pBlok1 = pBlok->pVolgendBlok;
-    pBlok2 = pStopBlok->pVolgendBlok;
-
-    pBlok->pVolgendBlok = pBlok2;
-    pStopBlok->pVolgendBlok = pBlok1;
-    pBlok2->pVorigBlok = pBlok;
-    pBlok1->pVorigBlok = pStopBlok;
+    pBlok->pVolgendBlok = pBlok2Temp;
+    pStopBlok->pVolgendBlok = pBlok1Temp;
+    pBlok2Temp->pVorigBlok = pBlok;
+    pBlok1Temp->pVorigBlok = pStopBlok;
 
     if (Stand == 13)
     {
