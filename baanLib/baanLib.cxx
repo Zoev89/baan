@@ -9,15 +9,15 @@
 BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWindowDrawing& mainWindowDrawing, ITreinenDialoog &treinenDialoog, IBlokInst& blokInst, IRegelaarViewUpdates& regelaarViewUpdates,
                  IRegelaarInstellingenDialoog& regelaarInstellingenDialoog, IWisselDialoog &wisselDialoog, ILampInstDialoog& lampInstDialoog, IKopRichtingDialoog& kopRichtingDialoog, INieuwIODialoog &nieuwIODialoog,
                  IAddBlokDialoog &addBlokDialoog, IThreadSleep& threadSleep, IHardwareCom &hardwareHoog, IHardwareCom & hardwareLaag, IDraaiSchijfTuning &draaiSchijfTuning)
-    : mBaanInfo(hardwareHoog,hardwareLaag)
-    , mTd(10000)
+    : mTd(10000)
+    , mBaanInfo(hardwareHoog,hardwareLaag)
     , mMessage(message)
     , mErrorPrint(mBaanInfo.tickTimer)
     , mBaanWT(message,mBaanMessage, mWissels, mTd, &mBaanInfo)
     , mBaanDoc(message, mBaanWT, mBaanTreinen, mBlok, mWissels, mainControls, mainWindowDrawing, regelaarViewUpdates, mBaanMessage, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog, addBlokDialoog, regelaarInstellingenDialoog,
              mTelefoonConnectie, mTd, mErrorPrint, &mBaanInfo, draaiSchijfTuning)
     , mBaanTreinen(mBaanDoc, treinenDialoog)
-    , mBlok(message, mainWindowDrawing, mTd, &mBaanInfo)
+    , mBlok(message, mainWindowDrawing, mTd, &mBaanInfo, mWissels)
     , mBaanMessage(mBaanView, mTd, mBaanInfo.RegelArray)
     , mBaanView(message, mBaanDoc,mBlok, blokInst, mWissels, mainWindowDrawing, mTd, &mBaanInfo)
     , mWissels(message,mBlok,mainWindowDrawing,mBaanMessage, wisselDialoog, &mBaanInfo, threadSleep, mBaanWT)
@@ -28,7 +28,6 @@ BaanLib::BaanLib(IMessage& message, IMainScreenControls& mainControls, IMainWind
 
 BaanLib::~BaanLib()
 {
-    mBaanDoc.baanDocClose();
 }
 
 void BaanLib::BaanClose()

@@ -19,6 +19,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent, std::string filename, bool editMode);
     ~MainWindow();
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 
 
 private slots:

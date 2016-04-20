@@ -249,6 +249,10 @@ BaanDoc::baanDocSchrijfBlkFile ()
                 case 6:
                     fprintf (blkFile, "# lamp\n");
                     break;
+                case 7:
+                    fprintf (blkFile, "# draaischijf: bloknummer coordX coordY radius offsetAngle aantalAansluitingen\n");
+                    fprintf (blkFile, "#   aansluitingNummer gndFirst aangeslotenBlok richting\n");
+                    break;
                 }
                 for (i = 0; i < mBaanInfo->AantalSpoelen; i++)
                 {
@@ -325,7 +329,7 @@ BaanDoc::baanDocClose ()
                 }
 
                 fprintf (file, "# gebruikte regelaars\n");
-                for (i = 0; i < MAX_AANTAL_REGELAARS; i++)
+                for (i = 0; i < mBaanInfo->RegelArray.size(); i++)
                 {
                     if (mBaanInfo->RegelArray[i].Gebruikt)
                     {
@@ -362,7 +366,7 @@ BaanDoc::baanDocClose ()
             }
 
             // De status van de baan is opgeslagen nu de regelaars verwijderen
-            for (i = 0; i < MAX_AANTAL_REGELAARS; i++)
+            for (i = 0; i < mBaanInfo->RegelArray.size(); i++)
             {
                 if (mBaanInfo->RegelArray[i].Gebruikt)
                 {
@@ -760,113 +764,18 @@ BaanDoc::baanDocParseBlkFile (FILE * file)
    **/
     for (i = 0; i < mBaanInfo->AantalBlokken; i++)
     {
-        int Nummer, MaxSnelheid, Lengte, Boven, blokSein, x, y;
-        int voorKeurRichting;
-        char BlokType[2];
-        float Volgend;
-        BlokPointer_t *pVolgend;
-
-        BlokType[0] = 0;
-        BlokType[1] = 0;
         if (EricFgets (Array, 200, file) == NULL)
         {
             mMessage.message (str(boost::format("Regel %d: End of file tijdens bloken lezen") %
                                   EricFgetsGetLineCount (file)));
             return 1;
         }
-        if (version <= 1)
+        if (mBlok.InitBlok(Array))
         {
-            if (sscanf (Array, "%d%1s%f%d%d%d%d%d%d", &Nummer, BlokType, &Volgend,
-                        &MaxSnelheid, &Lengte, &Boven, &blokSein, &x, &y) != 9)
-            {
-                mMessage.message (str(boost::format("Regel %d: Incorrect blok string at index %d\n%s") %
-                                      EricFgetsGetLineCount (file)% i% Array));
-                return 1;
-            }
-            voorKeurRichting = richtingBeiden;
-        }
-        else
-        {
-            if (sscanf (Array, "%d%1s%f%d%d%d%d%d%d%d", &Nummer, BlokType, &Volgend,
-                        &MaxSnelheid, &Lengte, &Boven, &voorKeurRichting, &blokSein, &x, &y) != 10)
-            {
-                mMessage.message (str(boost::format("Regel %d: Incorrect blok string at index %d\n%s") %
-                                      EricFgetsGetLineCount (file)% i% Array));
-                return 1;
-            }
-        }
-        if (mBlok.BlokIsBlokNummer (Nummer) == 0)
-        {
-            mMessage.message
-                    (str(boost::format("Regel %d: Blok %d niet binnen de range van 1 tot %d\n%s") %
-                         EricFgetsGetLineCount (file)% Nummer% MAX_NOBLOKS% Array));
+            mMessage.message (str(boost::format("At Regel %d") %
+                                  EricFgetsGetLineCount (file)));
             return 1;
         }
-        // Hoef eigenlijk niet te checken of deze al belegd is of niet want het kan alleen dezelfde
-        // zijn die we eerder gezien hebben. Maar je weet maar nooit
-        // met programmeer fouten....
-        if (mBaanInfo->BlokPointer[Nummer].BlokIONummer != Nummer)
-        {
-            mMessage.message
-                    (str(boost::format("Regel %d: Blok %d is incorrect geinitializeerd bug in baan?\n%s") %
-                         EricFgetsGetLineCount (file)% Nummer% Array));
-            return 1;
-        }
-
-        pVolgend = mWissels.wisselKrijgPointer (BlokType[0], Volgend);
-
-
-        if (NULL == pVolgend)
-        {
-            mMessage.message
-                    (str(boost::format("Regel %d: Volgend blok %s%g niet gevonden in de database\n%s") %
-                         EricFgetsGetLineCount (file)% Array));
-            return 1;
-        }
-        // test of de pVolgendBlok NULL is
-        if (&mBaanInfo->EindBlokPointer !=
-                mBaanInfo->BlokPointer[Nummer].pVolgendBlok)
-        {
-            // we hebben een probleem
-            mMessage.message
-                    (str(boost::format("Regel %d: Van Blok %d is het volgend blok al belegd met blok %d\n%s") %
-                         EricFgetsGetLineCount (file)% Nummer%
-                         mBaanInfo->BlokPointer[Nummer].pVolgendBlok->BlokIONummer% Array));
-            return 1;
-        }
-
-
-        if (Volgend == -1)
-            mBaanInfo->BlokPointer[Nummer].pVolgendBlok = &mBaanInfo->EindBlokPointer;
-        else
-        {
-            // eerst de heenweg
-            mBaanInfo->BlokPointer[Nummer].pVolgendBlok = pVolgend;
-            // nu de terug weg
-            // test of de pVorigBlok van het  pVolgendBlok NULL is
-            if (&mBaanInfo->EindBlokPointer != pVolgend->pVorigBlok)
-            {
-                // we hebben een probleem
-                mMessage.message
-                        (str(boost::format("Regel %d: Van Blok %d is het volgend blok zijn TERUG weg al belegd met blok %d\n%s") %
-                             EricFgetsGetLineCount (file)% Nummer%
-                             pVolgend->pVorigBlok->BlokIONummer% Array));
-                return 1;
-            }
-
-            pVolgend->pVorigBlok = &mBaanInfo->BlokPointer[Nummer];
-        }
-
-
-        mBaanInfo->BlokPointer[Nummer].Lengte = Lengte;
-
-        if (MaxSnelheid >= 0)
-            mBaanInfo->Blok[Nummer].MaxSnelheid = MaxSnelheid;
-        mBaanInfo->Blok[Nummer].Bovenleiding = Boven;
-        mBaanInfo->Blok[Nummer].blokSein = (blokSein_t) blokSein;
-        mBaanInfo->Blok[Nummer].XCoord = x;
-        mBaanInfo->Blok[Nummer].YCoord = y;
-        mBaanInfo->Blok[Nummer].richtingVoorkeur = (BlokRichtingVoorkeur)voorKeurRichting;
     }
 
 

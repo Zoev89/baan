@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QCloseEvent>
+
 
 // QT neemt de systeem locale over dus de c libraries gebruiken niet de c locale!
 // IK had problemen met 1.5 want dat leest die dan als 1
@@ -44,9 +46,16 @@ MainWindow::MainWindow(QWidget *parent, string filename, bool editMode)
     }
 }
 
+
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    mBaanCreator->mBaanLib->BaanClose();
+    event->accept();
 }
 
 void MainWindow::on_actionOpen_triggered()

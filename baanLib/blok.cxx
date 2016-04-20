@@ -3,16 +3,112 @@
 #include "boost/format.hpp"
 
 
-Blok::Blok(IMessage& msg, IMainWindowDrawing& mainWindowDrawing, ITd &td, BaanInfo_t *baanInfo):
-    mMessage(msg),
-    mMainWindowDrawing(mainWindowDrawing),
-    mTd(td),
-    mBaanInfo(baanInfo)
+Blok::Blok(IMessage& msg, IMainWindowDrawing& mainWindowDrawing, ITd &td, BaanInfo_t *baanInfo, IWissels &wissels)
+    : mMessage(msg)
+    , mMainWindowDrawing(mainWindowDrawing)
+    , mTd(td)
+    , mBaanInfo(baanInfo)
+    , mWissels(wissels)
 {
     lastVrij = 1;
     tdview = mTd.tdCreate("viewBlok");
     tdOnBlokDisplay = mTd.tdValueString ("OnBlokDisplay");
 }
+
+bool Blok::InitBlok(std::string blok)
+{
+    int Nummer, MaxSnelheid, Lengte, Boven, blokSein, x, y;
+    int voorKeurRichting;
+    char BlokType[2];
+    float Volgend;
+    BlokPointer_t *pVolgend;
+
+    BlokType[0] = 0;
+    BlokType[1] = 0;
+
+    if (sscanf (blok.c_str(), "%d%1s%f%d%d%d%d%d%d%d", &Nummer, BlokType, &Volgend,
+                &MaxSnelheid, &Lengte, &Boven, &voorKeurRichting, &blokSein, &x, &y) != 10)
+    {
+        mMessage.message (str(boost::format("Incorrect blok string %s") %
+                               blok));
+        return true;
+    }
+    if (BlokIsBlokNummer (Nummer) == 0)
+    {
+        mMessage.message
+                (str(boost::format("Blok %d niet binnen de range van 1 tot %d\n%s") %
+                     Nummer% MAX_NOBLOKS% blok));
+        return 1;
+    }
+    // Hoef eigenlijk niet te checken of deze al belegd is of niet want het kan alleen dezelfde
+    // zijn die we eerder gezien hebben. Maar je weet maar nooit
+    // met programmeer fouten....
+    if (mBaanInfo->BlokPointer[Nummer].BlokIONummer != Nummer)
+    {
+        mMessage.message
+                (str(boost::format("Blok %d is incorrect geinitializeerd bug in baan?\n%s") %
+                      Nummer% blok));
+        return true;
+    }
+
+    pVolgend = mWissels.wisselKrijgPointer (BlokType[0], Volgend);
+
+
+    if (NULL == pVolgend)
+    {
+        mMessage.message
+                (str(boost::format("Volgend blok %s%g niet gevonden in de database\n%s") %
+                      blok));
+        return true;
+    }
+    // test of de pVolgendBlok NULL is
+    if (&mBaanInfo->EindBlokPointer !=
+            mBaanInfo->BlokPointer[Nummer].pVolgendBlok)
+    {
+        // we hebben een probleem
+        mMessage.message
+                (str(boost::format("Van Blok %d is het volgend blok al belegd met blok %d\n%s") %
+                     Nummer%
+                     mBaanInfo->BlokPointer[Nummer].pVolgendBlok->BlokIONummer% blok));
+        return true;
+    }
+
+
+    if (Volgend == -1)
+        mBaanInfo->BlokPointer[Nummer].pVolgendBlok = &mBaanInfo->EindBlokPointer;
+    else
+    {
+        // eerst de heenweg
+        mBaanInfo->BlokPointer[Nummer].pVolgendBlok = pVolgend;
+        // nu de terug weg
+        // test of de pVorigBlok van het  pVolgendBlok NULL is
+        if (&mBaanInfo->EindBlokPointer != pVolgend->pVorigBlok)
+        {
+            // we hebben een probleem
+            mMessage.message
+                    (str(boost::format("Van Blok %d is het volgend blok zijn TERUG weg al belegd met blok %d\n%s") %
+                         Nummer%
+                         pVolgend->pVorigBlok->BlokIONummer% blok));
+            return true;
+        }
+
+        pVolgend->pVorigBlok = &mBaanInfo->BlokPointer[Nummer];
+    }
+
+
+    mBaanInfo->BlokPointer[Nummer].Lengte = Lengte;
+
+    if (MaxSnelheid >= 0)
+        mBaanInfo->Blok[Nummer].MaxSnelheid = MaxSnelheid;
+    mBaanInfo->Blok[Nummer].Bovenleiding = Boven;
+    mBaanInfo->Blok[Nummer].blokSein = (blokSein_t) blokSein;
+    mBaanInfo->Blok[Nummer].XCoord = x;
+    mBaanInfo->Blok[Nummer].YCoord = y;
+    mBaanInfo->Blok[Nummer].richtingVoorkeur = (BlokRichtingVoorkeur)voorKeurRichting;
+    return false;
+
+}
+
 
 char * Blok::BlokNaam (char *string, BlokPointer_t * blok)
 {

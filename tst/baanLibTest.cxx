@@ -43,6 +43,7 @@ TEST_F(baanLibTest, Constructie)
 
     BaanLib baanLibVar(message, mainScreenControls, mainWindowDrawing, treinenDialoog, blokInst, regelaarViewUpdates, regelaarInstellingenDialoog, wisselDialoog, lampInstDialoog, kopRichtingDialoog, nieuwIODialoog,
                        addBlok, threadSleep, hardwareHoog, hardwareLaag, draaiSchijfTuning);
+    baanLibVar.BaanClose();
 }
 
 TEST_F(baanLibTest, ConstructieNogmaals)

@@ -66,7 +66,7 @@ StandaardWissel::StandaardWissel(IMessage &msg, IBlok& blok, IWissels &wissels, 
 
 StandaardWissel::~StandaardWissel()
 {
-    mBlok.BlokEndPointDelete (&StopBlokPointer[0], Richting);
+    //mBlok.BlokEndPointDelete (&StopBlokPointer[0], Richting);
 }
 
 BlokPointer_t * StandaardWissel::GetWisselBlok()

@@ -70,8 +70,8 @@ DriewegWissel::DriewegWissel(IMessage &msg, IBlok& blok, IWissels& wissels, IBaa
 
 DriewegWissel::~DriewegWissel()
 {
-    mBlok.BlokEndPointDelete (&StopBlokPointer[0], Richting);
-    mBlok. BlokEndPointDelete (&StopBlokPointer[2], Richting);
+    //mBlok.BlokEndPointDelete (&StopBlokPointer[0], Richting);
+    //mBlok. BlokEndPointDelete (&StopBlokPointer[2], Richting);
 }
 
 BlokPointer_t * DriewegWissel::GetWisselBlok()

@@ -71,8 +71,8 @@ EngelseWissel::EngelseWissel(IMessage &msg, IBlok& blok, IWissels& wissels, IBaa
 EngelseWissel::~EngelseWissel()
 {
     // StopBlokPointer wordt aan beiden zijde gebruikt
-    mBlok.BlokEndPointDelete (&StopBlokPointer[0], 0);
-    mBlok.BlokEndPointDelete (&StopBlokPointer[0], 1);
+    //mBlok.BlokEndPointDelete (&StopBlokPointer[0], 0);
+    //mBlok.BlokEndPointDelete (&StopBlokPointer[0], 1);
 }
 
 BlokPointer_t * EngelseWissel::GetWisselBlok()

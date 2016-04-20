@@ -109,6 +109,7 @@ typedef struct BlokPointer_t
 class IBlok
 {
 public:
+    virtual bool InitBlok(std::string blok) = 0;
     virtual char *BlokNaam(char *string,BlokPointer_t *blok) = 0;
     virtual void BlokDisplay(int blokNummer, int regelaar,
                              int actie) = 0;
@@ -120,6 +121,8 @@ public:
     virtual int BlokIsBlokNummer(int blokNummer) = 0; // return 0 if ok else 1
     virtual int BlokIsVrij(int blokNummer) = 0;  // return 1 if vrij
     virtual int BlokVindVrijBlok() = 0; // return blok nummer, 0=error
+protected:
+    virtual ~IBlok() = default;
 };
 
 #endif // IBLOK_H

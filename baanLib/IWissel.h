@@ -26,10 +26,8 @@ public:
     virtual BlokPointer_t * GetWisselBlok() = 0;
     virtual int GetRichting() = 0;
     virtual int WisselLengte(int from, int to) = 0;
-
 protected:
-    virtual ~IWissel() {}
-
+    virtual ~IWissel() = default;
 
 };
 

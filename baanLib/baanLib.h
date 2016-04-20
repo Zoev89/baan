@@ -73,8 +73,8 @@ public:
 
 
 private:
-    BaanInfo_t mBaanInfo;
     Td mTd;
+    BaanInfo_t mBaanInfo;
     IMessage& mMessage;
     ErrorPrint mErrorPrint;
     BaanWT mBaanWT;

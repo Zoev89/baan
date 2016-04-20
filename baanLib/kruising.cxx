@@ -67,8 +67,8 @@ Kruising::Kruising(IMessage &msg, IBlok& blok, IWissels &wissels, IBaanMessage& 
 Kruising::~Kruising()
 {
     // StopBlokPointer wordt aan beiden zijde gebruikt
-    mBlok.BlokEndPointDelete (&StopBlokPointer[0], 0);
-    mBlok.BlokEndPointDelete (&StopBlokPointer[0], 1);
+    //mBlok.BlokEndPointDelete (&StopBlokPointer[0], 0);
+    //mBlok.BlokEndPointDelete (&StopBlokPointer[0], 1);
 }
 
 
