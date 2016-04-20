@@ -523,7 +523,6 @@ int EngelseWissel::Aanvraag (int stand)
     //
     // je wisselt dus alleen de pointers om van pBlok en pStopBlok
     */
-std::cout << Stand << " " << hardwareAdres << "." << hardwareBit << " " << WisselNummer() << std::endl;
     auto pBlok1Temp = pBlok->pVolgendBlok;
     auto pBlok2Temp = pStopBlok->pVolgendBlok;
 

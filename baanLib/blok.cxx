@@ -45,10 +45,9 @@ bool Blok::InitBlok(std::string blok)
     // met programmeer fouten....
     if (mBaanInfo->BlokPointer[Nummer].BlokIONummer != Nummer)
     {
-        mMessage.message
-                (str(boost::format("Blok %d is incorrect geinitializeerd bug in baan?\n%s") %
-                      Nummer% blok));
-        return true;
+        mMessage.message(str(boost::format("Blok %d is incorrect geinitializeerd bug in baan?\n%s") %
+                Nummer% blok));
+                return true;
     }
 
     pVolgend = mWissels.wisselKrijgPointer (BlokType[0], Volgend);
@@ -58,7 +57,7 @@ bool Blok::InitBlok(std::string blok)
     {
         mMessage.message
                 (str(boost::format("Volgend blok %s%g niet gevonden in de database\n%s") %
-                      blok));
+                      BlokType % Volgend % blok));
         return true;
     }
     // test of de pVolgendBlok NULL is
