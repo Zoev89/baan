@@ -13,7 +13,7 @@ SOURCES += \
     TdTest.cxx \
     draaischijfTest.cxx \
     DispatcherTest.cpp \
-    engelseWisselTest.cxx
+    wisselTest.cxx
 
 HEADERS += \
     IMessageMock.h \
