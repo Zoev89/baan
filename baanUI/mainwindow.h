@@ -30,6 +30,8 @@ private slots:
     void on_actionTd_Dump_triggered();
     void on_actionNieuw_IO_triggered();
 
+    void on_actionNieuw_Blok_triggered();
+
 private:
     Ui::MainWindow *ui;
     QBitmapLabel *bitMap;

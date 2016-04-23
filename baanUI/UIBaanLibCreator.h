@@ -14,7 +14,7 @@
 #include "UILampInstDialoog.h"
 #include "QtKopRichtingDialoog.h"
 #include "QtNieuwIODialoog.h"
-#include "UIAddBlokDialoog.h"
+#include "QtAddBlokDialoog.h"
 #include "UIRegelaarInstellingenDialoog.h"
 #include "UIRegelaarViewUpdates.h"
 #include "ThreadSleep.h"
@@ -35,7 +35,7 @@ public:
     QtKopRichtingDialoog kopRichtingDialoog;
     QtNieuwIODialoog nieuwIODialoog;
     QtDraaiSchijfTuning draaiSchijfTuningDialoog;
-    UIAddBlokDialoog addBlok;
+    QtAddBlokDialoog addBlok;
     std::unique_ptr<UIRegelaarViewUpdates> regelaarViewUpdates;
     UIRegelaarInstellingenDialoog regelaarInstellingenDialoog;
     ThreadSleep mThreadSleep; // moet voor mBaanLib zitten want anders is de distuctie volgoorde niet goed

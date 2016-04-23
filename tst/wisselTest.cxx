@@ -236,6 +236,12 @@ TEST_F(wisselTest, standaardWisselVoorWaards)
     EXPECT_EQ(2, baanInfo->BlokPointer[3].pVorigBlok->BlokIONummer);
     EXPECT_EQ(-1, baanInfo->BlokPointer[4].pVorigBlok->BlokIONummer);
 
+    // met een rijdende trein geen bediening
+    baanInfo->Blok[2].RegelaarNummer = 0;
+    baanInfo->Blok[2].State = BLOK_VOORUIT;
+    baanInfo->Blok[2].Snelheid = 10;
+    EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(13));
+
 }
 
 
@@ -299,6 +305,12 @@ TEST_F(wisselTest, standaardWisselAchterWaards)
     EXPECT_EQ(-1, baanInfo->BlokPointer[4].pVolgendBlok->BlokIONummer);
     EXPECT_EQ(1, baanInfo->BlokPointer[2].pVorigBlok->BlokIONummer);
     EXPECT_EQ(2, baanInfo->BlokPointer[3].pVorigBlok->BlokIONummer);
+
+    // met een rijdende trein geen bediening
+    baanInfo->Blok[2].RegelaarNummer = 0;
+    baanInfo->Blok[2].State = BLOK_VOORUIT;
+    baanInfo->Blok[2].Snelheid = 10;
+    EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(13));
 
 }
 
@@ -402,6 +414,12 @@ TEST_F(wisselTest, driewegWisselVoorWaards)
     EXPECT_EQ(2, baanInfo->BlokPointer[4].pVorigBlok->BlokIONummer);
     EXPECT_EQ(-1, baanInfo->BlokPointer[3].pVorigBlok->BlokIONummer);
     EXPECT_EQ(-1, baanInfo->BlokPointer[5].pVorigBlok->BlokIONummer);
+
+    // met een rijdende trein geen bediening
+    baanInfo->Blok[2].RegelaarNummer = 0;
+    baanInfo->Blok[2].State = BLOK_VOORUIT;
+    baanInfo->Blok[2].Snelheid = 10;
+    EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(12));
 }
 
 TEST_F(wisselTest, driewegWisselAchterWaards)
@@ -504,5 +522,11 @@ TEST_F(wisselTest, driewegWisselAchterWaards)
     EXPECT_EQ(-1, baanInfo->BlokPointer[5].pVolgendBlok->BlokIONummer);
     EXPECT_EQ(1, baanInfo->BlokPointer[2].pVorigBlok->BlokIONummer);
     EXPECT_EQ(2, baanInfo->BlokPointer[4].pVorigBlok->BlokIONummer);
+
+    // met een rijdende trein geen bediening
+    baanInfo->Blok[2].RegelaarNummer = 0;
+    baanInfo->Blok[2].State = BLOK_VOORUIT;
+    baanInfo->Blok[2].Snelheid = 10;
+    EXPECT_EQ(IOGEWIJGERD,baanInfo->IOBits[0]->Aanvraag(12));
 
 }

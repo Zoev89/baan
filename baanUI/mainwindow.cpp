@@ -88,3 +88,8 @@ void MainWindow::on_actionNieuw_IO_triggered()
 {
     mBaanCreator->mBaanLib->BaanDocNieuwIo();
 }
+
+void MainWindow::on_actionNieuw_Blok_triggered()
+{
+    mBaanCreator->mBaanLib->BaanAddBlok();
+}
