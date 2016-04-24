@@ -4,7 +4,7 @@
 #include "baanLib.h"
 #include "QWidget"
 
-#include "UIMessage.h"
+#include "QtMessage.h"
 #include "UIMainScreenControls.h"
 #include "UIMainWindowDrawing.h"
 #include "UITreinenDialoog.h"
@@ -23,9 +23,9 @@
 class UIBaanLibCreator
 {
 public:
-    UIBaanLibCreator(QWidget * parent);
+    UIBaanLibCreator(QWidget * parent, bool editMode);
 
-    UIMessage message;
+    QtMessage message;
     UIMainScreenControls mainScreenControls;
     std::unique_ptr<UIMainWindowDrawing> mainWindowDrawing;
     UITreinenDialoog treinenDialoog;

@@ -708,11 +708,23 @@ void DraaiSchijf::NieuwXY (int selectionX,
 void DraaiSchijf::InitDialoog ()
 {
     mDraaiWisselDialoog.SetUitleg(
-                "DRAAISCHIJF.\n"
-                "blok genomen\n");
+                "De draaischijf heeft 1 blok op de brug en die is het basis\n"
+                "adres. De baan aansluitingen eindigen op een eindblok.\n"
+                "De draaischijf leverd ook de mogelijkheid voor opstel\n"
+                "sporen die onder controle van de schijf hardware vallen.\n"
+                "Deze blokken worden vanaf het basis adres in de software\n"
+                "belegd maar leveren geen hardware aansturing die krijgen\n"
+                "ze van het brug blok.\n"
+                "Vanaf de home position draaid de draaischijf tegen de klok\n"
+                "in. Het huisje is het orientatie punt.\n"
+                "Voor de aansluiting geef het blok nummer voor een baan\n"
+                "blok of geef de electrische aansluiting nummer (negatief)\n"
+                "voor een opstelspoor [-47..0]."
+                );
+
     std::vector<DraaiSchijfAansluiting> aansluitingen;
     mDraaiWisselDialoog.SetAngle(OffsetAngle);
-    mDraaiWisselDialoog.SetAngleToolTip("Offset hoek vanaf de default plek in graden");
+    mDraaiWisselDialoog.SetAngleToolTip("Offset hoek vanaf de home plek in graden");
     for(auto i :m_aansluitingen )
     {
         if (i)

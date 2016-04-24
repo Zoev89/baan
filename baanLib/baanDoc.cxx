@@ -941,7 +941,6 @@ BaanDoc::baanDocCheckDatabase ()
         }
     }
     return 0;
-
 }
 
 

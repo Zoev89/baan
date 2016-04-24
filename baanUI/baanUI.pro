@@ -17,7 +17,6 @@ LIBS +=  -lgmock -lgmock_main ../baanLib/libbaanLib.a ../baanShared/libbaanShare
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    UIMessage.cpp \
     UIMainScreenControls.cpp \
     UIMainWindowDrawing.cpp \
     UITreinenDialoog.cpp \
@@ -34,10 +33,10 @@ SOURCES += main.cpp\
     QtDraaiAansluiting.cpp \
     QtNieuwIODialoog.cpp \
     QtDraaiSchijfTuning.cpp \
-    QtAddBlokDialoog.cpp
+    QtAddBlokDialoog.cpp \
+    QtMessage.cpp
 
 HEADERS  += mainwindow.h \
-    UIMessage.h \
     UIMainScreenControls.h \
     UIMainWindowDrawing.h \
     UITreinenDialoog.h \
@@ -54,7 +53,8 @@ HEADERS  += mainwindow.h \
     QtDraaiAansluiting.h \
     QtNieuwIODialoog.h \
     QtDraaiSchijfTuning.h \
-    QtAddBlokDialoog.h
+    QtAddBlokDialoog.h \
+    QtMessage.h
 
 FORMS    += mainwindow.ui \
     UIRegelaar.ui \
@@ -64,7 +64,8 @@ FORMS    += mainwindow.ui \
     QtDraaiAansluiting.ui \
     QtNieuwIODialoog.ui \
     QtDraaiSchijfTuning.ui \
-    QtAddBlokDialoog.ui
+    QtAddBlokDialoog.ui \
+    QtMessage.ui
 
 # Specify that we depend on the library (which, logically would be implicit from
 # the fact that we are linking to it)

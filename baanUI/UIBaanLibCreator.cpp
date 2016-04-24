@@ -1,6 +1,8 @@
 #include "UIBaanLibCreator.h"
 
-UIBaanLibCreator::UIBaanLibCreator(QWidget * parent)
+UIBaanLibCreator::UIBaanLibCreator(QWidget * parent, bool editMode)
+    : mHardwareHoog(editMode)
+    , mHardwareLaag(editMode)
 {
     mainWindowDrawing.reset(new UIMainWindowDrawing(parent));
     regelaarViewUpdates.reset(new UIRegelaarViewUpdates(parent));

@@ -69,7 +69,6 @@ static int usbActive;
 int
 uartOnOff (int onOff)
 {
-  int lengteRet = 0;
   int len;
   char string[64];
 

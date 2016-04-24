@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent, string filename, bool editMode)
     , m_editMode(editMode)
 {
     ui->setupUi(this);
-    mBaanCreator.reset(new UIBaanLibCreator(this));
+    mBaanCreator.reset(new UIBaanLibCreator(this, editMode));
     mRegelaars = new UIRegelaars(this,mBaanCreator->mBaanLib.get());
     bitMap  = new QBitmapLabel(this,mBaanCreator->mBaanLib.get(), mRegelaars);
 
@@ -55,6 +55,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     mBaanCreator->mBaanLib->BaanClose();
+    mBaanCreator->message.closeDialog();
     event->accept();
 }
 
@@ -92,4 +93,19 @@ void MainWindow::on_actionNieuw_IO_triggered()
 void MainWindow::on_actionNieuw_Blok_triggered()
 {
     mBaanCreator->mBaanLib->BaanAddBlok();
+}
+
+void MainWindow::on_actionCheck_triggered()
+{
+    if (mBaanCreator->mBaanLib->BaanCheckDatabase()==0)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Geen programma fouten");
+        msgBox.exec();
+    }
+}
+
+void MainWindow::on_actionView_Messages_triggered()
+{
+    mBaanCreator->message.show();
 }

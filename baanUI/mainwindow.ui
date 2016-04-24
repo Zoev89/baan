@@ -46,6 +46,7 @@
     <addaction name="actionTd_Dump"/>
     <addaction name="actionIO_Overzicht"/>
     <addaction name="actionBaan_Overzicht"/>
+    <addaction name="actionView_Messages"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -142,6 +143,11 @@
   <action name="actionAbout_Baan">
    <property name="text">
     <string>About Baan</string>
+   </property>
+  </action>
+  <action name="actionView_Messages">
+   <property name="text">
+    <string>View Messages</string>
    </property>
   </action>
  </widget>

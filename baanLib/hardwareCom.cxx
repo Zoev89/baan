@@ -1,6 +1,7 @@
 #include "hardwareCom.h"
 
-HardwareCom::HardwareCom ()
+HardwareCom::HardwareCom (bool editMode)
+    : m_editMode(editMode)
 {
   // breng leeg conditie aan
   kop = 0;
@@ -26,8 +27,8 @@ HardwareCom::nieuwItem (const hardwareArray_t &data)
   int nieuwKop;
   int max;
 
-  //if (mBaanInfo->editMode)
-  //   return 0;                   // hardware communicatie niet mogelijk
+  if (m_editMode)
+     return 0;                   // hardware communicatie niet mogelijk
 
   if (data.adres == -1)
   {
