@@ -168,6 +168,156 @@ void Regelaar::VerwijderClicked()
 
 void Regelaar::PropertiesClicked()
 {
+    int totaal, uren, minuten, ticken;
+    int afstand;
+    char string[20];
+
+    mRegelInstellingenDialoog.SetLocType(locSoort);
+    mRegelInstellingenDialoog.SetMaxSnelheid(MaxSnelheid);
+    mRegelInstellingenDialoog.SetMinSnelheid(MinSnelheid);
+    mRegelInstellingenDialoog.SetTopSnelheid(TopSnelheidKmh);
+    mRegelInstellingenDialoog.SetLengte(Lengte);
+    afstand = (TotaalAfstand + 50) / 100;
+    mRegelInstellingenDialoog.SetTotaalAfstand(afstand);
+    mRegelInstellingenDialoog.SetAfstand1(mAfstand1);
+    mRegelInstellingenDialoog.SetStand1(mStand1);
+    mRegelInstellingenDialoog.SetAfstand2(mAfstand2);
+    mRegelInstellingenDialoog.SetStand2(mStand2);
+    mRegelInstellingenDialoog.SetAlphaRijden(fNormaalAlfa);
+    mRegelInstellingenDialoog.SetAlphaStoppen(fStopAlfa);
+    mRegelInstellingenDialoog.SetClipRijden(NormaalClip >> SNELHEID_SHIFT);
+    mRegelInstellingenDialoog.SetClipStoppen(StopClip >> SNELHEID_SHIFT);
+    mRegelInstellingenDialoog.SetEloc(ELoc==1);
+    mRegelInstellingenDialoog.SetLaatsteWagonCheck(laatsteWagonCheck==1);
+    {
+        char *p;
+        p = strrchr (programmaNaam, '/');
+        if (p)
+            p++;
+        if (p)
+            mRegelInstellingenDialoog.SetProgrammaNaam(p);
+        else
+            mRegelInstellingenDialoog.SetProgrammaNaam("");
+    }
+    mRegelInstellingenDialoog.SetHerlaadProgramma(false);
+    mRegelInstellingenDialoog.SetLangzaam(Langzaam);
+    mRegelInstellingenDialoog.SetRijden(Rijden);
+
+    if (laatsteWagonCheckTotal == 0)
+    {
+        sprintf (string, "0%%");
+    }
+    else
+    {
+        sprintf (string, "%3d%%",
+                 (int) ((float) laatsteWagonCheckError /
+                        (float) laatsteWagonCheckTotal * 100 + 0.5));
+    }
+    mRegelInstellingenDialoog.SetErrors(string);
+    mRegelInstellingenDialoog.SetLastRegelKeuze(lastRegelKeuze);
+    mRegelInstellingenDialoog.SetKLpf(k_lpf);
+    mRegelInstellingenDialoog.SetHelling(helling);
+    mRegelInstellingenDialoog.SetDodeTijd(dodeTijd);
+    mRegelInstellingenDialoog.SetPlusMinus(plusMinus);
+    mRegelInstellingenDialoog.SetLastStand1(lastStand1);
+    mRegelInstellingenDialoog.SetLastGain1(lastGain1);
+    mRegelInstellingenDialoog.SetLastStand2(lastStand2);
+    mRegelInstellingenDialoog.SetLastGain2(lastGain2);
+
+    /* Bereken het aantal uren en minuten in bedrijf */
+    totaal = TotaalTicken;
+    // het aantal ticken per seconde
+    ticken = 1000 / (CYCLETIME * 2);
+    uren = totaal / (3600 * ticken);
+    minuten = (totaal - uren * 3600 * ticken + 30 * ticken) / (60 * ticken);
+    sprintf (string, "%d:%d", uren, minuten);
+    mRegelInstellingenDialoog.SetTotaalTijd(string);
+
+
+    if (mRegelInstellingenDialoog.RunDialogOk())
+    {
+        int NieuwUren, NieuwMinuten;
+
+        MaxSnelheid = mRegelInstellingenDialoog.GetMaxSnelheid();
+        MinSnelheid = mRegelInstellingenDialoog.GetMinSnelheid();
+        if (MaxSnelheid < MinSnelheid)
+        {
+            // swap de min en max
+            int x;
+            x = MinSnelheid;
+            MinSnelheid = MaxSnelheid;
+            MaxSnelheid = x;
+        }
+
+        //view.snelheid->range (0, MaxSnelheid);
+        //view.snelheid2->range (0, MaxSnelheid);
+        //view.gemeten->range (0, MaxSnelheid);
+
+        if (GewensteSnelheid > MaxSnelheid)
+        {
+            GewensteSnelheid = MaxSnelheid;
+        }
+
+        /* test op verandering in afstand en tijd */
+        if (mRegelInstellingenDialoog.GetTotaalAfstand() != afstand)
+        {
+            TotaalAfstand = mRegelInstellingenDialoog.GetTotaalAfstand() * 100;  /* eenheid in cm */
+        }
+        sscanf (mRegelInstellingenDialoog.GetTotaalTijd().c_str(), "%d:%d", &NieuwUren,
+                &NieuwMinuten);
+        if ((NieuwUren != uren) || (NieuwMinuten != minuten))
+        {
+            TotaalTicken = (NieuwUren * 3600 + NieuwMinuten * 60) * ticken;
+        }
+        ELoc = mRegelInstellingenDialoog.GetEloc();
+        laatsteWagonCheck = mRegelInstellingenDialoog.GetLaatsteWagonCheck();
+        TopSnelheidKmh = mRegelInstellingenDialoog.GetTopSnelheid();
+        TopSnelheid = (int) (63.0 / (float) TopSnelheidKmh * 16384 + 0.5);
+        Lengte = mRegelInstellingenDialoog.GetLengte();
+
+        fNormaalAlfa = (float) mRegelInstellingenDialoog.GetAlphaRijden();
+        fStopAlfa = (float) mRegelInstellingenDialoog.GetAlphaStoppen();
+        NormaalClip = mRegelInstellingenDialoog.GetClipRijden() << SNELHEID_SHIFT;
+        StopClip = mRegelInstellingenDialoog.GetClipStoppen() << SNELHEID_SHIFT;
+
+        NormaalAlfa = (int) (fNormaalAlfa * 32768);
+        StopAlfa = (int) (fStopAlfa * 32768);
+
+        InitRemWeg ((float) mRegelInstellingenDialoog.GetStand1(),
+                    (float) mRegelInstellingenDialoog.GetAfstand1(),
+                    (float) mRegelInstellingenDialoog.GetStand2(),
+                    (float) mRegelInstellingenDialoog.GetAfstand2());
+
+
+        lastRegelKeuze = mRegelInstellingenDialoog.GetLastRegelKeuze();
+        k_lpf = (float) mRegelInstellingenDialoog.GetKLpf();
+        helling = (float) mRegelInstellingenDialoog.GetHelling();
+        dodeTijd = (float) mRegelInstellingenDialoog.GetDodeTijd();
+        plusMinus = mRegelInstellingenDialoog.GetPlusMinus();
+        lastStand1 = mRegelInstellingenDialoog.GetLastStand1();
+        lastStand2 = mRegelInstellingenDialoog.GetLastStand2();
+        lastGain1 = (float) mRegelInstellingenDialoog.GetLastGain1();
+        lastGain2 = (float) mRegelInstellingenDialoog.GetLastGain2();
+
+        initPid ();
+        // reset de error meeting
+        laatsteWagonCheckError = 0;
+        laatsteWagonCheckTotal = 0;
+        herlaadProgramma = (int)mRegelInstellingenDialoog.GetHerlaadProgramma();
+        Langzaam = mRegelInstellingenDialoog.GetLangzaam();
+        Rijden = mRegelInstellingenDialoog.GetRijden();
+        if (herlaadProgramma)
+        {
+            if (mRegelInstellingenDialoog.GetProgrammaNaam().c_str()[0] != 0)
+            {
+                strcpy (programmaNaam, mRegelInstellingenDialoog.GetProgrammaNaam().c_str());
+            }
+            mBaanDoc.baanDocHerlaadProgramma (RegelaarNummer);
+            programRunning = 0;
+            RunProgramClicked(true);
+        }
+        strcpy (locSoort, mRegelInstellingenDialoog.GetLocType().c_str());
+    }
 
 }
 
@@ -515,157 +665,6 @@ Regelaar::GeefProgress (int Snelheid)
 //  GeefProgress (HuidigeSnelheid);
 //}
 
-void
-Regelaar::OnRegelProperties ()
-{
-    int totaal, uren, minuten, ticken;
-    int afstand;
-    char string[20];
-
-    mRegelInstellingenDialoog.SetLocType(locSoort);
-    mRegelInstellingenDialoog.SetMaxSnelheid(MaxSnelheid);
-    mRegelInstellingenDialoog.SetMinSnelheid(MinSnelheid);
-    mRegelInstellingenDialoog.SetTopSnelheid(TopSnelheidKmh);
-    mRegelInstellingenDialoog.SetLengte(Lengte);
-    afstand = (TotaalAfstand + 50) / 100;
-    mRegelInstellingenDialoog.SetTotaalAfstand(afstand);
-    mRegelInstellingenDialoog.SetAfstand1(mAfstand1);
-    mRegelInstellingenDialoog.SetStand1(mStand1);
-    mRegelInstellingenDialoog.SetAfstand2(mAfstand2);
-    mRegelInstellingenDialoog.SetStand2(mStand2);
-    mRegelInstellingenDialoog.SetAlphaRijden(fNormaalAlfa);
-    mRegelInstellingenDialoog.SetAlphaStoppen(fStopAlfa);
-    mRegelInstellingenDialoog.SetClipRijden(NormaalClip >> SNELHEID_SHIFT);
-    mRegelInstellingenDialoog.SetClipStoppen(StopClip >> SNELHEID_SHIFT);
-    mRegelInstellingenDialoog.SetEloc(ELoc==1);
-    mRegelInstellingenDialoog.SetLaatsteWagonCheck(laatsteWagonCheck==1);
-    {
-        char *p;
-        p = strrchr (programmaNaam, '/');
-        if (p)
-            p++;
-        mRegelInstellingenDialoog.SetProgrammaNaam(p);
-    }
-    mRegelInstellingenDialoog.SetHerlaadProgramma(false);
-    mRegelInstellingenDialoog.SetLangzaam(Langzaam);
-    mRegelInstellingenDialoog.SetRijden(Rijden);
-
-    if (laatsteWagonCheckTotal == 0)
-    {
-        sprintf (string, "0%%");
-    }
-    else
-    {
-        sprintf (string, "%3d%%",
-                 (int) ((float) laatsteWagonCheckError /
-                        (float) laatsteWagonCheckTotal * 100 + 0.5));
-    }
-    mRegelInstellingenDialoog.SetErrors(string);
-    mRegelInstellingenDialoog.SetLastRegelKeuze(lastRegelKeuze);
-    mRegelInstellingenDialoog.SetKLpf(k_lpf);
-    mRegelInstellingenDialoog.SetHelling(helling);
-    mRegelInstellingenDialoog.SetDodeTijd(dodeTijd);
-    mRegelInstellingenDialoog.SetPlusMinus(plusMinus);
-    mRegelInstellingenDialoog.SetLastStand1(lastStand1);
-    mRegelInstellingenDialoog.SetLastGain1(lastGain1);
-    mRegelInstellingenDialoog.SetLastStand2(lastStand2);
-    mRegelInstellingenDialoog.SetLastGain2(lastGain2);
-
-    /* Bereken het aantal uren en minuten in bedrijf */
-    totaal = TotaalTicken;
-    // het aantal ticken per seconde
-    ticken = 1000 / (CYCLETIME * 2);
-    uren = totaal / (3600 * ticken);
-    minuten = (totaal - uren * 3600 * ticken + 30 * ticken) / (60 * ticken);
-    sprintf (string, "%d:%d", uren, minuten);
-    mRegelInstellingenDialoog.SetTotaalTijd(string);
-
-
-    if (mRegelInstellingenDialoog.RunDialogOk())
-    {
-        int NieuwUren, NieuwMinuten;
-
-        MaxSnelheid = mRegelInstellingenDialoog.GetMaxSnelheid();
-        MinSnelheid = mRegelInstellingenDialoog.GetMinSnelheid();
-        if (MaxSnelheid < MinSnelheid)
-        {
-            // swap de min en max
-            int x;
-            x = MinSnelheid;
-            MinSnelheid = MaxSnelheid;
-            MaxSnelheid = x;
-        }
-
-        //view.snelheid->range (0, MaxSnelheid);
-        //view.snelheid2->range (0, MaxSnelheid);
-        //view.gemeten->range (0, MaxSnelheid);
-
-        if (GewensteSnelheid > MaxSnelheid)
-        {
-            GewensteSnelheid = MaxSnelheid;
-        }
-
-        /* test op verandering in afstand en tijd */
-        if (mRegelInstellingenDialoog.GetTotaalAfstand() != afstand)
-        {
-            TotaalAfstand = mRegelInstellingenDialoog.GetTotaalAfstand() * 100;  /* eenheid in cm */
-        }
-        sscanf (mRegelInstellingenDialoog.GetTotaalTijd().c_str(), "%d:%d", &NieuwUren,
-                &NieuwMinuten);
-        if ((NieuwUren != uren) || (NieuwMinuten != minuten))
-        {
-            TotaalTicken = (NieuwUren * 3600 + NieuwMinuten * 60) * ticken;
-        }
-        ELoc = mRegelInstellingenDialoog.GetEloc();
-        laatsteWagonCheck = mRegelInstellingenDialoog.GetLaatsteWagonCheck();
-        TopSnelheidKmh = mRegelInstellingenDialoog.GetTopSnelheid();
-        TopSnelheid = (int) (63.0 / (float) TopSnelheidKmh * 16384 + 0.5);
-        Lengte = mRegelInstellingenDialoog.GetLengte();
-
-        fNormaalAlfa = (float) mRegelInstellingenDialoog.GetAlphaRijden();
-        fStopAlfa = (float) mRegelInstellingenDialoog.GetAlphaStoppen();
-        NormaalClip = mRegelInstellingenDialoog.GetClipRijden() << SNELHEID_SHIFT;
-        StopClip = mRegelInstellingenDialoog.GetClipStoppen() << SNELHEID_SHIFT;
-
-        NormaalAlfa = (int) (fNormaalAlfa * 32768);
-        StopAlfa = (int) (fStopAlfa * 32768);
-
-        InitRemWeg ((float) mRegelInstellingenDialoog.GetStand1(),
-                    (float) mRegelInstellingenDialoog.GetAfstand1(),
-                    (float) mRegelInstellingenDialoog.GetStand2(),
-                    (float) mRegelInstellingenDialoog.GetAfstand2());
-
-
-        lastRegelKeuze = mRegelInstellingenDialoog.GetLastRegelKeuze();
-        k_lpf = (float) mRegelInstellingenDialoog.GetKLpf();
-        helling = (float) mRegelInstellingenDialoog.GetHelling();
-        dodeTijd = (float) mRegelInstellingenDialoog.GetDodeTijd();
-        plusMinus = mRegelInstellingenDialoog.GetPlusMinus();
-        lastStand1 = mRegelInstellingenDialoog.GetLastStand1();
-        lastStand2 = mRegelInstellingenDialoog.GetLastStand2();
-        lastGain1 = (float) mRegelInstellingenDialoog.GetLastGain1();
-        lastGain2 = (float) mRegelInstellingenDialoog.GetLastGain2();
-
-        initPid ();
-        // reset de error meeting
-        laatsteWagonCheckError = 0;
-        laatsteWagonCheckTotal = 0;
-        herlaadProgramma = (int)mRegelInstellingenDialoog.GetHerlaadProgramma();
-        Langzaam = mRegelInstellingenDialoog.GetLangzaam();
-        Rijden = mRegelInstellingenDialoog.GetRijden();
-        if (herlaadProgramma)
-        {
-            if (mRegelInstellingenDialoog.GetProgrammaNaam().c_str()[0] != 0)
-            {
-                strcpy (programmaNaam, mRegelInstellingenDialoog.GetProgrammaNaam().c_str());
-            }
-            mBaanDoc.baanDocHerlaadProgramma (RegelaarNummer);
-            programRunning = 0;
-            RunProgramClicked(true);
-        }
-        strcpy (locSoort, mRegelInstellingenDialoog.GetLocType().c_str());
-    }
-}
 
 void
 Regelaar::RegelaarStop (void)

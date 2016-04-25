@@ -203,8 +203,6 @@ openUsbPort (void)
 {
   struct usb_bus *bus;
   struct usb_device *dev;
-  int i;
-  unsigned int t1, t2;
 
   if (usbActive == 0)
     {
@@ -234,8 +232,8 @@ openUsbPort (void)
         }
       if ((usbHandle) && (usbDev))
         {
-          char string[256 + 32], stringOnt[256 + 32];
-          int len, i, l, x, eerste;
+          char string[256 + 32];
+          int len, i;
 
           len = usb_get_string_simple (usbHandle, usbDev->descriptor.iProduct,
                                        string, sizeof (string));

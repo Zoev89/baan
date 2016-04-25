@@ -44,7 +44,7 @@ adresDataTest ()
     int adres, data, ad;
     unsigned char bufferOut[64], bufferIn[64];
 
-    if (cx = openUsbPort ())
+    if ((cx = openUsbPort ()))
     {
         printf ("usbPort niet gevonden return status %d\n", cx);
         return;
@@ -110,7 +110,7 @@ void tijdelijkeTest()
     int adres, data, ad;
     unsigned char bufferOut[256], bufferIn[256];
 
-    if (cx = openUsbPort ())
+    if ((cx = openUsbPort ()))
     {
         printf ("usbPort niet gevonden return status %d\n", cx);
         return;
@@ -193,7 +193,7 @@ adresIODataTest ()
     int stop;
     unsigned char bufferOut[64], bufferIn[64];
 
-    if (cx = openUsbPort ())
+    if ((cx = openUsbPort ()))
     {
         printf ("usbPort niet gevonden return status %d\n", cx);
         return;
@@ -300,9 +300,8 @@ wisselPrintTest ()
 {
     int cx;
     int adres, subAdres;
-    unsigned char bufferOut[64], bufferIn[64];
 
-    if (cx = openUsbPort ())
+    if ((cx = openUsbPort ()))
     {
         printf ("usbPort niet gevonden return status %d\n", cx);
         return;
@@ -386,9 +385,7 @@ programBlokIOPrint ()
 {
     char text[MAX_LENGTH];
     int adres, type;
-    char nee;
     int device = 0;
-    int found = 0;
 
     programPrepare (&adres, &type, &device);
     if (adres == 0)
@@ -632,7 +629,6 @@ programPrepare (int *padres, int *ptype, int *pdevice)
     adres = byte1 + 256 * byte2;
     if (adres == 0xffff)
     {
-        char c;
         printf
         ("\n\nWeet je zeker dat er een blok print op de centrale controller is aangesloten\n[J/N]\n");
         fflush (stdin);
@@ -822,7 +818,7 @@ blokPrintTest ()
         int activeWaarde[2];
     } spanningStatus[6][6];
 
-    if (ret = openUsbPort ())
+    if ((ret = openUsbPort ()))
     {
         printf ("usbPort niet gevonden return status %d\n", ret);
         return;
@@ -947,7 +943,6 @@ main ()
 {
     FILE *file;
     char temp[MAX_LENGTH];
-    int ret;
 
     // eerst de default waarden lezen van de ini file
     file = fopen ("print.ini", "r");

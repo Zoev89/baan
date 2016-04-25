@@ -32,6 +32,7 @@ public slots:
     void vtValueSlot(int value);
     void verwijderClicked();
     void ignoreStopChangedSlot(bool ignore);
+    void instellingenDialogSlot();
 
 private:
     void updateRegelaar(int regelaarNummer);

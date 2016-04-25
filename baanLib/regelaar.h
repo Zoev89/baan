@@ -146,7 +146,6 @@ public:
 
 
   void OnInitDialog (int regelaar);
-  void OnRegelProperties ();
   int OnEchteSnelheid ();
   void SnelheidProgress(int snelheid);
 // Implementation

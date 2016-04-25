@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     UITreinenDialoog.cpp \
     UILampInstDialoog.cpp \
     UIRegelaarViewUpdates.cpp \
-    UIRegelaarInstellingenDialoog.cpp \
     UIBaanLibCreator.cpp \
     QBitmapLabel.cpp \
     UIRegelaars.cpp \
@@ -34,7 +33,8 @@ SOURCES += main.cpp\
     QtNieuwIODialoog.cpp \
     QtDraaiSchijfTuning.cpp \
     QtAddBlokDialoog.cpp \
-    QtMessage.cpp
+    QtMessage.cpp \
+    QtRegelaarInstellingenDialoog.cpp
 
 HEADERS  += mainwindow.h \
     UIMainScreenControls.h \
@@ -42,7 +42,6 @@ HEADERS  += mainwindow.h \
     UITreinenDialoog.h \
     UILampInstDialoog.h \
     UIRegelaarViewUpdates.h \
-    UIRegelaarInstellingenDialoog.h \
     UIBaanLibCreator.h \
     QBitmapLabel.h \
     UIRegelaars.h \
@@ -54,7 +53,8 @@ HEADERS  += mainwindow.h \
     QtNieuwIODialoog.h \
     QtDraaiSchijfTuning.h \
     QtAddBlokDialoog.h \
-    QtMessage.h
+    QtMessage.h \
+    QtRegelaarInstellingenDialoog.h
 
 FORMS    += mainwindow.ui \
     UIRegelaar.ui \
@@ -65,7 +65,8 @@ FORMS    += mainwindow.ui \
     QtNieuwIODialoog.ui \
     QtDraaiSchijfTuning.ui \
     QtAddBlokDialoog.ui \
-    QtMessage.ui
+    QtMessage.ui \
+    QtRegelaarInstellingenDialoog.ui
 
 # Specify that we depend on the library (which, logically would be implicit from
 # the fact that we are linking to it)

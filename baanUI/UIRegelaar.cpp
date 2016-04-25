@@ -1,5 +1,6 @@
 #include "UIRegelaar.h"
 #include "ui_UIRegelaar.h"
+#include <iostream>
 
 UIRegelaar::UIRegelaar(QWidget *parent) :
     QDialog(parent),
@@ -10,6 +11,7 @@ UIRegelaar::UIRegelaar(QWidget *parent) :
     connect(this, SIGNAL(vtValueSignal(int)), parent, SLOT(vtValueSlot(int)));
     connect(this, SIGNAL(verwijderClickedSignal()), parent, SLOT(verwijderClicked()));
     connect(this, SIGNAL(ignoreStopSignal(bool )), parent, SLOT(ignoreStopChangedSlot(bool)));
+    connect(this, SIGNAL(instellingenDialogSignal()), parent, SLOT(instellingenDialogSlot()));
 
 }
 
@@ -36,4 +38,9 @@ void UIRegelaar::on_verwijder_clicked()
 void UIRegelaar::on_ignoreStop_clicked(bool checked)
 {
     emit ignoreStopSignal(checked);
+}
+
+void UIRegelaar::on_bitmap_clicked()
+{
+    emit instellingenDialogSignal();
 }

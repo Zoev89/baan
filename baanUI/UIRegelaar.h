@@ -21,6 +21,7 @@ Q_SIGNALS:
     void vtValueSignal(int value);
     void verwijderClickedSignal();
     void ignoreStopSignal(bool checked);
+    void instellingenDialogSignal();
 
 public Q_SLOTS:
     void vtValue(int);
@@ -32,6 +33,8 @@ private slots:
     void on_verwijder_clicked();
 
     void on_ignoreStop_clicked(bool checked);
+
+    void on_bitmap_clicked();
 
 private:
 };

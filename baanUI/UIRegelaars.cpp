@@ -98,3 +98,8 @@ void UIRegelaars::ignoreStopChangedSlot(bool ignore)
     mBaanLib->SetIgnoreStop(mActiveRegelaar,ignore);
 }
 
+void UIRegelaars::instellingenDialogSlot()
+{
+    mBaanLib->PropertiesClicked(mActiveRegelaar);
+}
+
