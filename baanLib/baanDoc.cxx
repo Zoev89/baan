@@ -62,6 +62,8 @@ BaanDoc::BaanDoc(IMessage &msg, IBaanWT &baanWT, IBaanTreinen &baanTreinen, IBlo
     mBaanInfo->selectedOffsetY = 0;
     mBaanInfo->semWorkerThreadStopped = NULL;
     mBaanInfo->RegelaarAanvraag.semWacht = NULL;
+    blkFileName[0] = 0;
+    iniFileName[0] = 0;
 
 }
 
@@ -275,7 +277,6 @@ BaanDoc::baanDocClose ()
 {
     if (mBaanInfo->StopExecution == 0)
     {
-        int i;
         FILE *file;
         // stop de work thread
         mBaanInfo->StopExecution = 1;
@@ -297,7 +298,7 @@ BaanDoc::baanDocClose ()
         mBaanInfo->RegelaarAanvraag.semWacht = NULL;        // zodat de regelaar er niet meer aankan
 
         // Nu slaan we de status op van de database
-        if (0 == mBaanInfo->editMode)
+        if ((0 == mBaanInfo->editMode) && (iniFileName[0]!= 0))
         {
             // alleen als we in aansturingsmode zitten
             // slaan we de status op
@@ -310,7 +311,7 @@ BaanDoc::baanDocClose ()
 
                 fprintf (file, "# Wissel info\n");
                 /* Save de current wissel status */
-                for (i = 0; i < mBaanInfo->AantalSpoelen; i++)
+                for (int i = 0; i < mBaanInfo->AantalSpoelen; i++)
                 {
                     int Stand;
 
@@ -329,7 +330,7 @@ BaanDoc::baanDocClose ()
                 }
 
                 fprintf (file, "# gebruikte regelaars\n");
-                for (i = 0; i < mBaanInfo->RegelArray.size(); i++)
+                for (size_t  i = 0; i < mBaanInfo->RegelArray.size(); i++)
                 {
                     if (mBaanInfo->RegelArray[i].Gebruikt)
                     {
@@ -349,7 +350,7 @@ BaanDoc::baanDocClose ()
                                 pKopBlok->blokRicht[tegenRichting];
                         while ((pBlok->pBlok->State ==
                                 (BLOK_VOORUIT + richting))
-                               && (pBlok->pBlok->RegelaarNummer == i))
+                               && (pBlok->pBlok->RegelaarNummer == static_cast<int>(i)))
                         {
                             pBlok = pBlok->blokRicht[tegenRichting];
                             aantalBlokken += 1;
@@ -366,7 +367,7 @@ BaanDoc::baanDocClose ()
             }
 
             // De status van de baan is opgeslagen nu de regelaars verwijderen
-            for (i = 0; i < mBaanInfo->RegelArray.size(); i++)
+            for (size_t i = 0; i < mBaanInfo->RegelArray.size(); i++)
             {
                 if (mBaanInfo->RegelArray[i].Gebruikt)
                 {

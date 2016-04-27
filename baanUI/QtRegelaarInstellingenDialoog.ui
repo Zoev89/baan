@@ -262,7 +262,7 @@
     <item row="11" column="0">
      <widget class="QLabel" name="label_12">
       <property name="text">
-       <string>Stand2</string>
+       <string>Stand2 [tics]</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -282,7 +282,7 @@
     <item row="10" column="0">
      <widget class="QLabel" name="label_11">
       <property name="text">
-       <string>Stand1</string>
+       <string>Stand1 [tics]</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -315,7 +315,7 @@
     <item row="13" column="3">
      <widget class="QLabel" name="label_17">
       <property name="text">
-       <string>PlusMinus</string>
+       <string>PlusMinus [tics]</string>
       </property>
      </widget>
     </item>
@@ -365,7 +365,7 @@
     <item row="17" column="3">
      <widget class="QLabel" name="label_22">
       <property name="text">
-       <string>rijden</string>
+       <string>rijden [tics]</string>
       </property>
      </widget>
     </item>
@@ -375,7 +375,7 @@
     <item row="17" column="0">
      <widget class="QLabel" name="label_21">
       <property name="text">
-       <string>langzaam</string>
+       <string>langzaam [tics]</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

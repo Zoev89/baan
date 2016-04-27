@@ -2,11 +2,11 @@
 #include "baanLibSetup.h"
 #include "AllMocks.h"
 
+using ::testing::_;
+using ::testing::Return;
 
-static InitObjects *objects;
+static InitObjects *objects = NULL;
 static BaanInfo_t* baanInfo = NULL;
-static IHardwareComMock mHardwareHoog;
-static IHardwareComMock mHardwareLaag;
 
 
 class BaanZoekTest : public ::testing::Test {
@@ -17,6 +17,16 @@ class BaanZoekTest : public ::testing::Test {
     }
     virtual void TearDown() 
     {
+        if (baanInfo != NULL)
+        {
+            delete baanInfo;
+            baanInfo = NULL;
+        }
+        if (objects != NULL)
+        {
+            delete objects;
+            objects = NULL;
+        }
     }
 
 public:
@@ -36,6 +46,8 @@ public:
             std::string doc="/home/eric/trein/ezb/baan.blk";
             FILE * blkFile = objects->baanDoc.baanDocFileOpen (doc.c_str(), "rb", baanInfo->blkDir, &baanInfo->blkName);
             baanInfo->spoorInfo.LoadData("/home/eric/trein/ezb/baan");
+            EXPECT_CALL(objects->mainWindowDrawing, SetBitmap(_));
+            EXPECT_CALL(objects->baanTreinen, baanCreateTreinen(_,_,_,_));
             ASSERT_FALSE(objects->baanDoc.baanDocParseBlkFile (blkFile));
        }
     }
@@ -98,6 +110,8 @@ public:
         return objects->wissels.ZoekWisselNummer (mBaanInfo->IOBits, num);
     };
     BaanInfo_t *mBaanInfo;
+    IHardwareComMock mHardwareHoog;
+    IHardwareComMock mHardwareLaag;
 
 protected:
   
@@ -566,10 +580,16 @@ TEST_F(BaanZoekTest, ProgramInit)
     mBaanInfo->RegelArray[0].pKopBlok = blok; // init de regelaar met een blok
     mBaanInfo->RegelArray[0].Richting = 1; // achteruit
     prog.executeProgram (INIT, 0); // regelaar 0 initalizatie
+    EXPECT_CALL(objects->regelaarViewUpdates, NewSnelheid(0,10));
     int retSnel = prog.zetSnelheid(10);
     EXPECT_EQ(0, retSnel);
+
+    EXPECT_CALL(objects->regelaarViewUpdates, NewSnelheid(0,0));
     retSnel = prog.zetSnelheid(0);
-    EXPECT_EQ(0, retSnel);  // omdat de maxsnelheid van een ongeinitializeerde regelaar 0 is
+    EXPECT_EQ(10, retSnel);
+
+    EXPECT_CALL(objects->baanMessage, Post(_,_,_,_)).WillRepeatedly(Return(0));
+    EXPECT_CALL(mHardwareHoog, nieuwItem(_)).WillRepeatedly(Return(0));
     EXPECT_TRUE(prog.zoekEnBeleg(1));
     // test of de regelaar het destination blok belegd
     EXPECT_EQ(1,mBaanInfo->Blok[1].blokBelegt);
@@ -585,7 +605,6 @@ TEST_F(BaanZoekTest, ProgramInit)
     mBaanInfo->RegelArray[1].pKopBlok = blok; // init de regelaar met een blok
     mBaanInfo->RegelArray[1].Richting = 1; // achteruit
     prog2.executeProgram (INIT, 1); 
-    EXPECT_EQ(0, retSnel);  // omdat de maxsnelheid van een ongeinitializeerde regelaar 0 is
     EXPECT_TRUE(prog2.zoekEnBeleg(38));
 }
 

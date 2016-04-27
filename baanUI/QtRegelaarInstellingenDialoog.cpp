@@ -31,6 +31,7 @@ QtRegelaarInstellingenDialoog::QtRegelaarInstellingenDialoog(QWidget *parent)
     , m_hhmmRx("^[0-9]{1,6}:[0-5][0-9]")
     , m_tijdhhmmValidator(new QRegExpValidator(m_hhmmRx, this))
     , m_float0_1Validator(new DoubleValidator(0, 1, 4, this))
+    , m_floatPosValidator(new DoubleValidator(0, 10000, 2, this))
 
 {
     ui->setupUi(this);
@@ -44,6 +45,21 @@ QtRegelaarInstellingenDialoog::QtRegelaarInstellingenDialoog(QWidget *parent)
     ui->clipStoppen->setValidator(m_posValidator);
     ui->alphaRijden->setValidator(m_float0_1Validator);
     ui->alphaStoppen->setValidator(m_float0_1Validator);
+    ui->stand1->setValidator(m_snelheidValidator);
+    ui->stand2->setValidator(m_snelheidValidator);
+    ui->afstand1->setValidator(m_posValidator);
+    ui->afstand2->setValidator(m_posValidator);
+    ui->kLpf->setValidator(m_floatPosValidator);
+    ui->plusMinus->setValidator(m_floatPosValidator);
+    ui->helling->setValidator(m_floatPosValidator);
+    ui->dodeTijd->setValidator(m_floatPosValidator);
+    ui->langzaam->setValidator(m_snelheidValidator);
+    ui->rijden->setValidator(m_snelheidValidator);
+    ui->lastStand1->setValidator(m_snelheidValidator);
+    ui->lastStand2->setValidator(m_snelheidValidator);
+    ui->lastGain1->setValidator(m_floatPosValidator);
+    ui->lastGain2->setValidator(m_floatPosValidator);
+    ui->lastRegelingKeuze->setValidator(m_posValidator);
 }
 
 QtRegelaarInstellingenDialoog::~QtRegelaarInstellingenDialoog()
@@ -74,7 +90,23 @@ bool QtRegelaarInstellingenDialoog::RunDialogOk()
     ui->alphaStoppen->setText(toString(m_alphaStoppen).c_str());
     ui->clipRijden->setText(std::to_string(m_clipRijden).c_str());
     ui->clipStoppen->setText(std::to_string(m_clipStoppen).c_str());
-
+    ui->stand1->setText(std::to_string(m_stand1).c_str());
+    ui->stand2->setText(std::to_string(m_stand2).c_str());
+    ui->afstand1->setText(std::to_string(m_afstand1).c_str());
+    ui->afstand2->setText(std::to_string(m_afstand2).c_str());
+    ui->kLpf->setText(toString(m_kLpf).c_str());
+    ui->plusMinus->setText(toString(m_plusMinus).c_str());
+    ui->helling->setText(toString(m_helling).c_str());
+    ui->dodeTijd->setText(toString(m_dodeTijd).c_str());
+    ui->programmaNaam->setText(m_programmaNaam.c_str());
+    ui->herlaadProgramma->setChecked(m_laatsteWagonCheck);
+    ui->langzaam->setText(std::to_string(m_langzaam).c_str());
+    ui->rijden->setText(std::to_string(m_rijden).c_str());
+    ui->lastStand1->setText(std::to_string(m_lastStand1).c_str());
+    ui->lastStand2->setText(std::to_string(m_lastStand2).c_str());
+    ui->lastRegelingKeuze->setText(std::to_string(m_lastKeuze).c_str());
+    ui->lastGain1->setText(toString(m_lastGain1).c_str());
+    ui->lastGain2->setText(toString(m_lastGain2).c_str());
 
     auto dialogRet = exec();
     if (dialogRet==QDialog::Accepted)
@@ -92,7 +124,23 @@ bool QtRegelaarInstellingenDialoog::RunDialogOk()
         m_alphaStoppen = std::stof(ui->alphaStoppen->text().toStdString());
         m_clipRijden = std::stoi(ui->clipRijden->text().toStdString());
         m_clipStoppen = std::stoi(ui->clipStoppen->text().toStdString());
-
+        m_stand1 = std::stoi(ui->stand1->text().toStdString());
+        m_stand2 = std::stoi(ui->stand2->text().toStdString());
+        m_afstand1 = std::stoi(ui->afstand1->text().toStdString());
+        m_afstand2 = std::stoi(ui->afstand2->text().toStdString());
+        m_kLpf = std::stof(ui->kLpf->text().toStdString());
+        m_plusMinus = std::stof(ui->plusMinus->text().toStdString());
+        m_helling = std::stof(ui->helling->text().toStdString());
+        m_dodeTijd = std::stof(ui->dodeTijd->text().toStdString());
+        m_programmaNaam = ui->programmaNaam->text().toStdString();
+        m_herlaadProgramma = ui->herlaadProgramma->isChecked();
+        m_langzaam = std::stoi(ui->langzaam->text().toStdString());
+        m_rijden = std::stoi(ui->rijden->text().toStdString());
+        m_lastStand1 = std::stoi(ui->lastStand1->text().toStdString());
+        m_lastGain1 = std::stof(ui->lastGain1->text().toStdString());
+        m_lastStand2 = std::stoi(ui->lastStand2->text().toStdString());
+        m_lastGain2 = std::stof(ui->lastGain2->text().toStdString());
+        m_lastKeuze = std::stoi(ui->lastRegelingKeuze->text().toStdString());
         return true;
     }
     return false;
@@ -411,3 +459,47 @@ int QtRegelaarInstellingenDialoog::GetLastRegelKeuze()
 {
     return m_lastKeuze;
 }
+void QtRegelaarInstellingenDialoog::SetStandUitleg(const std::string &uitleg)
+{
+    ui->stand1->setToolTip(uitleg.c_str());
+    ui->stand2->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetAlphaUitleg(const std::string &uitleg)
+{
+    ui->alphaRijden->setToolTip(uitleg.c_str());
+    ui->alphaStoppen->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetClipUitleg(const std::string &uitleg)
+{
+    ui->clipRijden->setToolTip(uitleg.c_str());
+    ui->clipStoppen->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetKlpfUitleg(const std::string &uitleg)
+{
+    ui->kLpf->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetPlusMinusUitleg(const std::string &uitleg)
+{
+    ui->plusMinus->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetHellingUitleg(const std::string &uitleg)
+{
+    ui->helling->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetDodeTijdUitleg(const std::string &uitleg)
+{
+    ui->dodeTijd->setToolTip(uitleg.c_str());
+}
+
+void QtRegelaarInstellingenDialoog::SetLangzaamRijdenUitleg(const std::string &uitleg)
+{
+    ui->langzaam->setToolTip(uitleg.c_str());
+    ui->rijden->setToolTip(uitleg.c_str());
+}
+

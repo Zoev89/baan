@@ -82,6 +82,15 @@ public:
     virtual float GetLastGain2() override;
     virtual void  SetLastRegelKeuze(int keuzeIndex) override;
     virtual int   GetLastRegelKeuze() override;
+    virtual void  SetStandUitleg(const std::string &uitleg) override;
+    virtual void  SetAlphaUitleg(const std::string &uitleg) override;
+    virtual void  SetClipUitleg(const std::string &uitleg) override;
+    virtual void  SetKlpfUitleg(const std::string &uitleg) override;
+    virtual void  SetPlusMinusUitleg(const std::string &uitleg) override;
+    virtual void  SetHellingUitleg(const std::string &uitleg) override;
+    virtual void  SetDodeTijdUitleg(const std::string &uitleg) override;
+    virtual void  SetLangzaamRijdenUitleg(const std::string &uitleg) override;
+
 
 private:
     std::string toString(float);
@@ -91,8 +100,10 @@ private:
     QRegExp m_hhmmRx;
     QValidator *m_tijdhhmmValidator;
     QValidator *m_float0_1Validator;
+    QValidator *m_floatPosValidator;
     bool m_laatsteWagonCheck;
     bool m_eloc;
+    std::string m_locType;
     int m_minSnelheid;
     int m_maxSnelheid;
     int m_topSnelheid;
@@ -116,7 +127,6 @@ private:
     bool m_herlaadProgramma;
     int m_langzaam;
     int m_rijden;
-    std::string m_locType;
     int m_lastStand1;
     float m_lastGain1;
     int m_lastStand2;

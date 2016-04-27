@@ -69,7 +69,7 @@ Regelaar::Regelaar (IRegelaarViewUpdates &regelaarViewUpdates, IBaanTreinen &baa
     KortSluitCount = 0;
     ELoc = 0;
     VerlichtingCount = 0;
-    MaxSnelheid = 0;
+    MaxSnelheid = 60;
     MinSnelheid = 0;
     Rijden = 0;
     TopSnelheid = 0;
@@ -179,11 +179,14 @@ void Regelaar::PropertiesClicked()
     mRegelInstellingenDialoog.SetLengte(Lengte);
     afstand = (TotaalAfstand + 50) / 100;
     mRegelInstellingenDialoog.SetTotaalAfstand(afstand);
+    mRegelInstellingenDialoog.SetStandUitleg("Stand van de regelaar waarbij de trein x cm (afstand) nodig heeft om tot stilstand te komen.");
     mRegelInstellingenDialoog.SetAfstand1(mAfstand1);
     mRegelInstellingenDialoog.SetStand1(mStand1);
     mRegelInstellingenDialoog.SetAfstand2(mAfstand2);
     mRegelInstellingenDialoog.SetStand2(mStand2);
+    mRegelInstellingenDialoog.SetAlphaUitleg("Apha is een gain factor tussen 0.0 (langzaam) en 1.0 (snel). Typical 0.05.");
     mRegelInstellingenDialoog.SetAlphaRijden(fNormaalAlfa);
+    mRegelInstellingenDialoog.SetClipUitleg("Clip word gebruikt om te grote veranderingen tegen te gaan [0..63]. Typical 16.");
     mRegelInstellingenDialoog.SetAlphaStoppen(fStopAlfa);
     mRegelInstellingenDialoog.SetClipRijden(NormaalClip >> SNELHEID_SHIFT);
     mRegelInstellingenDialoog.SetClipStoppen(StopClip >> SNELHEID_SHIFT);
@@ -200,6 +203,8 @@ void Regelaar::PropertiesClicked()
             mRegelInstellingenDialoog.SetProgrammaNaam("");
     }
     mRegelInstellingenDialoog.SetHerlaadProgramma(false);
+    mRegelInstellingenDialoog.SetLangzaamRijdenUitleg("De snelheid setting voor rijden tijdens het uitvoeren van het programma.");
+
     mRegelInstellingenDialoog.SetLangzaam(Langzaam);
     mRegelInstellingenDialoog.SetRijden(Rijden);
 
@@ -215,6 +220,11 @@ void Regelaar::PropertiesClicked()
     }
     mRegelInstellingenDialoog.SetErrors(string);
     mRegelInstellingenDialoog.SetLastRegelKeuze(lastRegelKeuze);
+
+    mRegelInstellingenDialoog.SetKlpfUitleg("Gain van de gemeten waarde (K factor) tot de range van de regelaar.");
+    mRegelInstellingenDialoog.SetHellingUitleg(" De gain van de I actie van de PID regelaar [0..1.0]. Kleine alpha een langzame regeling.\nZet alpha op 0 voor het uitstakelen van de lastafhankelijke regeling.");
+    mRegelInstellingenDialoog.SetDodeTijdUitleg("De gain van de D actie van de PID regelaar [0..1.0]??. Kleine difmul geen differentie actie.");
+    mRegelInstellingenDialoog.SetPlusMinusUitleg("Clip waarde van de correcties die de last afhankelijke regeling mag maken.");
     mRegelInstellingenDialoog.SetKLpf(k_lpf);
     mRegelInstellingenDialoog.SetHelling(helling);
     mRegelInstellingenDialoog.SetDodeTijd(dodeTijd);

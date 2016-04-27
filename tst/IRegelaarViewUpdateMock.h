@@ -5,6 +5,7 @@
 
 class IRegelaarViewUpdatesMock: public IRegelaarViewUpdates
 {
+public:
     MOCK_METHOD2(NieuweRegelaar, void(int, const std::string&));
     MOCK_METHOD2(SnelheidProgress, void(int, int));
     MOCK_METHOD2(Meldingen, void(int, const std::string&));

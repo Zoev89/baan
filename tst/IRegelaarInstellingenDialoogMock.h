@@ -69,6 +69,15 @@ public:
     MOCK_METHOD0(GetLastGain2, float());
     MOCK_METHOD1(SetLastRegelKeuze, void(int));
     MOCK_METHOD0(GetLastRegelKeuze, int());
+    MOCK_METHOD1(SetStandUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetAlphaUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetClipUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetKlpfUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetPlusMinusUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetHellingUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetDodeTijdUitleg, void(const std::string &uitleg));
+    MOCK_METHOD1(SetLangzaamRijdenUitleg, void(const std::string &uitleg));
+
 };
 
 #endif // IREGELAARINSTELLINGENDIALOOGMOCK_H
