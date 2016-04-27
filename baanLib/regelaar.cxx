@@ -230,7 +230,7 @@ void Regelaar::PropertiesClicked()
     ticken = 1000 / (CYCLETIME * 2);
     uren = totaal / (3600 * ticken);
     minuten = (totaal - uren * 3600 * ticken + 30 * ticken) / (60 * ticken);
-    sprintf (string, "%d:%d", uren, minuten);
+    sprintf (string, "%d:%02d", uren, minuten);
     mRegelInstellingenDialoog.SetTotaalTijd(string);
 
 

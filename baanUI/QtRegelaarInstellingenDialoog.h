@@ -3,6 +3,8 @@
 #include "IRegelaarInstellingenDialoog.h"
 
 #include <QDialog>
+#include <QValidator>
+#include <QRegExpValidator>
 
 namespace Ui {
 class QtRegelaarInstellingenDialoog;
@@ -82,7 +84,13 @@ public:
     virtual int   GetLastRegelKeuze() override;
 
 private:
+    std::string toString(float);
     Ui::QtRegelaarInstellingenDialoog *ui;
+    QValidator *m_snelheidValidator;
+    QValidator *m_posValidator;
+    QRegExp m_hhmmRx;
+    QValidator *m_tijdhhmmValidator;
+    QValidator *m_float0_1Validator;
     bool m_laatsteWagonCheck;
     bool m_eloc;
     int m_minSnelheid;
@@ -91,7 +99,7 @@ private:
     int m_totaalAfstand;
     std::string m_totaalTijd;
     int m_lengte;
-    float m_alpha;
+    float m_alphaRijden;
     int m_clipRijden;
     float m_alphaStoppen;
     int m_clipStoppen;

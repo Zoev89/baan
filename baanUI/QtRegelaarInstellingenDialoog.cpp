@@ -1,12 +1,49 @@
 #include "QtRegelaarInstellingenDialoog.h"
 #include "ui_QtRegelaarInstellingenDialoog.h"
 #include <iostream>
+#include <sstream>
 
-QtRegelaarInstellingenDialoog::QtRegelaarInstellingenDialoog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::QtRegelaarInstellingenDialoog)
+
+class DoubleValidator : public QDoubleValidator
+{
+public:
+    DoubleValidator(double bottom, double top, int decimals, QObject * parent) :
+        QDoubleValidator(bottom, top, decimals, parent)
+    {
+    }
+
+    // limit checking is niet goed in QDoubleValidator want die returned Intermediate
+    // en QlineEdit heeft Invalid nodig dan
+    QValidator::State validate(QString &s, int &i) const
+    {
+        auto ret = QDoubleValidator::validate(s,i);
+        if (ret == QValidator::Intermediate)
+            return QValidator::Invalid;
+        return ret;
+    }
+};
+
+QtRegelaarInstellingenDialoog::QtRegelaarInstellingenDialoog(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::QtRegelaarInstellingenDialoog)
+    , m_snelheidValidator(new QIntValidator(3, 60, this))
+    , m_posValidator(new QIntValidator(0, 999999, this))
+    , m_hhmmRx("^[0-9]{1,6}:[0-5][0-9]")
+    , m_tijdhhmmValidator(new QRegExpValidator(m_hhmmRx, this))
+    , m_float0_1Validator(new DoubleValidator(0, 1, 4, this))
+
 {
     ui->setupUi(this);
+    ui->minSnelheid->setValidator(m_snelheidValidator);
+    ui->maxSnelheid->setValidator(m_snelheidValidator);
+    ui->topSnelheid->setValidator(m_posValidator);
+    ui->totaalAfstand->setValidator(m_posValidator);
+    ui->totaalTijd->setValidator(m_tijdhhmmValidator);
+    ui->lengte->setValidator(m_posValidator);
+    ui->clipRijden->setValidator(m_posValidator);
+    ui->clipStoppen->setValidator(m_posValidator);
+    ui->alphaRijden->setValidator(m_float0_1Validator);
+    ui->alphaStoppen->setValidator(m_float0_1Validator);
 }
 
 QtRegelaarInstellingenDialoog::~QtRegelaarInstellingenDialoog()
@@ -14,12 +51,48 @@ QtRegelaarInstellingenDialoog::~QtRegelaarInstellingenDialoog()
     delete ui;
 }
 
+std::string QtRegelaarInstellingenDialoog::toString(float value)
+{
+    std::ostringstream out;
+    out << value;
+    return out.str();
+}
 
 bool QtRegelaarInstellingenDialoog::RunDialogOk()
 {
+    ui->laatsteWagonCheck->setChecked(m_laatsteWagonCheck);
+    ui->eloc->setChecked(m_eloc);
+    ui->minSnelheid->setText(std::to_string(m_minSnelheid).c_str());
+    ui->maxSnelheid->setText(std::to_string(m_maxSnelheid).c_str());
+    ui->topSnelheid->setText(std::to_string(m_topSnelheid).c_str());
+    ui->locType->setText(m_locType.c_str());
+    ui->totaalAfstand->setText(std::to_string(m_totaalAfstand).c_str());
+    ui->totaalTijd->setText(m_totaalTijd.c_str());
+    ui->lengte->setText(std::to_string(m_lengte).c_str());
+    ui->errors->setText(m_errors.c_str());
+    ui->alphaRijden->setText(toString(m_alphaRijden).c_str());
+    ui->alphaStoppen->setText(toString(m_alphaStoppen).c_str());
+    ui->clipRijden->setText(std::to_string(m_clipRijden).c_str());
+    ui->clipStoppen->setText(std::to_string(m_clipStoppen).c_str());
+
+
     auto dialogRet = exec();
     if (dialogRet==QDialog::Accepted)
     {
+        m_laatsteWagonCheck = ui->laatsteWagonCheck->isChecked();
+        m_eloc = ui->eloc->isChecked();
+        m_minSnelheid = std::stoi(ui->minSnelheid->text().toStdString());
+        m_maxSnelheid = std::stoi(ui->maxSnelheid->text().toStdString());
+        m_topSnelheid = std::stoi(ui->topSnelheid->text().toStdString());
+        m_locType = ui->locType->text().toStdString();
+        m_totaalAfstand = std::stoi(ui->totaalAfstand->text().toStdString());
+        m_totaalTijd = ui->totaalTijd->text().toStdString();
+        m_lengte = std::stoi(ui->lengte->text().toStdString());
+        m_alphaRijden = std::stof(ui->alphaRijden->text().toStdString());
+        m_alphaStoppen = std::stof(ui->alphaStoppen->text().toStdString());
+        m_clipRijden = std::stoi(ui->clipRijden->text().toStdString());
+        m_clipStoppen = std::stoi(ui->clipStoppen->text().toStdString());
+
         return true;
     }
     return false;
@@ -109,12 +182,12 @@ int QtRegelaarInstellingenDialoog::GetLengte()
 
 void QtRegelaarInstellingenDialoog::SetAlphaRijden(float alpha)
 {
-    m_alpha = alpha;
+    m_alphaRijden = alpha;
 }
 
 float QtRegelaarInstellingenDialoog::GetAlphaRijden()
 {
-    return m_alpha;
+    return m_alphaRijden;
 }
 
 void QtRegelaarInstellingenDialoog::SetClipRijden(int clip)
