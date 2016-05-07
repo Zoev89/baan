@@ -43,7 +43,7 @@ public:
     virtual std::string baanDocGetBitmapname();
 
     // Nog niet in IBaanDoc later bekijken of dat moet
-    void baanDocOpen(const char *doc);
+    void baanDocOpen(const std::string &doc);
     void baanDocClose();
     void baanDocRegelaarOpen(const char *filename);
     void baanDocAddBlok();
@@ -58,6 +58,7 @@ private:
     int BaanCheckBlokNummer (int Nummer, int max, char *Array);
     void baanDocIniFile ();
     int baanDocInitRegelaar (int RegelaarNummer, int show);
+    std::string GetProgrammaNaamVanString(std::string inputline);
 
 
 private:

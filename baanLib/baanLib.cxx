@@ -38,7 +38,7 @@ void BaanLib::BaanClose()
 void BaanLib::BaanOpen(const string &inputFilename, bool editMode)
 {
     mBaanInfo.editMode = (editMode) ? 1:0;
-    mBaanDoc.baanDocOpen(inputFilename.c_str());
+    mBaanDoc.baanDocOpen(inputFilename);
 }
 
 std::string BaanLib::baanDocGetBitmapname()

@@ -116,52 +116,41 @@ CProgramma::unload ()
 }
 
 int
-CProgramma::InitGlobal ()
+CProgramma::InitGlobal (std::string filename)
 {
-    return Init (NULL);
+    return Init (NULL, filename);
 }
 
 int
-CProgramma::Init (pvarArray_t GlobalArray)
+CProgramma::Init (pvarArray_t GlobalArray, string filename)
 {
-    char *naam;
-    char progNaam[sizeof(programmaNaam)];
-    int i;
-    // default initializatie zodat in ieder geval een
-    // valid situatie is. Als er geen naam gegeven is
-    // kan het programma toch deels aangeroepen worden
-
-    naam = programmaNaam;
-    // kijk of je een = vindt
-    for (i = 0; i < 200; i++)
+    if (filename.empty())
     {
-        if (naam[i] == '=')
-        {
-            i++;
-            break;
-        }
-        if (naam[i] == 0)
-        {
-            // = komt niet voor dus stop
-            i = 0;
-            break;
-        }
-    }
-    // verwijder spaties en tabs
-    while ((naam[i] == ' ') || (naam[i] == '\t'))
-    {
-        i++;
-    }
-    if (naam[i] == 0)
-    {
+        programmaNaam.clear();
         return 0;
     }
-    strcpy(naam,&naam[i]);  // save de korte naam niet het volledige path als die er niet inzat
-    // er is een naam dus open die
-    if (baanDocFileName (progNaam, naam, mBaanInfo->blkDir))
+    programmaNaam = filename;
+    if (programmaNaam.has_parent_path())
     {
-        mErrorPrint.errorPrint ("Filename niet gevonden %s\n", naam);
-        unload ();
+        // hij heeft een dir spec
+        if (programmaNaam.parent_path() == mBaanInfo->blkFilePath.parent_path())
+        {
+            programmaNaam = programmaNaam.filename();
+        }
+    }
+    auto file = programmaNaam.filename();
+    if (programmaNaam.has_parent_path())
+    {
+        file = programmaNaam;
+    }
+    else
+    {
+        file = mBaanInfo->blkFilePath.parent_path();
+        file /= programmaNaam.filename();
+    }
+    std::cout<< file << std::endl;
+    if (file.filename() == ".")
+    {
         return 0;
     }
     // Ik gebruik de dlmopen met LM_ID_NEWLM zodat
@@ -173,10 +162,18 @@ CProgramma::Init (pvarArray_t GlobalArray)
     // library unresolved externels heeft dat dit dan wel
     // dodelijk is (kan niet geladen worden).
     //  prog_handle = dlmopen (LM_ID_NEWLM, progNaam, RTLD_LAZY);
-    prog_handle = dlopen (progNaam, RTLD_LAZY);
+    prog_handle = dlopen (file.c_str(), RTLD_LAZY);
     if (!prog_handle)
     {
-        mErrorPrint.errorPrint ("dlopen error met %s error %s\n", progNaam, dlerror ());
+        auto p=dlerror();
+        if (p)
+        {
+            mErrorPrint.errorPrint ("dlopen error met %s error %s\n", file.c_str(),p);
+        }
+        else
+        {
+            mErrorPrint.errorPrint ("dlopen error met %s error\n", file.c_str());
+        }
         unload ();
         return 1;
     }
@@ -185,7 +182,7 @@ CProgramma::Init (pvarArray_t GlobalArray)
     progMain = (progMain_t) dlsym (prog_handle, "progMain");
     if (progMain == NULL)
     {
-        mErrorPrint.errorPrint ("progMain niet gevonden voor %s\n", progNaam);
+        mErrorPrint.errorPrint ("progMain niet gevonden voor %s\n", file.c_str());
         return 2;
     }
 
@@ -196,7 +193,7 @@ CProgramma::Init (pvarArray_t GlobalArray)
     zetInstantie = (zetInstantie_t) dlsym (prog_handle, "zetInstantie");
     if (zetInstantie == NULL)
     {
-        mErrorPrint.errorPrint ("zetInstantie niet gevonden voor %s\n", progNaam);
+        mErrorPrint.errorPrint ("zetInstantie niet gevonden voor %s\n", file.c_str());
         unload ();
         return 3;
     }
@@ -226,7 +223,7 @@ CProgramma::Init (pvarArray_t GlobalArray)
 
     // program succesvol geladen
     aanVraagLees = aanVraagSchrijf = 0;
-    for (i = 0; i < AANVRAAG_DIEPTE; i++)
+    for (int i = 0; i < AANVRAAG_DIEPTE; i++)
     {
         aanVraag[i].adres = -1;
     }
@@ -849,7 +846,7 @@ CProgramma::blokAanvraag (int adres, int beleg, int timeout)
     int ret = 0;
     if ((adres < 1) || (adres >= MAX_NOBLOKS))
     {
-        mErrorPrint.errorPrint ("In prog %s invalid adres %d", programmaNaam, adres);
+        mErrorPrint.errorPrint ("In prog %s invalid adres %d", programmaNaam.c_str(), adres);
         return IOGEWIJGERD;
     }
     if (beleg == BLOKAANVRAAG_VRIJ)

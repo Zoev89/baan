@@ -306,9 +306,6 @@
       </property>
      </widget>
     </item>
-    <item row="16" column="1">
-     <widget class="QLineEdit" name="programmaNaam"/>
-    </item>
     <item row="13" column="1">
      <widget class="QLineEdit" name="kLpf"/>
     </item>
@@ -450,6 +447,13 @@
     </item>
     <item row="21" column="1">
      <widget class="QLineEdit" name="lastRegelingKeuze"/>
+    </item>
+    <item row="16" column="1">
+     <widget class="QPushButton" name="programmaNaam">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -5,8 +5,6 @@
 using ::testing::_;
 using ::testing::Return;
 
-static InitObjects *objects = NULL;
-static BaanInfo_t* baanInfo = NULL;
 
 
 class BaanZoekTest : public ::testing::Test {
@@ -32,8 +30,6 @@ class BaanZoekTest : public ::testing::Test {
 public:
     void TestFrameWorkInitBaan()
     {
-        if (baanInfo == NULL)
-        {
             baanInfo = new BaanInfo_t(mHardwareHoog,mHardwareLaag);
             objects =  new InitObjects(baanInfo); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
 
@@ -49,7 +45,6 @@ public:
             EXPECT_CALL(objects->mainWindowDrawing, SetBitmap(_));
             EXPECT_CALL(objects->baanTreinen, baanCreateTreinen(_,_,_,_));
             ASSERT_FALSE(objects->baanDoc.baanDocParseBlkFile (blkFile));
-       }
     }
 
     void printZoekPad(std::vector<BaanZoekResultaat> &pad)
@@ -112,6 +107,8 @@ public:
     BaanInfo_t *mBaanInfo;
     IHardwareComMock mHardwareHoog;
     IHardwareComMock mHardwareLaag;
+    InitObjects *objects = NULL;
+    BaanInfo_t* baanInfo = NULL;
 
 protected:
   

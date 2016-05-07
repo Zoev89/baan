@@ -20,6 +20,7 @@
 #include "IBaanMessage.h"
 #include "array"
 #include  "IHardwareCom.h"
+#include <boost/filesystem.hpp>
 
 // Het aantal stop blokken per wissel; voor een drie weg wissel heb ik er 3 nodig
 // Ik zou strikt genomen met 2 stopblokken kunnen volstaan bij een drieweg wissel,
@@ -220,6 +221,7 @@ public:
 
   char blkDir[MAX_FILENAME];
   char *blkName;
+  boost::filesystem::path blkFilePath;
 
   // variable gebruikt voor editMode
   int editMode;

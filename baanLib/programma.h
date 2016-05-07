@@ -96,13 +96,13 @@ public:
 
     // preconditoin van InitGloabl en Init is dat programmaNaam gezet is!
     // Bij het herladen word deze naam weer gebruikt!
-    int InitGlobal ();
-    int Init (pvarArray_t GlobalArray);
+    int InitGlobal (string filename);
+    int Init (pvarArray_t GlobalArray, std::string filename);
     pvarArray_t GetGlobalArray ();
     void unload ();		// verwijder programma en allocated memory
     void executeProgram (int eventType, int nummer);
     void checkMuisEvents (int x, int y);
-    char programmaNaam[200];
+    boost::filesystem::path programmaNaam;
 
     virtual void progVerwijderAanvragen ();   // Gebruik deze voor van buiten
 

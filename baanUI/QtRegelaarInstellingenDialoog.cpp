@@ -2,6 +2,7 @@
 #include "ui_QtRegelaarInstellingenDialoog.h"
 #include <iostream>
 #include <sstream>
+#include <QFileDialog>
 
 
 class DoubleValidator : public QDoubleValidator
@@ -503,3 +504,15 @@ void QtRegelaarInstellingenDialoog::SetLangzaamRijdenUitleg(const std::string &u
     ui->rijden->setToolTip(uitleg.c_str());
 }
 
+
+void QtRegelaarInstellingenDialoog::on_programmaNaam_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
+            tr("Prog Files (*.so)"));
+
+    if (!fileName.isEmpty())
+    {
+        auto file = QFileInfo(fileName);
+        ui->programmaNaam->setText(file.baseName());
+    }
+}

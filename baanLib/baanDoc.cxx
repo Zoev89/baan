@@ -68,21 +68,22 @@ BaanDoc::BaanDoc(IMessage &msg, IBaanWT &baanWT, IBaanTreinen &baanTreinen, IBlo
 }
 
 void
-BaanDoc::baanDocOpen (const char *doc)
+BaanDoc::baanDocOpen (const string &doc)
 {
-    if (doc)
+    if (!doc.empty())
     {
         FILE *blkFile;
 
 
-        blkFile = baanDocFileOpen (doc, "rb", mBaanInfo->blkDir, &mBaanInfo->blkName);
+        blkFile = baanDocFileOpen (doc.c_str(), "rb", mBaanInfo->blkDir, &mBaanInfo->blkName);
 
         if (blkFile)
         {
-            strncpy (blkFileName, doc, MAX_FILENAME - 1);
+            strncpy (blkFileName, doc.c_str(), MAX_FILENAME - 1);
             printf ("dir <%s>\n", mBaanInfo->blkDir);
             printf ("name <%s>\n", mBaanInfo->blkName);
             boost::filesystem::path path(std::string(mBaanInfo->blkDir) + std::string(mBaanInfo->blkName));
+            std::cout << mBaanInfo->blkFilePath << "  " << mBaanInfo->blkFilePath.parent_path() << std::endl;
             path.replace_extension("");
             mBaanInfo->spoorInfo.LoadData(path.string());
             mMainControls.mainWindowLabel(mBaanInfo->blkName);
@@ -181,7 +182,7 @@ BaanDoc::baanDocSchrijfBlkFile ()
             fprintf (blkFile, "# ini filename\n");
             fprintf (blkFile, "%s\n", iniBlkFileName);
             fprintf (blkFile, "# global programma naam\n");
-            fprintf (blkFile, "Programma = %s\n", globaalProg.programmaNaam);
+            fprintf (blkFile, "Programma = %s\n", globaalProg.programmaNaam.c_str());
             fprintf (blkFile, "# aantal blokken en spoelen\n");
             fprintf (blkFile, "%d %d\n", mBaanInfo->AantalBlokken,
                      mBaanInfo->AantalSpoelen);
@@ -398,6 +399,13 @@ BaanDoc::baanDocFileOpen (const char *filename, const char *acces, char *dirName
     file = fopen (filename, acces);
     if (file)
     {
+        mBaanInfo->blkFilePath = filename;
+        if (mBaanInfo->blkFilePath.parent_path().empty())
+        {
+            mBaanInfo->blkFilePath = boost::filesystem::current_path();
+            mBaanInfo->blkFilePath /= boost::filesystem::path(filename);
+        }
+
         char *p;
         // the file is there so start openening the rest
         strncpy (dirName, filename, MAX_FILENAME);
@@ -433,6 +441,19 @@ BaanDoc::baanDocFileOpen (const char *filename, const char *acces, char *dirName
 std::string BaanDoc::baanDocGetBitmapname()
 {
     return std::string(bitmapBlkFileName);
+}
+
+std::string BaanDoc::GetProgrammaNaamVanString(std::string inputline)
+{
+    std::stringstream input(inputline);
+    std::string string1;
+    std::string string2;
+    std::string string3;
+    input >> string1;
+    input >> string2;
+    input >> string3;
+
+    return string3;
 }
 
 
@@ -507,17 +528,17 @@ BaanDoc::baanDocParseBlkFile (FILE * file)
     //
     // Lees de global programma naam
     //
-    if (EricFgets (globaalProg.programmaNaam, 200, file) == NULL)
+    if (EricFgets (Array, 200, file) == NULL)
     {
         mErrorPrint.errorPrint ("Regel %d: programma filename kan niet gelezen worden",
                     EricFgetsGetLineCount (file));
         return 1;
     }
-    if (globaalProg.InitGlobal ())
+    if (globaalProg.InitGlobal (GetProgrammaNaamVanString(Array)))
     {
         mErrorPrint.errorPrint
                 ("Regel %d: Het global programma %s kan niet geladen worden",
-                 EricFgetsGetLineCount (file), globaalProg.programmaNaam);
+                 EricFgetsGetLineCount (file), globaalProg.programmaNaam.c_str());
         return 1;
     }
 
@@ -778,10 +799,6 @@ BaanDoc::baanDocParseBlkFile (FILE * file)
             return 1;
         }
     }
-
-
-
-
 
     /*
    ** Lees nu de wissel database
@@ -1403,7 +1420,7 @@ int BaanDoc::baanDocInitRegelaar (int RegelaarNummer, int show)
 
 
     // lees het programma
-    if (EricFgets (regelProg[RegelaarNummer].programmaNaam, 200, file) == NULL)
+    if (EricFgets (BitmapFileName, 200, file) == NULL)
     {
         mMessage.message (str(boost::format("Regel %d: EOF bij het lezen van het programma naam") %
                               EricFgetsGetLineCount (file)));
@@ -1412,7 +1429,7 @@ int BaanDoc::baanDocInitRegelaar (int RegelaarNummer, int show)
         return 1;
     }
     //  mBaanInfo->RegelArray[RegelaarNummer].pView = m_mBaanInfo->pView;
-    int ret = regelProg[RegelaarNummer].Init (globaalProg.GetGlobalArray ());
+    int ret = regelProg[RegelaarNummer].Init (globaalProg.GetGlobalArray (), GetProgrammaNaamVanString(BitmapFileName));
     if (ret == 0)
         regelProg[RegelaarNummer].executeProgram (INIT, RegelaarNummer);
 
@@ -1672,11 +1689,12 @@ void BaanDoc::baanDocHerlaadProgramma (int regelaar)
             regelProg[regelaar].unload ();
             if (mBaanInfo->RegelArray[regelaar].programmaNaam[0] != 0)
             {
+                std::cout << "baanDocHerlaadProgramma path wijziging" <<std::endl;
                 // we moeten dus ook het programma naam veranderen
-                strcpy (regelProg[regelaar].programmaNaam,
-                        mBaanInfo->RegelArray[regelaar].programmaNaam);
+//                strcpy (regelProg[regelaar].programmaNaam,
+//                        mBaanInfo->RegelArray[regelaar].programmaNaam);
             }
-            regelProg[regelaar].Init (globaalProg.GetGlobalArray ());
+            regelProg[regelaar].Init (globaalProg.GetGlobalArray (),regelProg[regelaar].programmaNaam.c_str());
             regelProg[regelaar].executeProgram (INIT, regelaar);
             mBaanInfo->RegelArray[regelaar].herlaadProgramma = 0;
         }

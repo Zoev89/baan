@@ -92,6 +92,9 @@ public:
     virtual void  SetLangzaamRijdenUitleg(const std::string &uitleg) override;
 
 
+private slots:
+    void on_programmaNaam_clicked();
+
 private:
     std::string toString(float);
     Ui::QtRegelaarInstellingenDialoog *ui;
