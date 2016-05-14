@@ -99,7 +99,8 @@ bool QtRegelaarInstellingenDialoog::RunDialogOk()
     ui->plusMinus->setText(toString(m_plusMinus).c_str());
     ui->helling->setText(toString(m_helling).c_str());
     ui->dodeTijd->setText(toString(m_dodeTijd).c_str());
-    ui->programmaNaam->setText(m_programmaNaam.c_str());
+    auto file = QFileInfo(m_programmaNaam.c_str());
+    ui->programmaNaam->setText(file.baseName());
     ui->herlaadProgramma->setChecked(m_laatsteWagonCheck);
     ui->langzaam->setText(std::to_string(m_langzaam).c_str());
     ui->rijden->setText(std::to_string(m_rijden).c_str());
@@ -133,7 +134,7 @@ bool QtRegelaarInstellingenDialoog::RunDialogOk()
         m_plusMinus = std::stof(ui->plusMinus->text().toStdString());
         m_helling = std::stof(ui->helling->text().toStdString());
         m_dodeTijd = std::stof(ui->dodeTijd->text().toStdString());
-        m_programmaNaam = ui->programmaNaam->text().toStdString();
+        //m_programmaNaam = ui->programmaNaam->text().toStdString(); niet converteren word gedaan in on_programmaNaam_clicked
         m_herlaadProgramma = ui->herlaadProgramma->isChecked();
         m_langzaam = std::stoi(ui->langzaam->text().toStdString());
         m_rijden = std::stoi(ui->rijden->text().toStdString());
@@ -509,10 +510,10 @@ void QtRegelaarInstellingenDialoog::on_programmaNaam_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
             tr("Prog Files (*.so)"));
-
     if (!fileName.isEmpty())
     {
         auto file = QFileInfo(fileName);
         ui->programmaNaam->setText(file.baseName());
+        m_programmaNaam = fileName.toStdString();
     }
 }

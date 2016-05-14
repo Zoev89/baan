@@ -193,14 +193,15 @@ void Regelaar::PropertiesClicked()
     mRegelInstellingenDialoog.SetEloc(ELoc==1);
     mRegelInstellingenDialoog.SetLaatsteWagonCheck(laatsteWagonCheck==1);
     {
-        char *p;
-        p = strrchr (programmaNaam, '/');
-        if (p)
-            p++;
-        if (p)
-            mRegelInstellingenDialoog.SetProgrammaNaam(p);
-        else
-            mRegelInstellingenDialoog.SetProgrammaNaam("");
+        //char *p;
+        //p = strrchr (programmaNaam, '/');
+        //if (p)
+//            p++;
+        //if (p)
+        //mRegelInstellingenDialoog.SetProgrammaNaam(p);
+        mRegelInstellingenDialoog.SetProgrammaNaam(programmaNaam);
+        //else
+            //mRegelInstellingenDialoog.SetProgrammaNaam("");
     }
     mRegelInstellingenDialoog.SetHerlaadProgramma(false);
     mRegelInstellingenDialoog.SetLangzaamRijdenUitleg("De snelheid setting voor rijden tijdens het uitvoeren van het programma.");
@@ -320,6 +321,7 @@ void Regelaar::PropertiesClicked()
         {
             if (mRegelInstellingenDialoog.GetProgrammaNaam().c_str()[0] != 0)
             {
+                std::cout << mRegelInstellingenDialoog.GetProgrammaNaam() << std::endl;
                 strcpy (programmaNaam, mRegelInstellingenDialoog.GetProgrammaNaam().c_str());
             }
             mBaanDoc.baanDocHerlaadProgramma (RegelaarNummer);

@@ -9,43 +9,32 @@ using ::testing::Return;
 
 class BaanZoekTest : public ::testing::Test {
  protected:
-    virtual void SetUp() {
-        TestFrameWorkInitBaan();
-        mBaanInfo = baanInfo;
+    virtual void SetUp()
+    {
+        baanInfo = make_unique<BaanInfo_t>(mHardwareHoog,mHardwareLaag);
+        objects =  make_unique<InitObjects>(baanInfo.get()); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
+
+        {
+            for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
+                baanInfo->RegelArray.push_back(Regelaar(objects->regelaarViewUpdates, objects->baanTreinen, objects->baanDoc, objects->regelaarInstellingenDialoog, objects->baanMessage,
+                                                        objects->telefoonConnectie, objects->td));
+        }
+
+        std::string doc="/home/eric/trein/ezb/baan.blk";
+        FILE * blkFile = objects->baanDoc.baanDocFileOpen (doc.c_str(), "rb", baanInfo->blkDir, &baanInfo->blkName);
+        baanInfo->spoorInfo.LoadData("/home/eric/trein/ezb/baan");
+        EXPECT_CALL(objects->mainWindowDrawing, SetBitmap(_));
+        EXPECT_CALL(objects->baanTreinen, baanCreateTreinen(_,_,_,_));
+        ASSERT_FALSE(objects->baanDoc.baanDocParseBlkFile (blkFile));
+
+        mBaanInfo = baanInfo.get();
     }
+
     virtual void TearDown() 
     {
-        if (baanInfo != NULL)
-        {
-            delete baanInfo;
-            baanInfo = NULL;
-        }
-        if (objects != NULL)
-        {
-            delete objects;
-            objects = NULL;
-        }
     }
 
 public:
-    void TestFrameWorkInitBaan()
-    {
-            baanInfo = new BaanInfo_t(mHardwareHoog,mHardwareLaag);
-            objects =  new InitObjects(baanInfo); // Program Init fails want de objects zijn niet geinitializeerd bij mBaanInfo new hier boven
-
-            {
-                for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
-                    baanInfo->RegelArray.push_back(Regelaar(objects->regelaarViewUpdates, objects->baanTreinen, objects->baanDoc, objects->regelaarInstellingenDialoog, objects->baanMessage,
-                                                            objects->telefoonConnectie, objects->td));
-            }
-
-            std::string doc="/home/eric/trein/ezb/baan.blk";
-            FILE * blkFile = objects->baanDoc.baanDocFileOpen (doc.c_str(), "rb", baanInfo->blkDir, &baanInfo->blkName);
-            baanInfo->spoorInfo.LoadData("/home/eric/trein/ezb/baan");
-            EXPECT_CALL(objects->mainWindowDrawing, SetBitmap(_));
-            EXPECT_CALL(objects->baanTreinen, baanCreateTreinen(_,_,_,_));
-            ASSERT_FALSE(objects->baanDoc.baanDocParseBlkFile (blkFile));
-    }
 
     void printZoekPad(std::vector<BaanZoekResultaat> &pad)
     {
@@ -107,8 +96,8 @@ public:
     BaanInfo_t *mBaanInfo;
     IHardwareComMock mHardwareHoog;
     IHardwareComMock mHardwareLaag;
-    InitObjects *objects = NULL;
-    BaanInfo_t* baanInfo = NULL;
+    std::unique_ptr<InitObjects> objects;
+    std::unique_ptr<BaanInfo_t> baanInfo;
 
 protected:
   
