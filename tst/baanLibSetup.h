@@ -51,6 +51,7 @@ public:
     ITelefoonConnectieMock telefoonConnectie;
     IErrorPrintMock errorPrint;
     IDraaiSchijfTuningMock draaiSchijfTuning;
+    IProgrammaMock programma;
 };
 
 #endif // BAANLIBSETUP_H

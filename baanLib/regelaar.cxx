@@ -44,10 +44,10 @@
 // Regelaar dialog
 
 
-Regelaar::Regelaar (IRegelaarViewUpdates &regelaarViewUpdates, IBaanTreinen &baanTreinen, IBaanDoc &baanDoc, IRegelaarInstellingenDialoog &regelDialoog, IBaanMessage &baanMessage, ITelefoonConnectie &telefoonConnectie, ITd &td):
+Regelaar::Regelaar (IRegelaarViewUpdates &regelaarViewUpdates, IBaanTreinen &baanTreinen, IProgramma &programma, IRegelaarInstellingenDialoog &regelDialoog, IBaanMessage &baanMessage, ITelefoonConnectie &telefoonConnectie, ITd &td):
     mRegelaarViewUpdates(regelaarViewUpdates),
     mBaanTreinen(baanTreinen),
-    mBaanDoc(baanDoc),
+    mProgramma(programma),
     mRegelInstellingenDialoog(regelDialoog),
     mBaanMessage(baanMessage),
     mTelefoonConnectie(telefoonConnectie),
@@ -192,17 +192,7 @@ void Regelaar::PropertiesClicked()
     mRegelInstellingenDialoog.SetClipStoppen(StopClip >> SNELHEID_SHIFT);
     mRegelInstellingenDialoog.SetEloc(ELoc==1);
     mRegelInstellingenDialoog.SetLaatsteWagonCheck(laatsteWagonCheck==1);
-    {
-        //char *p;
-        //p = strrchr (programmaNaam, '/');
-        //if (p)
-//            p++;
-        //if (p)
-        //mRegelInstellingenDialoog.SetProgrammaNaam(p);
-        mRegelInstellingenDialoog.SetProgrammaNaam(programmaNaam);
-        //else
-            //mRegelInstellingenDialoog.SetProgrammaNaam("");
-    }
+    mRegelInstellingenDialoog.SetProgrammaNaam(mProgramma.GetProgrammaNaam().c_str());
     mRegelInstellingenDialoog.SetHerlaadProgramma(false);
     mRegelInstellingenDialoog.SetLangzaamRijdenUitleg("De snelheid setting voor rijden tijdens het uitvoeren van het programma.");
 
@@ -319,12 +309,7 @@ void Regelaar::PropertiesClicked()
         Rijden = mRegelInstellingenDialoog.GetRijden();
         if (herlaadProgramma)
         {
-            if (mRegelInstellingenDialoog.GetProgrammaNaam().c_str()[0] != 0)
-            {
-                std::cout << mRegelInstellingenDialoog.GetProgrammaNaam() << std::endl;
-                strcpy (programmaNaam, mRegelInstellingenDialoog.GetProgrammaNaam().c_str());
-            }
-            mBaanDoc.baanDocHerlaadProgramma (RegelaarNummer);
+            mProgramma.HerlaadProgramma(mRegelInstellingenDialoog.GetProgrammaNaam(), RegelaarNummer);
             programRunning = 0;
             RunProgramClicked(true);
         }
@@ -555,7 +540,7 @@ Regelaar::CleanUp (void)
                  StopClip >> SNELHEID_SHIFT);
         fprintf (file, "#Snelheid1 Afstand1\n%d %d\n", mStand1, mAfstand1);
         fprintf (file, "#Snelheid2 Afstand2\n%d %d\n", mStand2, mAfstand2);
-        fprintf (file, "Programma = %s\n", programmaNaam);
+        fprintf (file, "Programma = %s\n", mProgramma.GetProgrammaNaam().c_str());
         fprintf (file, "#Langzaam Rijden\n%d %d\n", Langzaam, Rijden);
         fprintf (file, "#locSoort\n%s\n", locSoort);
         fprintf (file, "#laatsteWagonCheck\n%d\n", laatsteWagonCheck);

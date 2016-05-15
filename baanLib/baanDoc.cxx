@@ -47,7 +47,7 @@ BaanDoc::BaanDoc(IMessage &msg, IBaanWT &baanWT, IBaanTreinen &baanTreinen, IBlo
         regelProg.push_back(CProgramma(msg, wissels, baanMessage, mainWindowDrawing, td, errorPrint, mBaanInfo));
 
     for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
-        mBaanInfo->RegelArray.push_back(Regelaar(regelaarViewUpdates, baanTreinen, *this, regelaarInstellingenDialoog, baanMessage,
+        mBaanInfo->RegelArray.push_back(Regelaar(regelaarViewUpdates, baanTreinen, regelProg[i], regelaarInstellingenDialoog, baanMessage,
                                                 telefoonConnectie, td));
 
     tdglobal = mTd.tdCreate("globalProg");
@@ -534,7 +534,7 @@ BaanDoc::baanDocParseBlkFile (FILE * file)
                     EricFgetsGetLineCount (file));
         return 1;
     }
-    if (globaalProg.InitGlobal (GetProgrammaNaamVanString(Array)))
+    if (globaalProg.Init(GetProgrammaNaamVanString(Array)))
     {
         mErrorPrint.errorPrint
                 ("Regel %d: Het global programma %s kan niet geladen worden",
@@ -1429,7 +1429,7 @@ int BaanDoc::baanDocInitRegelaar (int RegelaarNummer, int show)
         return 1;
     }
     //  mBaanInfo->RegelArray[RegelaarNummer].pView = m_mBaanInfo->pView;
-    int ret = regelProg[RegelaarNummer].Init (globaalProg.GetGlobalArray (), GetProgrammaNaamVanString(BitmapFileName));
+    int ret = regelProg[RegelaarNummer].Init (GetProgrammaNaamVanString(BitmapFileName));
     if (ret == 0)
         regelProg[RegelaarNummer].executeProgram (INIT, RegelaarNummer);
 
@@ -1677,29 +1677,6 @@ BaanDoc::baanDocRegelaarOpen (const char *filename)
     }
 }
 
-
-void BaanDoc::baanDocHerlaadProgramma (int regelaar)
-{
-    if (mBaanInfo->RegelArray[regelaar].Gebruikt)
-    {
-        if (mBaanInfo->RegelArray[regelaar].herlaadProgramma)
-        {
-            // laad het programma opnieuw
-            // CLAIMS worden door de unload verwijderd
-            regelProg[regelaar].unload ();
-            if (mBaanInfo->RegelArray[regelaar].programmaNaam[0] != 0)
-            {
-                std::cout << "baanDocHerlaadProgramma path wijziging" <<std::endl;
-                // we moeten dus ook het programma naam veranderen
-//                strcpy (regelProg[regelaar].programmaNaam,
-//                        mBaanInfo->RegelArray[regelaar].programmaNaam);
-            }
-            regelProg[regelaar].Init (globaalProg.GetGlobalArray (),regelProg[regelaar].programmaNaam.c_str());
-            regelProg[regelaar].executeProgram (INIT, regelaar);
-            mBaanInfo->RegelArray[regelaar].herlaadProgramma = 0;
-        }
-    }
-}
 
 
 void

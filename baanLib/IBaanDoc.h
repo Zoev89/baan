@@ -12,7 +12,6 @@ public:
     virtual void baanDocExecuteProgram (int regelaar, int eventType, int event) = 0;
     virtual void baanDocStopProgram(int regelaar) = 0;
     virtual void baanDocPlaatsRegelaar(int RegelaarNummer, bool show) = 0;
-    virtual void baanDocHerlaadProgramma(int regelaar) = 0;
     virtual std::string baanDocGetBitmapname() = 0;
 };
 

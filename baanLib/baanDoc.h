@@ -39,7 +39,6 @@ public:
     virtual void baanDocExecuteProgram (int regelaar, int eventType, int event);
     virtual void baanDocStopProgram(int regelaar);
     virtual void baanDocPlaatsRegelaar(int RegelaarNummer, bool show);
-    virtual void baanDocHerlaadProgramma(int regelaar);
     virtual std::string baanDocGetBitmapname();
 
     // Nog niet in IBaanDoc later bekijken of dat moet

@@ -38,7 +38,8 @@ HEADERS += \
     baanLibSetup.h \
     IThreadSleepMock.h \
     IHardwareComMock.h \
-    IDraaiSchijfTuningMock.h
+    IDraaiSchijfTuningMock.h \
+    IProgrammaMock.h
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../baanLib/release/ -lbaanLib

@@ -4,7 +4,7 @@
 #include "IRegelaarView.h"
 #include "IRegelaarViewUpdates.h"
 #include "IBaanTreinen.h"
-#include "IBaanDoc.h"
+#include "IProgramma.h"
 #include "IRegelaarInstellingenDialoog.h"
 #include "IBaanMessage.h"
 #include "ITelefoonConnectie.h"
@@ -24,7 +24,7 @@ class Regelaar : public IRegelaarView
 {
 // Construction
 public:
-  Regelaar (IRegelaarViewUpdates& regelaarViewUpdates, IBaanTreinen& baanTreinen, IBaanDoc& baanDoc, IRegelaarInstellingenDialoog &regelDialoog, IBaanMessage& baanMessage,
+  Regelaar (IRegelaarViewUpdates& regelaarViewUpdates, IBaanTreinen& baanTreinen, IProgramma& program, IRegelaarInstellingenDialoog &regelDialoog, IBaanMessage& baanMessage,
             ITelefoonConnectie& telefoonConnectie, ITd& td);			// standard constructor
 
   // IRegelaarView
@@ -113,8 +113,6 @@ public:
   int blokLengte; 		// De meeting kan over meerder blokken plaats vinden
 
   char RegelaarFileName[300];	/* zodat als we de het programma weer aanzetten we de status hebben */
-  char programmaNaam[200];	// wordt gebuikt om een nieuw programma te kunnen laden
-
 
   // voor het niet altijd checken van het check blok is hier
   // een decimatie variabele. Het gebruik van de decimatie is afhankelijk van de lengte 
@@ -155,7 +153,7 @@ protected:
 private:
   IRegelaarViewUpdates& mRegelaarViewUpdates;
   IBaanTreinen& mBaanTreinen;
-  IBaanDoc& mBaanDoc;
+  IProgramma& mProgramma;
   IRegelaarInstellingenDialoog &mRegelInstellingenDialoog;
   IBaanMessage& mBaanMessage;
   ITelefoonConnectie& mTelefoonConnectie;

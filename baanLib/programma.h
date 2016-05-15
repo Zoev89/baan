@@ -8,18 +8,13 @@
 #include "IMainWindowDrawing.h"
 #include "ITd.h"
 #include "IErrorPrint.h"
+#include "IProgramma.h"
 
 #define NO_MUIS_EVENTS 20
 
 typedef  void (*progMain_t)(int event,int nummer);
 typedef void (*progAanvraagRet_t)(int adres,int bit,int ret);
 typedef void (*zetInstantie_t)(class CProgramma *inst);
-
-typedef struct
-{
-    int *adres;
-    int size;
-} varArray_t, *pvarArray_t;
 
 typedef struct
 {
@@ -41,11 +36,16 @@ typedef struct
 #define AANVRAAG_DIEPTE 16
 #define AANVRAAG_MASK 0x0f
 
-class CProgramma
+class CProgramma : public IProgramma
 {
 public:
     CProgramma (IMessage& message, IWissels& wissels, IBaanMessage &baanMessage, IMainWindowDrawing& mainWindowDrawing, ITd& td, IErrorPrint & errorPrint, BaanInfo_t *baanInfo);
     ~CProgramma ();
+
+    // IProgramma
+    virtual boost::filesystem::path GetProgrammaNaam() const override;
+    virtual void HerlaadProgramma(const boost::filesystem::path& naam, int regelaarNummer) override;
+
 
     //
     // Ik plaats de api routines bovenaan zodat die niet
@@ -96,9 +96,7 @@ public:
 
     // preconditoin van InitGloabl en Init is dat programmaNaam gezet is!
     // Bij het herladen word deze naam weer gebruikt!
-    int InitGlobal (string filename);
-    int Init (pvarArray_t GlobalArray, std::string filename);
-    pvarArray_t GetGlobalArray ();
+    int Init (std::string filename);
     void unload ();		// verwijder programma en allocated memory
     void executeProgram (int eventType, int nummer);
     void checkMuisEvents (int x, int y);
@@ -134,7 +132,6 @@ private:
 
     // data en routines voor het baan API
     muisEvents_t muisEvents[NO_MUIS_EVENTS];
-    int geenGlobaalArray;
     int ioAanvraag(IOAanvraag_t aanvraag, int timeout);
     char *m_staticData;
 };

@@ -121,7 +121,8 @@ HEADERS +=\
     ThreadSleep.h \
     IThreadSleep.h \
     IHardwareCom.h \
-    IDraaiSchijfTuning.h
+    IDraaiSchijfTuning.h \
+    IProgramma.h
 
 unix {
     target.path = /usr/lib

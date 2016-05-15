@@ -16,8 +16,10 @@ class BaanZoekTest : public ::testing::Test {
 
         {
             for (int i=0;i<MAX_AANTAL_REGELAARS;i++)
-                baanInfo->RegelArray.push_back(Regelaar(objects->regelaarViewUpdates, objects->baanTreinen, objects->baanDoc, objects->regelaarInstellingenDialoog, objects->baanMessage,
+            {
+                baanInfo->RegelArray.push_back(Regelaar(objects->regelaarViewUpdates, objects->baanTreinen, objects->programma, objects->regelaarInstellingenDialoog, objects->baanMessage,
                                                         objects->telefoonConnectie, objects->td));
+            }
         }
 
         std::string doc="/home/eric/trein/ezb/baan.blk";

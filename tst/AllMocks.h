@@ -22,5 +22,6 @@
 #include "IThreadSleepMock.h"
 #include "IHardwareComMock.h"
 #include "IDraaiSchijfTuningMock.h"
+#include "IProgrammaMock.h"
 
 #endif // ALLMOCKS_H

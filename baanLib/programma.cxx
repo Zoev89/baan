@@ -46,7 +46,6 @@ CProgramma::CProgramma (IMessage& message, IWissels& wissels, IBaanMessage& baan
 {
     int i;
 
-    geenGlobaalArray = 0;
     prog_handle = NULL;
     // initialize de muisEvents tot ongebruikt
     for (i = 0; i < NO_MUIS_EVENTS; i++)
@@ -116,13 +115,7 @@ CProgramma::unload ()
 }
 
 int
-CProgramma::InitGlobal (std::string filename)
-{
-    return Init (NULL, filename);
-}
-
-int
-CProgramma::Init (pvarArray_t GlobalArray, string filename)
+CProgramma::Init (std::string filename)
 {
     if (filename.empty())
     {
@@ -199,27 +192,6 @@ CProgramma::Init (pvarArray_t GlobalArray, string filename)
     }
     zetInstantie (this);
 
-    // allocate memorys
-
-    if (GlobalArray == NULL)
-    {
-        //      globalArray.adres = new int[globalArray.size];
-        //      if (globalArray.adres == NULL)
-        //        {
-        //          unload ();
-        //          return 1;
-        //        }
-        //      memset (globalArray.adres, 0, globalArray.size * sizeof (int));
-    }
-    else
-    {
-        //      globalArray = *GlobalArray;
-        //      geenGlobaalArray = 1;
-    }
-
-
-
-
 
     // program succesvol geladen
     aanVraagLees = aanVraagSchrijf = 0;
@@ -232,12 +204,19 @@ CProgramma::Init (pvarArray_t GlobalArray, string filename)
     return 0;
 }
 
-pvarArray_t
-CProgramma::GetGlobalArray ()
+boost::filesystem::path CProgramma::GetProgrammaNaam() const
 {
-    //  return &globalArray;
-    return NULL;
+    return programmaNaam;
 }
+
+void CProgramma::HerlaadProgramma(const boost::filesystem::path& naam, int regelaarNummer)
+{
+    unload ();
+    Init (naam.c_str());
+    executeProgram (INIT, regelaarNummer);
+}
+
+
 
 void
 CProgramma::executeProgram (int eventType, int nummer)
