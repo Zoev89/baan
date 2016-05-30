@@ -12,10 +12,20 @@ CONFIG += staticlib
 
 DEFINES += BAANLIB_LIBRARY
 
+CONFIG(CodeCoverage)
+{
+QMAKE_CXXFLAGS += -g -Wall -fprofile-arcs -ftest-coverage -O0
+QMAKE_LFLAGS += -g -Wall -fprofile-arcs -ftest-coverage  -O0
+
+LIBS += \
+    -lgcov
+
+}
+
 
 QMAKE_CXXFLAGS += -std=c++11 -fPIC -I../../baanShared `pkg-config libxml++-2.6 --cflags`
 QMAKE_LFLAGS += -rdynamic -fPIC -L/usr/X11R6/lib
-LIBS = -lfltk2_images -lfltk2    -lX11 -lXi -lXinerama -lXft -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lrt -lusb -lboost_thread -lboost_system -lboost_filesystem `pkg-config libxml++-2.6 --libs` -ldl -lfontconfig -lXrender
+LIBS += -lfltk2_images -lfltk2    -lX11 -lXi -lXinerama -lXft -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lrt -lusb -lboost_thread -lboost_system -lboost_filesystem `pkg-config libxml++-2.6 --libs` -ldl -lfontconfig -lXrender
 
 SOURCES += \
     baanDoc.cxx \

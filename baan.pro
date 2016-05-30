@@ -10,3 +10,4 @@ SUBDIRS += \
 baanUI.depends = baanLib
 tst.depends = baanLib
 baanLib.depends = baanShared
+print.depends = baanShared
