@@ -56,6 +56,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     mBaanCreator->mBaanLib->BaanClose();
     mBaanCreator->message.closeDialog();
+    mBaanCreator->ioOverzicht.closeDialog();
+    mBaanCreator->baanOverzicht.closeDialog();
     event->accept();
 }
 
@@ -108,4 +110,15 @@ void MainWindow::on_actionCheck_triggered()
 void MainWindow::on_actionView_Messages_triggered()
 {
     mBaanCreator->message.show();
+}
+
+void MainWindow::on_actionIO_Overzicht_triggered()
+{
+    mBaanCreator->ioOverzicht.Display(mBaanCreator->mBaanLib->GetIoOverzicht());
+}
+
+void MainWindow::on_actionBaan_Overzicht_triggered()
+{
+    mBaanCreator->baanOverzicht.Display(mBaanCreator->mBaanLib->GetBaanOverzicht());
+
 }

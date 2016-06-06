@@ -42,6 +42,18 @@ std::vector<std::string> IoOverzicht::GetOverzicht (BaanInfo_t * pInfo)
                 {
                     ios[p][pWissel->hardwareBit + 2] = pWissel->Type;
                 }
+                if (DRAAISCHIJF == Type)
+                {
+                    ios[p+1][0] = pWissel->hardwareAdres+1;
+                    ios[p+2][0] = pWissel->hardwareAdres+2;
+                    for(int index=1;index<17;index++)
+                    {
+                        ios[p][index] = pWissel->Type;
+                        ios[p+1][index] = pWissel->Type;
+                        ios[p+2][index] = pWissel->Type;
+                    }
+
+                }
                 break;
             }
         }
@@ -88,6 +100,9 @@ std::vector<std::string> IoOverzicht::GetOverzicht (BaanInfo_t * pInfo)
                     break;
                 case 6:
                     t = "lamp";
+                    break;
+                case 7:
+                    t = "draai";
                     break;
                 default:
                     t = "?";

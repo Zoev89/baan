@@ -16,6 +16,8 @@
 #include "QtNieuwIODialoog.h"
 #include "QtAddBlokDialoog.h"
 #include "QtRegelaarInstellingenDialoog.h"
+#include "QtIoOverzicht.h"
+#include "QtBaanOverzicht.h"
 #include "UIRegelaarViewUpdates.h"
 #include "ThreadSleep.h"
 #include "hardwareCom.h"
@@ -36,6 +38,8 @@ public:
     QtNieuwIODialoog nieuwIODialoog;
     QtDraaiSchijfTuning draaiSchijfTuningDialoog;
     QtAddBlokDialoog addBlok;
+    QtIoOverzicht ioOverzicht;
+    QtBaanOverzicht baanOverzicht;
     std::unique_ptr<UIRegelaarViewUpdates> regelaarViewUpdates;
     QtRegelaarInstellingenDialoog regelaarInstellingenDialoog;
     ThreadSleep mThreadSleep; // moet voor mBaanLib zitten want anders is de distuctie volgoorde niet goed

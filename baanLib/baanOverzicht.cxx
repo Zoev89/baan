@@ -9,7 +9,7 @@ std::vector<std::string>
 BaanOverzicht::GetOverzicht (BaanInfo_t * pInfo)
 {
     int i;
-    int aantal[7];
+    int aantal[8];
     int blokken = 0;
     char inhoud[100];
     int laatsteBlok;
@@ -59,12 +59,14 @@ BaanOverzicht::GetOverzicht (BaanInfo_t * pInfo)
     returnVector.push_back(inhoud);
     sprintf (inhoud, "%d\tTotaal wissels", aantal[5] + aantal[2] + aantal[4]);
     returnVector.push_back(inhoud);
+    sprintf (inhoud, "%d\tdraaischijven", aantal[7]);
+    returnVector.push_back(inhoud);
 
     for (i = 1; i <= laatsteBlok; i++)
     {
         sprintf (inhoud, "blok %3d\t%s", i,
                  (pInfo->BlokPointer[i].BlokIONummer >
-                  0) ? "Gebruikt" : "Vrij");
+                  0) ? (pInfo->Blok[i].hardwareAdres != i)? "draai blok" : "Gebruikt" : "Vrij");
         returnVector.push_back(inhoud);
     }
     return returnVector;

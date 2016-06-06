@@ -36,6 +36,10 @@ private slots:
 
     void on_actionView_Messages_triggered();
 
+    void on_actionIO_Overzicht_triggered();
+
+    void on_actionBaan_Overzicht_triggered();
+
 private:
     Ui::MainWindow *ui;
     QBitmapLabel *bitMap;

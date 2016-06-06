@@ -43,7 +43,9 @@ SOURCES += main.cpp\
     QtDraaiSchijfTuning.cpp \
     QtAddBlokDialoog.cpp \
     QtMessage.cpp \
-    QtRegelaarInstellingenDialoog.cpp
+    QtRegelaarInstellingenDialoog.cpp \
+    QtIoOverzicht.cpp \
+    QtBaanOverzicht.cpp
 
 HEADERS  += mainwindow.h \
     UIMainScreenControls.h \
@@ -63,7 +65,9 @@ HEADERS  += mainwindow.h \
     QtDraaiSchijfTuning.h \
     QtAddBlokDialoog.h \
     QtMessage.h \
-    QtRegelaarInstellingenDialoog.h
+    QtRegelaarInstellingenDialoog.h \
+    QtIoOverzicht.h \
+    QtBaanOverzicht.h
 
 FORMS    += mainwindow.ui \
     UIRegelaar.ui \
@@ -75,7 +79,9 @@ FORMS    += mainwindow.ui \
     QtDraaiSchijfTuning.ui \
     QtAddBlokDialoog.ui \
     QtMessage.ui \
-    QtRegelaarInstellingenDialoog.ui
+    QtRegelaarInstellingenDialoog.ui \
+    QtIoOverzicht.ui \
+    QtBaanOverzicht.ui
 
 # Specify that we depend on the library (which, logically would be implicit from
 # the fact that we are linking to it)
