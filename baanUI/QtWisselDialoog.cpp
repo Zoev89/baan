@@ -138,15 +138,15 @@ bool QtWisselDialoog::RunDialogOk()
         ui->stack->setCurrentIndex(0);
         for(int i=0; i<editFields; ++i)
         {
-            m_editAansluiting[i]->setEnabled(m_aansluiting[i]);
+            m_editAansluiting[i]->setEnabled(m_aansluiting[i] ? true: false);
             m_editAansluiting[i]->setText((m_aansluiting[i]) ? m_aansluiting[i].get().c_str():"");
             m_editAansluiting[i]->setToolTip((m_aansluitingToolTip[i]) ? m_aansluitingToolTip[i].get().c_str():"");
 
-            m_editLengte[i]->setEnabled(m_lengte[i]);
+            m_editLengte[i]->setEnabled(m_lengte[i] ? true: false);
             m_editLengte[i]->setText((m_lengte[i]) ? std::to_string(m_lengte[i].get()).c_str():"");
             m_editLengte[i]->setToolTip((m_lengteToolTip[i]) ? m_lengteToolTip[i].get().c_str():"");
 
-            m_editMaxSnelheid[i]->setEnabled(m_maxSnelheid[i]);
+            m_editMaxSnelheid[i]->setEnabled(m_maxSnelheid[i] ? true: false);
             m_editMaxSnelheid[i]->setText((m_maxSnelheid[i]) ? std::to_string(m_maxSnelheid[i].get()).c_str():"");
             m_editMaxSnelheid[i]->setToolTip((m_maxSnelheidToolTip[i]) ? m_maxSnelheidToolTip[i].get().c_str():"");
         }
@@ -445,7 +445,6 @@ void QtWisselDialoog::on_Edit_clicked()
     {
         QtDraaiAansluiting aansluiting(this);
         auto cellIndex = ui->draaiAansluiting->currentRow();
-        std::cout << cellIndex << std::endl;
         aansluiting.SetValues(m_draaiAansluitingen[cellIndex]);
         auto dialogRet = aansluiting.exec();
         if (dialogRet==QDialog::Accepted)

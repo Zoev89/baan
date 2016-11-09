@@ -14,8 +14,7 @@ QMAKE_CXXFLAGS += -std=c++11 -fPIC `pkg-config libxml++-2.6 --cflags`
 TEMPLATE = app
 LIBS +=  -lgmock -lgmock_main ../baanLib/libbaanLib.a ../baanShared/libbaanShared.a -L/usr/X11R6/lib  -lX11 -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lrt -lusb -lboost_system -lboost_thread -lboost_filesystem `pkg-config libxml++-2.6 --libs` -ldl
 
-CONFIG(CodeCoverage)
-{
+CodeCoverage {
 QMAKE_CXXFLAGS += -g -Wall -fprofile-arcs -ftest-coverage -O0
 QMAKE_LFLAGS += -g -Wall -fprofile-arcs -ftest-coverage  -O0
 
@@ -81,7 +80,8 @@ FORMS    += mainwindow.ui \
     QtMessage.ui \
     QtRegelaarInstellingenDialoog.ui \
     QtIoOverzicht.ui \
-    QtBaanOverzicht.ui
+    QtBaanOverzicht.ui \
+    QtTreinenDialoog.ui
 
 # Specify that we depend on the library (which, logically would be implicit from
 # the fact that we are linking to it)

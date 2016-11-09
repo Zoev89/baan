@@ -1,11 +1,26 @@
 #include "UIRegelaars.h"
+#include <QLabel>
 
-UIRegelaars::UIRegelaars(QWidget *parent, BaanLib *baanLib) :
-    QWidget(parent),
-    mBaanLib(baanLib),
-    mActiveRegelaar(0)
+UIRegelaars::UIRegelaars(QWidget *parent, BaanLib *baanLib)
+    : QDialog(parent)
+    , mBaanLib(baanLib)
+    , mActiveRegelaar(0)
+    , ui(new Ui::QtTreinenDialoog)
 {
     mRegelaar = new UIRegelaar(this);
+    ui->setupUi(this);
+
+    QTreeWidgetItem *treeItem = new QTreeWidgetItem(ui->treinen);
+    treeItem->setText(0, "aap");
+    ui->treinen->addTopLevelItem(treeItem);
+    QTreeWidgetItem *childItem = new QTreeWidgetItem();
+    childItem->setText(0, "aapje");
+    treeItem->addChild(childItem);
+
+    treeItem = new QTreeWidgetItem(ui->treinen);
+    treeItem->setText(0, "note");
+    ui->treinen->addTopLevelItem(treeItem);
+
 }
 
 QPixmap* UIRegelaars::GetBitmap(int regelaarNummer)
@@ -17,7 +32,22 @@ QPixmap* UIRegelaars::GetBitmap(int regelaarNummer)
 void UIRegelaars::NieuweRegelaarSlot(int regelaarNummer, const QString bitmapFileName)
 {
     //std::cout << "reg " << regelaarNummer << "  " << bitmapFileName.toStdString() << std::endl;
+
     mRegelaars[regelaarNummer].bitmap = new QPixmap(bitmapFileName);
+
+    QTreeWidgetItem *treeItem = new QTreeWidgetItem(ui->treinen);
+    //treeItem->setFont(0,  QFont("Times", 15, QFont::Bold));
+    treeItem->setText(2, "wat");
+    auto label = new QLabel(ui->treinen);
+    label->setPixmap(*mRegelaars[regelaarNummer].bitmap);
+    ui->treinen->addTopLevelItem(treeItem);
+    ui->treinen->setItemWidget(treeItem, 0, label);
+    auto progress = new QProgressBar(ui->treinen);
+    progress->setOrientation(Qt::Vertical);
+    progress->setMaximum(63);
+
+    ui->treinen->setItemWidget(treeItem, 1 , progress);
+
 }
 
 void UIRegelaars::SnelheidProgressSlot(int regelaarNummer, int snelheid)
@@ -65,6 +95,8 @@ void UIRegelaars::updateRegelaar(int regelaarNummer)
 {
     if (regelaarNummer == mActiveRegelaar)
     {
+        show();  //evenhier maar moeten we anders doen
+
         QIcon ButtonIcon(*mRegelaars[regelaarNummer].bitmap);
         mRegelaar->ui->bitmap->setIcon(ButtonIcon);
         mRegelaar->ui->snelheid->setValue(mRegelaars[regelaarNummer].snelheid);

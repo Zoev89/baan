@@ -7,8 +7,10 @@
 #include <cstddef>
 #include <QWidget>
 #include <QPixmap>
+#include <QDialog>
+#include "ui_QtTreinenDialoog.h"
 
-class UIRegelaars : public QWidget
+class UIRegelaars : public QDialog
 {
     Q_OBJECT
 public:
@@ -40,6 +42,8 @@ private:
     BaanLib *mBaanLib;
     UIRegelaar *mRegelaar;
     int mActiveRegelaar;
+    Ui::QtTreinenDialoog *ui;
+
     struct RegelaarData
     {
         RegelaarData()

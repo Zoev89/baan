@@ -3,8 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-CONFIG(CodeCoverage)
-{
+CodeCoverage {
 QMAKE_CXXFLAGS += -g -Wall -fprofile-arcs -ftest-coverage -O0
 QMAKE_LFLAGS += -g -Wall -fprofile-arcs -ftest-coverage  -O0
 
@@ -14,7 +13,7 @@ LIBS += \
 
 QMAKE_CXXFLAGS += -std=c++11 -I../../baanLib -I../../baan/baanShared `pkg-config libxml++-2.6 --cflags`
 QMAKE_LFLAGS += -L/usr/X11R6/lib
-LIBS +=  -lgmock -lgmock_main ../baanLib/libbaanLib.a ../baanShared/libbaanShared.a -L/usr/X11R6/lib  -lX11 -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lrt -lusb -lboost_system -lboost_thread -lboost_filesystem `pkg-config libxml++-2.6 --libs` -ldl
+LIBS += -lgmock -lgmock_main ../baanLib/libbaanLib.a ../baanShared/libbaanShared.a -L/usr/X11R6/lib  -lX11 -lpthread -lm  -lXext  -lsupc++ -lstdc++ -lrt -lusb -lboost_system -lboost_thread -lboost_filesystem `pkg-config libxml++-2.6 --libs` -ldl
 
 SOURCES += \
     baanZoek.cxx \
