@@ -463,7 +463,7 @@ BaanView::Draw ()
     }
     for (i = 0; i < mBaanInfo->AantalSpoelen; i++)
     {
-        mWissels.Display (i, NULL);
+        mWissels.Display (i, true);
     }
 
     mTd.tdStop (tdDraw);

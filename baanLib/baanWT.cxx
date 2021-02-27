@@ -27,6 +27,7 @@
 #include "usbinout.h"
 
 #include <stdio.h>
+#include <iostream>
 #include <time.h>
 #include <assert.h>
 #include "IView.h"

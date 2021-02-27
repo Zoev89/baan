@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include <string.h>
 #if defined(_WIN32)
 # if !defined(__CYGWIN__)

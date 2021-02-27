@@ -6,7 +6,7 @@ run:
 	cd ../build-baan-Desktop-Debug/baanUI;./baanUI ../../ezb/baan.blk
 
 edit:
-	cd ./bin;./baan -editMode $(BAAN_PATH)/baan.blk
+	cd ../ezb;../build-baan-Desktop-Debug/baanUI/baanUI -e baan.blk
 
 clean:
 	make -C src clean

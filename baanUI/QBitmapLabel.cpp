@@ -14,7 +14,7 @@ QBitmapLabel::QBitmapLabel(QWidget * parent, BaanLib *baanLib, UIRegelaars *rege
 
 void QBitmapLabel::paintEvent ( QPaintEvent * /*event*/ )
 {
-//printf("paint\n");
+    //printf("paint\n");
     QPainter painter(this);
     painter.drawPixmap(mWorkingBitmap.rect(), mWorkingBitmap);
 
@@ -32,7 +32,6 @@ void QBitmapLabel::mouseMoveEvent(QMouseEvent *ev)
     {
         mBaanLib->HandleMouseEvents (IView::ButtonDrag, IView::RightButton ,ev->x(), ev->y());
     }
-
 }
 
 void QBitmapLabel::mousePressEvent(QMouseEvent *ev)
@@ -65,14 +64,13 @@ void QBitmapLabel::SetBitmapSlot(const QString bitmapName)
     mInputBitmap.reset(new QPixmap(bitmapName));
     mWorkingBitmap = mInputBitmap->copy();
     setMinimumSize(mWorkingBitmap.width(), mWorkingBitmap.height());
-
     update();
 }
 
 
 void QBitmapLabel::RedrawAllSlot()
 {
-    //std::cout << "RedrawAllSlot" << std::endl;
+    std::cout << "RedrawAllSlot" << std::endl;
     mWorkingBitmap = *mInputBitmap;
     mBaanLib->Draw();
     update();

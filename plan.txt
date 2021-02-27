@@ -46,3 +46,10 @@ die de bitmap niet vinden. Het probleem zit in
 We zouden een locale blkDir moeten maken als we niet in blkDir zitten. Deze zou
 dan gebruikt kunnen worden voor het openen van de bitmap.
  
+ 
+ ----------------------
+ libusb en libusb-1.0 er is een verschil mogelijk eens kijken om te upgraden naar libusb-1.0
+ meestal moet je dan ook je include anders doen 
+ include <libusb.h>
+ include <libusb-1.0/libusb.h>   
+ Of zoiets
